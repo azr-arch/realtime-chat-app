@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: "Noto Sans", sans-serif;
+}
+
+.flex-center {
+  @apply flex justify-center items-center;
+}
+
+.side-p {
+  @apply px-[3.5rem];
+}
+
+.input-border {
+  @apply border border-solid border-gray rounded-lg;
+}
