@@ -6,12 +6,8 @@ import { redirect } from "next/dist/server/api-utils";
 import { useState } from "react";
 
 const Profile = () => {
-  const { data: session, status } = useSession();
-  const [dropbar, setDropbar] = useState(true);
-
-  if (status === "unauthenticated") {
-    return redirect("/");
-  }
+  const { data: session } = useSession();
+  const [dropbar, setDropbar] = useState(false);
 
   return (
     <section className="w-full min-h-screen flex flex-col items-start">
@@ -45,6 +41,8 @@ const Profile = () => {
 
         <ProfileForms />
       </section>
+
+      <button onClick={signOut}>signout</button>
     </section>
   );
 };

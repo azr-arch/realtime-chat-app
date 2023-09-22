@@ -19,3 +19,46 @@ html {
 .input-border {
   @apply border border-solid border-gray rounded-lg;
 }
+
+svg {
+  @apply transition-colors duration-150 ease-in-out;
+}
+svg path {
+  @apply transition-colors duration-150 ease-in-out;
+}
+
+svg[data-type="github"]:hover {
+  @apply fill-[#e6edf3];
+}
+
+svg[data-type="github"]:hover path {
+  fill: #010409;
+}
+
+svg[data-type="twitter"]:hover {
+  @apply fill-[#1e9af0];
+}
+
+svg[data-type="twitter"]:hover path {
+  fill: white;
+}
+
+svg[data-type="google"]:hover {
+  @apply fill-[#e75a4d];
+}
+
+svg[data-type="google"]:hover path {
+  fill: white;
+}
+
+svg[data-type="facebook"]:hover {
+  @apply fill-[#0766FF];
+}
+
+svg[data-type="facebook"]:hover path {
+  fill: white;
+}
+
+input:active {
+  @apply bg-transparent;
+}

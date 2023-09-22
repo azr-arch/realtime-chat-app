@@ -1,11 +1,61 @@
 "use client";
-import Link from "next/link";
+
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const Login = ({ setIsLoginPage }) => {
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    if (!formData.email || !formData.password) return;
+
+    try {
+      const res = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
+
+      console.log("res in login submit ", res);
+      if (res.error) {
+        setLoading(false);
+        setError("invalid credentials");
+        return;
+      }
+
+      setLoading(false);
+      setError("");
+      //if everything goes well
+      router.replace("/profile");
+    } catch (error) {
+      console.log("an error occured while logging ", error);
+    }
+  };
+
   return (
     <section className="max-w-login max-h-login side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
       <h1 className="text-text text-lg leading-normal mb-7">Login</h1>
-      <form action="#" className="self-stretch flex flex-col items-start mb-8">
+      <form
+        onSubmit={handleSubmit}
+        className="self-stretch flex flex-col items-start mb-8"
+        //added this onchange to clear out any previous error messages
+        onChange={(e) => {
+          if (error) {
+            setError("");
+          }
+        }}
+      >
         <div className="self-stretch flex items-center p-3 mb-[.9rem] input-border ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +68,15 @@ const Login = ({ setIsLoginPage }) => {
             <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
           </svg>
           <input
+            value={formData.email}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
             type="email"
+            name="email"
             placeholder="Email"
             className="border-none outline-none placeholder:text-l-gray"
           />
@@ -36,13 +94,29 @@ const Login = ({ setIsLoginPage }) => {
             <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z" />
           </svg>
           <input
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
+            value={formData.password}
             type="password"
+            name="password"
             placeholder="Password"
             className="border-none outline-none placeholder:text-l-gray"
           />
         </div>
-        <button className="rounded-lg py-2 self-stretch flex items-center justify-center bg-blue text-white">
-          Start coding now
+        {error && (
+          <p className="text-red-600 text-sm font-medium pb-2">{error}</p>
+        )}
+        <button
+          disabled={loading}
+          className={`rounded-lg py-2 self-stretch flex items-center justify-center bg-blue text-white ${
+            loading ? "opacity-60" : ""
+          }`}
+        >
+          {loading ? "Wait up..." : "Start coding now"}
         </button>
       </form>
 
@@ -51,28 +125,39 @@ const Login = ({ setIsLoginPage }) => {
       </p>
 
       <div className="flex items-center justify-center gap-[1.3rem] mb-7">
-        <span>
+        <span
+          onClick={() => signIn("google", { callbackUrl: "/profile" })}
+          role="button"
+          aria-label="Sign in with Google"
+        >
           <svg
             width="43"
             height="43"
             viewBox="0 0 43 43"
             fill="none"
+            data-type="google"
             xmlns="http://www.w3.org/2000/svg"
           >
             <circle cx="21.8826" cy="21.5981" r="20.5" stroke="#828282" />
             <path
               d="M21.91 15.8883C23.7953 15.8883 25.5006 16.8557 26.478 18.1887L28.7945 15.8556C27.409 14.054 24.7425 12.6255 21.91 12.6255C16.9505 12.6255 12.8828 16.6388 12.8828 21.5983C12.8828 26.5578 16.9505 30.5711 21.91 30.5711C26.0213 30.5711 29.4797 27.8141 30.5402 24.0454C30.7685 23.2622 30.8828 22.4465 30.8828 21.5983V20.7826H22.7257V24.0448H27.049C26.1517 25.97 24.1776 27.3083 21.91 27.3083C18.7614 27.3083 16.1457 24.7469 16.1457 21.5983C16.1457 18.4497 18.7614 15.8883 21.91 15.8883Z"
               fill="#828282"
+              className=""
             />
           </svg>
         </span>
 
-        <span>
+        <span
+          onClick={() => signIn("facebook", { callbackUrl: "/profile" })}
+          role="button"
+          aria-label="Sign in with Facebook"
+        >
           <svg
             width="43"
             height="43"
             viewBox="0 0 43 43"
             fill="none"
+            data-type="facebook"
             xmlns="http://www.w3.org/2000/svg"
           >
             <circle cx="21.8088" cy="21.5981" r="20.5" stroke="#828282" />
@@ -94,8 +179,13 @@ const Login = ({ setIsLoginPage }) => {
             </defs>
           </svg>
         </span>
-        <span>
+        <span
+          onClick={() => signIn("twitter", { callbackUrl: "/profile" })}
+          role="button"
+          aria-label="Sign in with Github"
+        >
           <svg
+            data-type="twitter"
             width="43"
             height="43"
             viewBox="0 0 43 43"
@@ -121,8 +211,13 @@ const Login = ({ setIsLoginPage }) => {
             </defs>
           </svg>
         </span>
-        <span>
+        <span
+          onClick={() => signIn("github", { callbackUrl: "/profile" })}
+          role="button"
+          aria-label="Sign in with Twitter"
+        >
           <svg
+            data-type="github"
             width="43"
             height="43"
             viewBox="0 0 43 43"

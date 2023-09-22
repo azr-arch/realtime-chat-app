@@ -9,7 +9,7 @@ import { redirect } from "next/dist/server/api-utils";
 import Link from "next/link";
 
 const Home = () => {
-  const [isLoginPage, setIsLoginPage] = useState(false);
+  const [isLoginPage, setIsLoginPage] = useState(true);
 
   const { status } = useSession();
   if (status === "loading") {
@@ -17,9 +17,9 @@ const Home = () => {
   } else if (status === "authenticated") {
     return (
       <p>
-        You are Already Logged In{" "}
+        please wait while we are redirecting you
         <Link href="/profile" className="text-blue">
-          check profile
+          redirect
         </Link>{" "}
       </p>
     );

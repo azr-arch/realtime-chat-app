@@ -1,10 +1,41 @@
 "use client";
 
-import Link from "next/link";
-import Logo from "./Logo";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 const Register = ({ setIsLoginPage }) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.email || !formData.password) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setLoading(false);
+        setFormData((prev) => ({ ...prev, email: "", password: "" }));
+        setIsLoginPage(true);
+      }
+    } catch (err) {
+      console.log("an error occured while registering user! ", err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       <section className="h-screen md:max-w-login md:h-auto md:max-h-login px-5 md:side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
@@ -17,7 +48,7 @@ const Register = ({ setIsLoginPage }) => {
         </p>
 
         <form
-          action="#"
+          onSubmit={handleSubmit}
           className="self-stretch flex flex-col items-start mb-8"
         >
           <div className="self-stretch flex items-center p-3 mb-[.9rem] input-border">
@@ -32,9 +63,17 @@ const Register = ({ setIsLoginPage }) => {
               <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
             </svg>
             <input
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+              value={formData.email}
+              name="email"
               type="email"
               placeholder="Email"
-              className="border-none outline-none placeholder:text-l-gray"
+              className="w-full border-none outline-none placeholder:text-l-gray"
             />
           </div>
 
@@ -50,13 +89,26 @@ const Register = ({ setIsLoginPage }) => {
               <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z" />
             </svg>
             <input
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  [e.target.name]: e.target.value,
+                }))
+              }
+              value={formData.password}
+              name="password"
               type="password"
               placeholder="Password"
-              className="border-none outline-none placeholder:text-l-gray"
+              className="w-full border-none outline-none placeholder:text-l-gray"
             />
           </div>
-          <button className="rounded-lg py-2 self-stretch flex items-center justify-center bg-blue text-white">
-            Start coding now
+          <button
+            disabled={loading}
+            className={`rounded-lg py-2 self-stretch flex items-center justify-center bg-blue text-white ${
+              loading ? "opacity-60" : ""
+            }`}
+          >
+            {loading ? "Registering you.. " : "Start coding now"}
           </button>
         </form>
 
@@ -65,12 +117,17 @@ const Register = ({ setIsLoginPage }) => {
         </p>
 
         <div className="flex items-center justify-center gap-[1.3rem] mb-7">
-          <span onClick={() => signIn("google", { callbackUrl: "/profile" })}>
+          <span
+            onClick={() => signIn("google", { callbackUrl: "/profile" })}
+            role="button"
+            aria-label="Sign in with Google"
+          >
             <svg
               width="43"
               height="43"
               viewBox="0 0 43 43"
               fill="none"
+              data-type="google"
               xmlns="http://www.w3.org/2000/svg"
             >
               <circle cx="21.8826" cy="21.5981" r="20.5" stroke="#828282" />
@@ -81,12 +138,17 @@ const Register = ({ setIsLoginPage }) => {
             </svg>
           </span>
 
-          <span onClick={() => signIn("facebook", { callbackUrl: "/profile" })}>
+          <span
+            onClick={() => signIn("facebook", { callbackUrl: "/profile" })}
+            role="button"
+            aria-label="Sign in with Facebook"
+          >
             <svg
               width="43"
               height="43"
               viewBox="0 0 43 43"
               fill="none"
+              data-type="facebook"
               xmlns="http://www.w3.org/2000/svg"
             >
               <circle cx="21.8088" cy="21.5981" r="20.5" stroke="#828282" />
@@ -108,8 +170,13 @@ const Register = ({ setIsLoginPage }) => {
               </defs>
             </svg>
           </span>
-          <span onClick={() => signIn("github", { callbackUrl: "/profile" })}>
+          <span
+            onClick={() => signIn("twitter", { callbackUrl: "/profile" })}
+            role="button"
+            aria-label="Sign in with Github"
+          >
             <svg
+              data-type="twitter"
               width="43"
               height="43"
               viewBox="0 0 43 43"
@@ -135,8 +202,13 @@ const Register = ({ setIsLoginPage }) => {
               </defs>
             </svg>
           </span>
-          <span onClick={() => signIn("twitter", { callbackUrl: "/profile" })}>
+          <span
+            onClick={() => signIn("github", { callbackUrl: "/profile" })}
+            role="button"
+            aria-label="Sign in with Twitter"
+          >
             <svg
+              data-type="github"
               width="43"
               height="43"
               viewBox="0 0 43 43"
