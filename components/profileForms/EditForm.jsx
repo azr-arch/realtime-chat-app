@@ -1,10 +1,15 @@
-import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
 
-const EditForm = ({ setFunc }) => {
-  const { data: session } = useSession();
+const EditForm = ({ setFunc, currentUser }) => {
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    bio: "",
+  });
+
   return (
-    <div className="w-full h-full flex flex-col items-start md:w-11/12 md:self-center md:border md:max-w-[52rem] md:border-solid md:border-divider md:rounded-xl md:pt-8 md:px-12 py-[2.6rem]">
+    <div className=" w-full h-full flex flex-col items-start px-7 md:w-11/12 md:self-center md:border md:max-w-[52rem] md:border-solid md:border-divider md:rounded-xl md:pt-8 md:px-12 py-[2.6rem]">
       <p className="text-black text-2xl leading-normal mb-1 flex items-center w-full justify-between  -tracking-wider">
         Change Info
         <button
@@ -19,7 +24,10 @@ const EditForm = ({ setFunc }) => {
       </p>
 
       <div className="flex items-center gap-7 mb-8">
-        <div className="relative w-[4.5rem] aspect-square rounded-lg overflow-hidden">
+        <div
+          className="relative w-[4.5rem] aspect-square rounded-lg overflow-hidden"
+          id="change-img"
+        >
           <input type="file" hidden />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +41,7 @@ const EditForm = ({ setFunc }) => {
           </svg>
 
           <img
-            src={session?.user.image}
+            src={currentUser?.image}
             alt="user-profile"
             className="w-full h-full "
           />
@@ -55,8 +63,8 @@ const EditForm = ({ setFunc }) => {
           <input
             type="text"
             name="name"
-            placeholder="Enter your name..."
-            className="w-full rounded-xl border border-solid border-light-gray py-4 pl-4"
+            placeholder={currentUser?.name}
+            className="w-full rounded-xl border border-solid border-light-gray py-4 px-4"
           />
         </div>
         <div className="w-full flex flex-col items-start gap-1">
@@ -69,8 +77,8 @@ const EditForm = ({ setFunc }) => {
           <input
             type="email"
             name="Email"
-            placeholder="Enter your Email..."
-            className="w-full rounded-xl border border-solid border-light-gray py-4 pl-4"
+            placeholder={currentUser?.email}
+            className="w-full rounded-xl border border-solid border-light-gray py-4 px-4"
           />
         </div>
         <div className="w-full flex flex-col items-start gap-1">
@@ -82,9 +90,9 @@ const EditForm = ({ setFunc }) => {
           </label>
           <textarea
             name="bio"
-            placeholder="Enter your Bio..."
+            placeholder={currentUser?.bio}
             rows={3}
-            className="w-full rounded-xl border border-solid border-light-gray py-4 pl-4 resize-none"
+            className="w-full rounded-xl border border-solid border-light-gray py-4 px-4 resize-none text-ellipsis"
           />
         </div>
         <div className="w-full flex flex-col items-start gap-1">
@@ -97,8 +105,8 @@ const EditForm = ({ setFunc }) => {
           <input
             type="password"
             name="password"
-            placeholder="Enter your Password..."
-            className="w-full rounded-xl border border-solid border-light-gray py-4 pl-4"
+            placeholder={"*".repeat(currentUser?.password.length)}
+            className="w-full rounded-xl border border-solid border-light-gray py-4 px-4 text-ellipsis"
           />
         </div>
         <button className="px-6 py-2 rounded-lg bg-blue text-white ">

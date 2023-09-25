@@ -18,7 +18,7 @@ module.exports = {
         blue: "#2F80ED",
         divider: "#E0E0E0",
         main: "#FAFAFB",
-        hover: "F2F2F2",
+        hover: "#F2F2F2",
       },
       colors: {
         text: "#333",
@@ -28,11 +28,15 @@ module.exports = {
         heading: "#000000",
         gray: "#BDBDBD",
         label: "#4F4F4F",
+        alert: "#EB5757",
       },
       borderColor: {
         gray: "#BDBDBD",
         divider: "#E0E0E0",
         "light-gray": "#828282",
+      },
+      boxShadow: {
+        primary: "0px 2px 4px 0px rgba(0, 0, 0, 0.05);",
       },
     },
   },

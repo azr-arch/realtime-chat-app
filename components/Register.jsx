@@ -10,6 +10,7 @@ const Register = ({ setIsLoginPage }) => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,11 +26,17 @@ const Register = ({ setIsLoginPage }) => {
         body: JSON.stringify(formData),
       });
 
-      if (res.ok) {
+      const data = await res.json();
+
+      if (data.success) {
         setLoading(false);
         setFormData((prev) => ({ ...prev, email: "", password: "" }));
         setIsLoginPage(true);
+        return;
       }
+
+      setError(data.message);
+      throw new Error(data.message);
     } catch (err) {
       console.log("an error occured while registering user! ", err);
     } finally {
@@ -50,7 +57,13 @@ const Register = ({ setIsLoginPage }) => {
         <form
           onSubmit={handleSubmit}
           className="self-stretch flex flex-col items-start mb-8"
+          onChange={(e) => {
+            if (error) {
+              setError("");
+            }
+          }}
         >
+          {error && <p className="text-red-500 text-xs font-medium">{error}</p>}
           <div className="self-stretch flex items-center p-3 mb-[.9rem] input-border">
             <svg
               xmlns="http://www.w3.org/2000/svg"

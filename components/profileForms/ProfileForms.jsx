@@ -1,5 +1,6 @@
+"use client";
+
 import Divider from "@components/Divider";
-import { useSession } from "next-auth/react";
 import EditForm from "./EditForm";
 import { useState } from "react";
 
@@ -21,14 +22,14 @@ const Container = ({ item, value, image }) => {
   );
 };
 
-const ProfileForms = () => {
+const ProfileForms = ({ currentUser }) => {
   const [isEditable, setIsEditable] = useState(false);
-  const { data: session } = useSession();
-
+  const [editFormData, setEditFormData] = useState({});
+  console.log(currentUser);
   return (
     <>
       {isEditable ? (
-        <EditForm setFunc={setIsEditable} />
+        <EditForm setFunc={setIsEditable} currentUser={currentUser} />
       ) : (
         <div className="w-full h-full flex flex-col items-start md:w-11/12 md:self-center md:border md:max-w-[52rem] md:border-solid md:border-divider md:rounded-xl md:pt-8 md:px-12 pb-8">
           <div className="w-full flex items-center justify-between px-6 mb-9 md:max-w-[90rem]">
@@ -61,27 +62,19 @@ const ProfileForms = () => {
 
           {/* for small devices */}
           <div className="flex flex-col items-start w-full">
-            <Container
-              item={"Photo"}
-              image={true}
-              value={session?.user.image}
-            />
+            <Container item={"Photo"} image={true} value={currentUser?.image} />
             <Divider />
-            <Container item={"Name"} value={session?.user.name} />
+            <Container item={"Name"} value={currentUser?.name} />
             <Divider />
             <Container
               item={"bio"}
-              value={
-                "i am a software developer with background in css and some othr more just testing this string "
-              }
+              value={"i am a software developer with background"}
             />
             <Divider />
-            <Container item={"email"} value={session?.user.email} />
+            <Container item={"email"} value={currentUser?.email} />
             <Divider />
             <Container item={"password"} value={"**********"} />
           </div>
-
-          {/* for large devices  */}
         </div>
       )}
     </>

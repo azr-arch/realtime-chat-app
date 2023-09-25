@@ -1,5 +1,6 @@
 import "@styles/globals.css";
 import Provider from "@components/Provider";
+import GlobalProvider from "@context/GlobalContext";
 
 export const metadata = {
   title: "Auth",
@@ -11,7 +12,9 @@ const RootLayout = ({ children }) => {
     <html lang="en">
       <body className="min-h-screen">
         <Provider>
-          <main className="min-h-screen flex-center">{children}</main>
+          <GlobalProvider>
+            <main className="min-h-screen flex-center">{children}</main>
+          </GlobalProvider>
         </Provider>
       </body>
     </html>

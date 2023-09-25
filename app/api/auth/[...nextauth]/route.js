@@ -72,30 +72,37 @@ const handler = NextAuth({
         throw new Error(e.message);
       }
     },
-    async signIn({ profile, user }) {
-      try {
-        await connectToDB();
-        const email = profile ? profile.email : user.email;
+    async signIn({ profile, user, account }) {
+      if (
+        account.provider === "github" ||
+        account.provider === "google" ||
+        account.provider === "facebook" ||
+        account.provider === "twitter"
+      ) {
+        try {
+          await connectToDB();
+          const email = profile.email;
 
-        // check if user already exists
-        const userExists = await User.findOne({ email });
+          // check if user already exists
+          const userExists = await User.findOne({ email });
 
-        // if not, create a new document and save user in MongoDB
-        if (!userExists) {
-          await User.create({
-            email: profile.email,
-            name: profile ? profile.name : user.email.split("@")[0],
-            image: profile ? profile.image : null,
-          });
+          // if not, create a new document and save user in MongoDB
+          if (!userExists) {
+            await User.create({
+              email: profile.email,
+              name: profile ? profile.name : user.email.split("@")[0],
+              image: profile ? profile.image : null,
+            });
+          }
+        } catch (error) {
+          console.error("Error checking if user exists: ", error.message);
         }
-
-        return true;
-      } catch (error) {
-        console.log("Error checking if user exists: ", error.message);
-        return false;
       }
+      return true;
     },
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };
