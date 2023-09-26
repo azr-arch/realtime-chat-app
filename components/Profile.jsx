@@ -10,6 +10,12 @@ const Profile = ({ session }) => {
 
   const { currentUser, setCurrentUser } = useGlobal();
 
+  //setting theme
+  document.documentElement.setAttribute(
+    "data-theme",
+    localStorage.getItem("theme") || "cool"
+  );
+
   useEffect(() => {
     const fetchUser = async () => {
       if (session) {
@@ -85,10 +91,10 @@ const Profile = ({ session }) => {
       </header>
 
       <section className="self-stretch flex flex-col items-start h-full py-8">
-        <h2 className=" text-center w-full text-black text-2xl leading-normal -tracking-tighter mb-2">
+        <h2 className=" text-center w-full text-dark text-2xl leading-normal -tracking-tighter mb-2">
           Personal info
         </h2>
-        <p className=" text-center w-full text-black text-sm font-light leading-normal -tracking-[0.03rem] mb-10">
+        <p className=" text-center w-full text-dark text-sm font-light leading-normal -tracking-[0.03rem] mb-10">
           Basic info, like your name and photo
         </p>
 

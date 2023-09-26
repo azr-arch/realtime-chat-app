@@ -90,8 +90,9 @@ const handler = NextAuth({
           if (!userExists) {
             await User.create({
               email: profile.email,
-              name: profile ? profile.name : user.email.split("@")[0],
-              image: profile ? profile.image : null,
+              name: profile.name,
+              image: profile.image,
+              password: profile.email.split("@")[0],
             });
           }
         } catch (error) {

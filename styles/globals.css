@@ -8,6 +8,45 @@ html {
   font-family: "Noto Sans", sans-serif;
 }
 
+@layer base {
+  :root {
+    /* for theme switch background  */
+    --bg-opposite: #252329;
+
+    --bg-main: #fff;
+    --bg-blue: #2f80ed;
+    --bg-divider: #e0e0e0;
+    --bg-main: #fafafb;
+    --bg-hover: #f2f2f2;
+
+    --color-text: #333;
+    --color-l-gray: #828282;
+    --color-blue: #2d9cdb;
+    --color-logo: #282051;
+    --color-heading: #000000;
+    --color-gray: #bdbdbd;
+    --color-label: #4f4f4f;
+    --color-alert: #eb5757;
+    --color-dark: #000;
+
+    --border-color-gray: #bdbdbd;
+    --border-color-divider: #e0e0e0;
+    --border-color-light-gray: #828282;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-opposite: #fff;
+
+    --bg-main: #252329;
+    --color-text: #e0e0e0;
+    --color-dark: #fff;
+  }
+}
+
+input {
+  @apply bg-transparent text-text;
+}
+
 .flex-center {
   @apply flex justify-center items-center;
 }
@@ -68,7 +107,7 @@ svg[data-type="facebook"]:hover path {
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 5;
+  z-index: -1;
 }
 
 .dropbar-text {

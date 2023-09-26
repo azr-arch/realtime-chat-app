@@ -24,8 +24,6 @@ const Container = ({ item, value, image }) => {
 
 const ProfileForms = ({ currentUser }) => {
   const [isEditable, setIsEditable] = useState(false);
-  const [editFormData, setEditFormData] = useState({});
-  console.log(currentUser);
   return (
     <>
       {isEditable ? (
@@ -34,14 +32,14 @@ const ProfileForms = ({ currentUser }) => {
         <div className="w-full h-full flex flex-col items-start md:w-11/12 md:self-center md:border md:max-w-[52rem] md:border-solid md:border-divider md:rounded-xl md:pt-8 md:px-12 pb-8">
           <div className="w-full flex items-center justify-between px-6 mb-9 md:max-w-[90rem]">
             <div className="flex flex-col items-start">
-              <p className="text-black text-2xl leading-normal mb-1  -tracking-wider">
+              <p className="text-dark text-2xl leading-normal mb-1  -tracking-wider">
                 Profile
               </p>
               <p className="text-l-gray text-sm font-medium -tracking-tight ">
                 Some info may be visible <br /> to other people
               </p>
 
-              {/* <p className="text-black hidden md:block text-2xl leading-normal mb-1-tracking-wider">
+              {/* <p className="text-dark hidden md:block text-2xl leading-normal mb-1-tracking-wider">
               Change Info
             </p>
             <p className="text-l-gray hidden md:block text-sm font-medium -tracking-tight mb-6">

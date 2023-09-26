@@ -78,7 +78,7 @@ const Login = ({ setIsLoginPage }) => {
             type="email"
             name="email"
             placeholder="Email"
-            className="border-none outline-none placeholder:text-l-gray"
+            className="border-none  outline-none placeholder:text-l-gray"
           />
         </div>
 

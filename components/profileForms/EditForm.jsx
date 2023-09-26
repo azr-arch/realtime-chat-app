@@ -6,11 +6,56 @@ const EditForm = ({ setFunc, currentUser }) => {
     email: "",
     password: "",
     bio: "",
+    image: null,
   });
+
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    //if anything changes  --> update the changes else return
+    if (
+      editFormData.name ||
+      editFormData.email ||
+      editFormData.password ||
+      editFormData.bio ||
+      editFormData.image
+    ) {
+      try {
+        const formData = new FormData();
+        for (let key in editFormData) {
+          formData.append(key, editFormData[key]);
+        }
+
+        // const res = await fetch("/api/updateUserDetails", {
+        //   method: "POST",
+        //   body: formData,
+        // });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    return;
+  };
+
+  const handleImageUpdate = (e) => {
+    console.log(e.target);
+    const file = e.target.files[0];
+    console.log(file);
+    if (file) {
+      setEditFormData((prev) => ({ ...prev, image: file }));
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        setPreviewImage(reader.result);
+      });
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className=" w-full h-full flex flex-col items-start px-7 md:w-11/12 md:self-center md:border md:max-w-[52rem] md:border-solid md:border-divider md:rounded-xl md:pt-8 md:px-12 py-[2.6rem]">
-      <p className="text-black text-2xl leading-normal mb-1 flex items-center w-full justify-between  -tracking-wider">
+      <p className="text-dark text-2xl leading-normal mb-1 flex items-center w-full justify-between  -tracking-wider">
         Change Info
         <button
           onClick={() => setFunc(false)}
@@ -24,11 +69,18 @@ const EditForm = ({ setFunc, currentUser }) => {
       </p>
 
       <div className="flex items-center gap-7 mb-8">
-        <div
+        <label
           className="relative w-[4.5rem] aspect-square rounded-lg overflow-hidden"
           id="change-img"
+          htmlFor="image-upload"
         >
-          <input type="file" hidden />
+          <input
+            onChange={handleImageUpdate}
+            type="file"
+            name="image"
+            hidden
+            id="image-upload"
+          />
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24"
@@ -41,18 +93,21 @@ const EditForm = ({ setFunc, currentUser }) => {
           </svg>
 
           <img
-            src={currentUser?.image}
+            src={previewImage ? previewImage : currentUser?.image}
             alt="user-profile"
-            className="w-full h-full "
+            className="w-full h-full object-contain"
           />
-        </div>
+        </label>
 
         <p className="text-gray uppercase font-medium text-sm leading-normal -tracking-tight h-auto ">
           change photo
         </p>
       </div>
 
-      <div className="w-full max-w-[26rem] flex flex-col items-start justify-between min-h-[5.67rem] gap-6 py-4">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-[26rem] flex flex-col items-start justify-between min-h-[5.67rem] gap-6 py-4"
+      >
         <div className="w-full flex flex-col items-start gap-1">
           <label
             htmlFor="name"
@@ -64,6 +119,12 @@ const EditForm = ({ setFunc, currentUser }) => {
             type="text"
             name="name"
             placeholder={currentUser?.name}
+            onChange={(e) =>
+              setEditFormData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
             className="w-full rounded-xl border border-solid border-light-gray py-4 px-4"
           />
         </div>
@@ -78,6 +139,12 @@ const EditForm = ({ setFunc, currentUser }) => {
             type="email"
             name="Email"
             placeholder={currentUser?.email}
+            onChange={(e) =>
+              setEditFormData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
             className="w-full rounded-xl border border-solid border-light-gray py-4 px-4"
           />
         </div>
@@ -91,6 +158,12 @@ const EditForm = ({ setFunc, currentUser }) => {
           <textarea
             name="bio"
             placeholder={currentUser?.bio}
+            onChange={(e) =>
+              setEditFormData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
             rows={3}
             className="w-full rounded-xl border border-solid border-light-gray py-4 px-4 resize-none text-ellipsis"
           />
@@ -105,14 +178,20 @@ const EditForm = ({ setFunc, currentUser }) => {
           <input
             type="password"
             name="password"
-            placeholder={"*".repeat(currentUser?.password.length)}
+            placeholder={"*".repeat(8)}
+            onChange={(e) =>
+              setEditFormData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
             className="w-full rounded-xl border border-solid border-light-gray py-4 px-4 text-ellipsis"
           />
         </div>
         <button className="px-6 py-2 rounded-lg bg-blue text-white ">
           Save
         </button>
-      </div>
+      </form>
     </div>
   );
 };

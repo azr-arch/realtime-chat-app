@@ -10,10 +10,12 @@ export const metadata = {
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">
-      <body className="min-h-screen">
+      <body className="min-h-screen bg-main transition-colors duration-150 ease-linear">
         <Provider>
           <GlobalProvider>
-            <main className="min-h-screen flex-center">{children}</main>
+            <main className="relative min-h-screen flex-center">
+              {children}
+            </main>
           </GlobalProvider>
         </Provider>
       </body>
