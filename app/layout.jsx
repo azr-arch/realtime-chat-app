@@ -1,6 +1,7 @@
 import "@styles/globals.css";
 import Provider from "@components/Provider";
 import GlobalProvider from "@context/GlobalContext";
+import ThemeProvider from "@context/ThemeContext";
 
 export const metadata = {
   title: "Auth",
@@ -13,9 +14,11 @@ const RootLayout = ({ children }) => {
       <body className="min-h-screen bg-main transition-colors duration-150 ease-linear">
         <Provider>
           <GlobalProvider>
-            <main className="relative min-h-screen flex-center">
-              {children}
-            </main>
+            <ThemeProvider>
+              <main className="relative min-h-screen flex-center">
+                {children}
+              </main>
+            </ThemeProvider>
           </GlobalProvider>
         </Provider>
       </body>

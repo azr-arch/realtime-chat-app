@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 
 const EditForm = ({ setFunc, currentUser }) => {
@@ -10,10 +12,11 @@ const EditForm = ({ setFunc, currentUser }) => {
   });
 
   const [previewImage, setPreviewImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //if anything changes  --> update the changes else return
+    //if anything has been changed -> update the changes else return
     if (
       editFormData.name ||
       editFormData.email ||
@@ -22,27 +25,64 @@ const EditForm = ({ setFunc, currentUser }) => {
       editFormData.image
     ) {
       try {
-        const formData = new FormData();
+        let imageUrl = await uploadImage();
+
+        //add only changed data in object
+        let profileData = {};
         for (let key in editFormData) {
-          formData.append(key, editFormData[key]);
+          if (editFormData[key]) {
+            profileData[key] = editFormData[key];
+          }
         }
 
-        // const res = await fetch("/api/updateUserDetails", {
-        //   method: "POST",
-        //   body: formData,
-        // });
+        //add image
+        if (editFormData.image) {
+          profileData["image"] = imageUrl;
+        }
+
+        setLoading(true);
+        const res = await fetch(`/api/updateUserDetails/${currentUser._id}`, {
+          method: "POST",
+          body: JSON.stringify(profileData),
+        });
+
+        // const data = await res.json();
+        window.location.reload();
+        console.log("profile updated successfully");
       } catch (error) {
-        console.error(error);
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
-
     return;
   };
 
+  const uploadImage = async () => {
+    if (editFormData.image) {
+      const formData = new FormData();
+      formData.append("file", editFormData.image);
+      formData.append("upload_preset", "auth-uploads");
+      try {
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data = await res.json();
+        return data.secure_url;
+      } catch (error) {
+        throw new Error("error occured while uploading image");
+      }
+    }
+    return null;
+  };
+
   const handleImageUpdate = (e) => {
-    console.log(e.target);
     const file = e.target.files[0];
-    console.log(file);
     if (file) {
       setEditFormData((prev) => ({ ...prev, image: file }));
       const reader = new FileReader();
@@ -59,7 +99,7 @@ const EditForm = ({ setFunc, currentUser }) => {
         Change Info
         <button
           onClick={() => setFunc(false)}
-          className="bg-red-600 text-white px-4 py-1 rounded-md text-lg"
+          className="bg-red-600 hover:opacity-70 text-white px-4 py-1 rounded-md text-lg"
         >
           Cancel
         </button>
@@ -188,8 +228,13 @@ const EditForm = ({ setFunc, currentUser }) => {
             className="w-full rounded-xl border border-solid border-light-gray py-4 px-4 text-ellipsis"
           />
         </div>
-        <button className="px-6 py-2 rounded-lg bg-blue text-white ">
-          Save
+        <button
+          disabled={loading}
+          className={`hover:opacity-70  px-6 py-2 rounded-lg bg-blue text-white ${
+            loading ? "opacity-50" : ""
+          }`}
+        >
+          {loading ? "Saving..." : "Save"}
         </button>
       </form>
     </div>

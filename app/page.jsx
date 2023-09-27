@@ -14,7 +14,7 @@ const Home = () => {
   const { status } = useSession();
 
   if (status === "loading") {
-    return <h1>please wait...</h1>;
+    return <h1 className="text-text">Please wait...</h1>;
   } else if (status === "authenticated") {
     return router.push("/profile");
   }

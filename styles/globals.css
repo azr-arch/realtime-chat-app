@@ -43,8 +43,13 @@ html {
   }
 }
 
-input {
+input,
+textarea {
   @apply bg-transparent text-text;
+}
+
+button {
+  @apply transition-all active:scale-95 duration-200 ease-linear;
 }
 
 .flex-center {

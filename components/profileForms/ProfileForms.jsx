@@ -12,7 +12,10 @@ const Container = ({ item, value, image }) => {
       </p>
 
       {image ? (
-        <img src={value} className="rounded-lg w-[4.5rem] aspect-square " />
+        <img
+          src={value}
+          className="rounded-lg w-[4.5rem] aspect-square object-contain "
+        />
       ) : (
         <p className="text-text font-medium leading-normal -tracking-[0.035rem] max-w-[12.5rem] md:max-w-full overflow-ellipsis whitespace-nowrap overflow-hidden">
           {value}
@@ -49,7 +52,7 @@ const ProfileForms = ({ currentUser }) => {
             {/* for small devices  */}
             <button
               onClick={() => setIsEditable(!isEditable)}
-              className="rounded-xl border border-solid border-light-gray-gray px-9 py-2 text-l-gray"
+              className="rounded-xl border border-solid border-light-gray-gray px-9 py-2 text-l-gray hover:bg-opposite"
             >
               Edit
             </button>
@@ -64,14 +67,14 @@ const ProfileForms = ({ currentUser }) => {
             <Divider />
             <Container item={"Name"} value={currentUser?.name} />
             <Divider />
-            <Container
-              item={"bio"}
-              value={"i am a software developer with background"}
-            />
+            <Container item={"bio"} value={currentUser?.bio} />
             <Divider />
             <Container item={"email"} value={currentUser?.email} />
             <Divider />
-            <Container item={"password"} value={"**********"} />
+            <Container
+              item={"password"}
+              value={"*".repeat(currentUser?.password.length)}
+            />
           </div>
         </div>
       )}

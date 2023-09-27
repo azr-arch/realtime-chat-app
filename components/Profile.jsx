@@ -10,12 +10,6 @@ const Profile = ({ session }) => {
 
   const { currentUser, setCurrentUser } = useGlobal();
 
-  //setting theme
-  document.documentElement.setAttribute(
-    "data-theme",
-    localStorage.getItem("theme") || "cool"
-  );
-
   useEffect(() => {
     const fetchUser = async () => {
       if (session) {

@@ -88,11 +88,13 @@ const handler = NextAuth({
 
           // if not, create a new document and save user in MongoDB
           if (!userExists) {
+            const hashedPassword = bcrypt.hash(profile.email.split("@")[0], 10);
+
             await User.create({
               email: profile.email,
               name: profile.name,
               image: profile.image,
-              password: profile.email.split("@")[0],
+              password: hashedPassword,
             });
           }
         } catch (error) {
