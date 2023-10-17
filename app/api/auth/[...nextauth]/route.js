@@ -20,7 +20,7 @@ const handler = NextAuth({
 
       async authorize(credentials) {
         const { email, password } = credentials;
-        console.log(email, password);
+        // console.log(email, password);
         try {
           await connectToDB();
           const user = await User.findOne({ email });
@@ -28,7 +28,7 @@ const handler = NextAuth({
 
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          console.log(passwordsMatch);
+          // console.log(passwordsMatch);
           if (!passwordsMatch) return null;
 
           return user;

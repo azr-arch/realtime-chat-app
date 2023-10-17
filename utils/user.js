@@ -7,4 +7,19 @@ async function checkUserExists(email) {
   return Boolean(user);
 }
 
-export { checkUserExists };
+async function addToContactList(currUser, data) {
+  try {
+    await connectToDB();
+    await User.findOneAndUpdate(
+      { email: currUser },
+      {
+        // Add data in contacts array of user document
+        $push: { contacts: data },
+      }
+    );
+  } catch (error) {
+    console.log("Error while updating contact list ", error.message);
+  }
+}
+
+export { checkUserExists, addToContactList };

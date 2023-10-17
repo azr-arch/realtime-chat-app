@@ -37,7 +37,7 @@ const Login = ({ setIsLoginPage }) => {
       setLoading(false);
       setError("");
       //if everything goes well
-      router.replace("/profile");
+      router.replace("/chat");
     } catch (error) {
       console.log("an error occured while logging ", error);
     }
