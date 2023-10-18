@@ -1,47 +1,43 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { io as ClientIO } from "socket.io-client";
 
 const SocketContext = createContext({
   socket: null,
+  isConnected: false,
 });
 
-const useSocket = () => useContext(SocketContext);
+export const useSocket = () => useContext(SocketContext);
 
-const SocketProvider = ({ children }) => {
+export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    fetch("/api/socket").finally(() => {
-      const socket = io();
+    const socketInstance = new ClientIO("http://localhost:3000", {
+      path: "/api/socket/io",
+      addTrailingSlash: false,
+    });
 
-      socket.on("connection", () => {
-        console.log("user connected");
-      });
+    socketInstance.on("connect", () => {
+      setIsConnected(true);
+    });
 
-      socket.on("hello", (data) => {
-        console.log("hello", data);
-      });
+    socketInstance.on("disconnect", () => {
+      setIsConnected(false);
+    });
 
-      socket.on("a user connected", () => {
-        console.log("a user connected");
-      });
+    setSocket(socketInstance);
 
-      socket.on("disconnect", () => {
-        console.log("disconnect");
-      });
-    }, []);
-
-    // Handle socket events here
-    // setSocket(socketInit);
+    return () => {
+      socketInstance.disconnect();
+    };
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket }}>
+    <SocketContext.Provider value={{ socket, isConnected }}>
       {children}
     </SocketContext.Provider>
   );
 };
-
-export { SocketProvider, useSocket };

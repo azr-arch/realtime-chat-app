@@ -1,6 +1,7 @@
 import Chat from "@models/chat";
 import ChatMessage from "@models/message";
 import { ApiResponse } from "@utils";
+import mongoose from "mongoose";
 
 export async function POST(request) {
   try {
@@ -10,14 +11,45 @@ export async function POST(request) {
     const selectedChat = await Chat.findById(chatId);
 
     if (!selectedChat) {
-      ApiResponse("No chat exists", 404);
+      return ApiResponse("No chat exists", 404);
     }
-    // Add a route for checking wether use is a part of or not
-    const messages = await ChatMessage.find({ chat: chatId }).sort({
-      createdAt: -1,
-    });
+    // Add a route for checking wether user is a part of or not
+
+    const messages = await ChatMessage.aggregate([
+      {
+        $match: {
+          chat: new mongoose.Types.ObjectId(chatId),
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          foreignField: "_id",
+          localField: "sender",
+          as: "sender",
+          pipeline: [
+            {
+              $project: {
+                avatar: 1,
+                email: 1,
+                name: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $addFields: {
+          sender: { $first: "$sender" },
+        },
+      },
+    ]);
+
     return ApiResponse(messages, 201);
   } catch (error) {
-    return ApiResponse("Something went wrong while fetching messages", 500);
+    return ApiResponse(
+      error.message || "something went wrong",
+      error.statusCode || 503
+    );
   }
 }

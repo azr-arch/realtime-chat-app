@@ -1,5 +1,6 @@
 import Chat from "@models/chat";
 import ChatMessage from "@models/message";
+import User from "@models/user";
 import { ApiResponse } from "@utils";
 
 export async function POST(request) {
@@ -11,7 +12,7 @@ export async function POST(request) {
         $all: [currUserId, receiverId],
       },
     });
-
+    console.log("From getChat: ", chat);
     // If chat exists
     if (chat) {
       return ApiResponse(chat, 200);

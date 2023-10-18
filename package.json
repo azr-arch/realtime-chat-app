@@ -12,6 +12,7 @@
     "autoprefixer": "10.4.15",
     "bcrypt": "^5.1.1",
     "bufferutil": "^4.0.8",
+    "moment": "^2.29.4",
     "mongodb": "^6.1.0",
     "mongoose": "^7.5.2",
     "next": "13.5.1",
