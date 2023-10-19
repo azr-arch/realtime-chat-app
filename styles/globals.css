@@ -1,46 +1,46 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
-  font-family: "Noto Sans", sans-serif;
+    font-family: "Montserrat", sans-serif;
 }
 
 @layer base {
-  :root {
-    /* for theme switch background  */
-    --bg-opposite: #252329;
+    :root {
+        /* for theme switch background  */
+        --bg-opposite: #252329;
 
-    --bg-main: #fff;
-    --bg-blue: #2f80ed;
-    --bg-divider: #e0e0e0;
-    --bg-main: #fafafb;
-    --bg-hover: #f2f2f2;
+        --bg-main: #fff;
+        --bg-blue: #2f80ed;
+        --bg-divider: #e0e0e0;
+        --bg-main: #fafafb;
+        --bg-hover: #f2f2f2;
 
-    --color-text: #333;
-    --color-l-gray: #828282;
-    --color-blue: #2d9cdb;
-    --color-logo: #282051;
-    --color-heading: #000000;
-    --color-gray: #bdbdbd;
-    --color-label: #4f4f4f;
-    --color-alert: #eb5757;
-    --color-dark: #000;
+        --color-text: #333;
+        --color-l-gray: #828282;
+        --color-blue: #2d9cdb;
+        --color-logo: #282051;
+        --color-heading: #000000;
+        --color-gray: #bdbdbd;
+        --color-label: #4f4f4f;
+        --color-alert: #eb5757;
+        --color-dark: #000;
 
-    --border-color-gray: #bdbdbd;
-    --border-color-divider: #e0e0e0;
-    --border-color-light-gray: #828282;
-  }
+        --border-color-gray: #bdbdbd;
+        --border-color-divider: #e0e0e0;
+        --border-color-light-gray: #828282;
+    }
 
-  :root[data-theme="dark"] {
-    --bg-opposite: #fff;
+    :root[data-theme="dark"] {
+        --bg-opposite: #fff;
 
-    --bg-main: #252329;
-    --color-text: #e0e0e0;
-    --color-dark: #fff;
-  }
+        --bg-main: #252329;
+        --color-text: #e0e0e0;
+        --color-dark: #fff;
+    }
 }
 
 /* input,
@@ -49,76 +49,80 @@ textarea {
 } */
 
 button {
-  @apply transition-all active:scale-95 duration-200 ease-linear;
+    @apply transition-all active:scale-95 duration-200 ease-linear;
+}
+
+input {
+    @apply bg-none text-on_white_gray bg-transparent;
 }
 
 .flex-center {
-  @apply flex justify-center items-center;
+    @apply flex justify-center items-center;
 }
 
 .side-p {
-  @apply px-[3.5rem];
+    @apply px-[3.5rem];
 }
 
 .input-border {
-  @apply border border-solid border-gray rounded-lg;
+    @apply border border-solid border-gray rounded-lg;
 }
 
 svg {
-  @apply transition-colors duration-150 ease-in-out;
+    @apply transition-colors duration-150 ease-in-out;
 }
 svg path {
-  @apply transition-colors duration-150 ease-in-out;
+    @apply transition-colors duration-150 ease-in-out;
 }
 
 svg[data-type="github"]:hover {
-  @apply fill-[#e6edf3];
+    @apply fill-[#e6edf3];
 }
 
 svg[data-type="github"]:hover path {
-  fill: #010409;
+    fill: #010409;
 }
 
 svg[data-type="twitter"]:hover {
-  @apply fill-[#1e9af0];
+    @apply fill-[#1e9af0];
 }
 
 svg[data-type="twitter"]:hover path {
-  fill: white;
+    fill: white;
 }
 
 svg[data-type="google"]:hover {
-  @apply fill-[#e75a4d];
+    @apply fill-[#e75a4d];
 }
 
 svg[data-type="google"]:hover path {
-  fill: white;
+    fill: white;
 }
 
 svg[data-type="facebook"]:hover {
-  @apply fill-[#0766FF];
+    @apply fill-[#0766FF];
 }
 
 svg[data-type="facebook"]:hover path {
-  fill: white;
+    fill: white;
 }
 
 /* black overlay when changing image  */
 #change-img::after {
-  content: " ";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
+    content: " ";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
 }
 
 .dropbar-text {
-  @apply text-label text-xs font-medium leading-normal -tracking-tight;
+    @apply text-label text-xs font-medium leading-normal -tracking-tight;
 }
 
 .dropbar-red-text {
-  @apply text-alert text-xs font-medium leading-normal -tracking-tight;
+    @apply text-alert text-xs font-medium leading-normal -tracking-tight;
 }

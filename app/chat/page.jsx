@@ -5,14 +5,14 @@ import ChatContainer from "@components/ChatContainer";
 import SocketIndicator from "@components/SocketIndicator";
 
 const page = () => {
-  return (
-    <div className="flex  gap-4 bg-black w-screen h-screen relative">
-      <SocketIndicator />
-      <Contacts />
+    return (
+        <>
+            <SocketIndicator />
+            <Contacts />
 
-      <ChatContainer />
-    </div>
-  );
+            {/* <ChatContainer /> */}
+        </>
+    );
 };
 
 export default page;
