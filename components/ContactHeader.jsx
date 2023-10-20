@@ -10,7 +10,7 @@ const ContactHeader = ({ handleAddContact }) => {
     const dialogRef = useRef();
 
     return (
-        <header className="flex items-center bg-secondary_bg rounded-md px-5 py-3 justify-between max-w-contact w-full shadow-sm">
+        <header className="self-stretch w-full  flex items-center bg-secondary_bg rounded-md px-5 py-3 justify-between md:max-w-contact w-full shadow-md">
             <p className="text-black_accent_2 text-lg font-medium">Chat</p>
 
             <button

@@ -5,17 +5,24 @@ import { createContext, useContext, useState } from "react";
 const ChatContext = createContext({});
 
 const ChatProvider = ({ children }) => {
-  const [currentChat, setCurrentChat] = useState("");
+    const [currentChat, setCurrentChat] = useState("");
+    const [loading, setLoading] = useState(false);
 
-  //   useEffect(() => {
-  //     const currChat = JSON.parse(localstorage.getItem("currChat"))
-  //   }, [])
+    //   useEffect(() => {
+    //     const currChat = JSON.parse(localstorage.getItem("currChat"))
+    //   }, [])
 
-  return (
-    <ChatContext.Provider value={{ currentChat, setCurrentChat }}>
-      {children}
-    </ChatContext.Provider>
-  );
+    const handleSetCurrChat = (data) => {
+        setLoading(true);
+        setCurrentChat(data);
+        setLoading(false);
+    };
+
+    return (
+        <ChatContext.Provider value={{ currentChat, handleSetCurrChat, loading }}>
+            {children}
+        </ChatContext.Provider>
+    );
 };
 
 const useChat = () => useContext(ChatContext);

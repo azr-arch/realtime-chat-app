@@ -7,6 +7,9 @@ module.exports = {
     ],
     theme: {
         extend: {
+            screens: {
+                sm: "220px",
+            },
             maxWidth: {
                 login: "29.16444rem",
                 contact: "330px",
@@ -38,6 +41,7 @@ module.exports = {
                 primary_bg: "#eeeeee",
                 secondary_bg: "#f6f6f6",
                 on_white_gray: "#ababab",
+                on_white_gray_2: "#e6e6e6",
 
                 black_accent_2: "#161425",
             },

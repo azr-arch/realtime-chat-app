@@ -12,23 +12,23 @@ const Navbar = () => {
     const pathname = usePathname();
 
     return (
-        <nav className="flex flex-col items-center justify-between py-8 px-4 bg-nav_bg h-full rounded-md">
+        <nav className="flex  min-w-[70px] max-w-[75px] flex-col items-center justify-between py-8 px-4 bg-nav_bg h-full rounded-md shadow-sm">
             <Link
                 href={"/chat"}
                 className={`p-3 rounded-full ${
                     pathname === "/chat" ? "bg-orange" : "bg-transparent"
                 }`}
             >
-                <Image src={chatIcon} alt="chat-icon" width={20} height={20} />
+                <Image src={chatIcon} alt="chat-icon" width={50} height={50} />
             </Link>
 
             <Link
                 href={"/chat/profile"}
-                className={`p-4 rounded-full ${
+                className={`p-3  rounded-full ${
                     pathname === "/chat/profile" ? "bg-orange" : "bg-transparent"
                 }`}
             >
-                <Image src={profileIcon} alt="profile-icon" width={30} height={30} />
+                <Image src={profileIcon} alt="profile-icon" width={50} height={50} />
             </Link>
         </nav>
     );

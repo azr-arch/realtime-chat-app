@@ -53,7 +53,7 @@ button {
 }
 
 input {
-    @apply bg-none text-on_white_gray bg-transparent;
+    @apply text-black_accent_2;
 }
 
 .flex-center {
@@ -125,4 +125,29 @@ svg[data-type="facebook"]:hover path {
 
 .dropbar-red-text {
     @apply text-alert text-xs font-medium leading-normal -tracking-tight;
+}
+
+div[data-sender="self"] {
+    @apply rounded-tl-2xl rounded-r-3xl pl-4 py-3 pr-6 shadow-sm;
+}
+
+div[data-sender="other"] {
+    @apply rounded-tr-2xl rounded-l-3xl pr-5 py-3 pl-6 shadow-sm;
+}
+
+div[data-disable="true"] {
+    @apply pointer-events-none opacity-40;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+    @apply w-[1px];
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-black h-5;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-white;
 }
