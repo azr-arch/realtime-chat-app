@@ -17,7 +17,7 @@ const RECEIVE_MSG_EVENT = "receive-message";
 const ChatContainer = () => {
     // Chat id to fetch corresponding chat me ssages --> ToDo Use context
     // Store all the chat messages in here state
-    const { currentChat } = useChat(); // Id of currentChat
+    const { currentChat } = useChat(); // Data of currentChat
     const [messages, setMessages] = useState([]);
     const { socket, isConnected } = useSocket();
     const [message, setMessage] = useState("");
@@ -43,6 +43,8 @@ const ChatContainer = () => {
                 body: JSON.stringify({
                     users: { senderId, receiverId: receiverId[0] },
                     content: message,
+                    status: "pending",
+                    seen: false,
                 }),
             });
             const msg = await res.json();
@@ -85,10 +87,21 @@ const ChatContainer = () => {
 
         socket.on(RECEIVE_MSG_EVENT, (msg) => {
             setMessages((prev) => [...prev, msg]);
+
+            console.log("sending message seen", msg);
+            socket.emit("MESSAGE_SEEN", { messageId: msg._id });
+        });
+
+        socket.on("MESSAGE_SEEN_ACK", (updatedMsg) => {
+            console.log("new msg: ", updatedMsg);
+            setMessages((prev) =>
+                prev.map((msg) => (msg._id === updatedMsg._id ? updatedMsg : msg))
+            );
         });
 
         return () => {
             socket.off(RECEIVE_MSG_EVENT);
+            socket.off("MESSAGE_SEEN_ACK");
         };
     }, [socket]);
 

@@ -18,7 +18,7 @@ const ChatMessages = ({ messages, session }) => {
     return (
         <div className="grow w-full  flex flex-col items-start  rounded-lg shadow-md h-full max-h-[415px] md:max-h-[550px] bg-secondary_bg p-6">
             <div
-                className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2 shadow-inner"
+                className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2 shadow-inner py-1"
                 ref={messagesEndRef}
             >
                 {messages?.map((msg, idx) => {
@@ -47,9 +47,13 @@ const ChatMessages = ({ messages, session }) => {
                                 <p>{msg?.content}</p>
                             </div>
 
-                            <time className="text-[10px] px-2 text-on_white_gray font-semibold mt-[2px]">
-                                {moment(msg?.updatedAt).format("HH:mm A")}
-                            </time>
+                            <div className="flex items-center space-x-2 mt-[2px] text-[10px]">
+                                <time className=" text-on_white_gray font-semibold ">
+                                    {moment(msg?.updatedAt).format("HH:mm A")}
+                                </time>
+                                <p>{msg?.status}</p>
+                                <p>{msg?.seen && "seen"}</p>
+                            </div>
                         </div>
                     );
                 })}
