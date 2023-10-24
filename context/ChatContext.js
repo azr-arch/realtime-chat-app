@@ -1,8 +1,15 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import { useSocket } from "../context/SocketContext";
 
-const ChatContext = createContext({});
+const ChatContext = createContext({
+    // deleteMessage: () => undefined,
+    // addMessage: () => undefined,
+    // updateMessage: () => undefined,
+    // createChat: () => undefined,
+    // removeMessage: () => undefined,
+});
 
 const ChatProvider = ({ children }) => {
     const [currentChat, setCurrentChat] = useState("");

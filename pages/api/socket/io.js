@@ -1,7 +1,5 @@
-import { Server } from "http";
-import { NextApiResponse } from "next";
 import { Server as ServerIO } from "socket.io";
-import { updateSeenStatus } from "@utils/messageUtils";
+import { SEND_MSG_EVENT, TYPING_EVENT } from "@utils/socket-events";
 
 export const config = {
     api: {
@@ -19,13 +17,23 @@ const ioHandler = (req, res) => {
         });
 
         io.on("connection", (socket) => {
-            socket.on("MESSAGE_SEEN", async ({ messageId }) => {
-                console.log("got message seen event");
-                // Update the seen field in Databse
-                const newMsg = await updateSeenStatus(messageId);
+            // socket.on(TYPING_EVENT, ({chat, isTyping}) => {
+            //     socket.to(chatId)
+            // })
 
-                // Send back the acknowledgement
-                socket.emit("MESSAGE_SEEN_ACK", newMsg);
+            // socket.on("JOIN_EVENT", ({ chatId }) => {
+            //     console.log("join event ", chatId);
+            //     socket.join(chatId);
+            // });
+
+            socket.on("JOIN", (data) => {
+                console.log("joined: ", data._id);
+                socket.join(data._id);
+            });
+
+            socket.on(TYPING_EVENT, ({ chatId, isTyping }) => {
+                console.log("typing event ", chatId, isTyping);
+                socket.broadcast.to(chatId).emit(TYPING_EVENT, isTyping);
             });
         });
 

@@ -1,9 +1,15 @@
 "use client";
+
+import { useSocket } from "@context/SocketContext";
+import { TYPING_EVENT } from "@utils/socket-events";
 import moment from "moment";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ChatMessages = ({ messages, session }) => {
     const messagesEndRef = useRef(null);
+    const { socket } = useSocket();
+
+    const [isTyping, setIsTyping] = useState(false);
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -14,6 +20,22 @@ const ChatMessages = ({ messages, session }) => {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
+    useEffect(() => {
+        socket.on(TYPING_EVENT, (typingStatus) => {
+            console.log("typing status ", typingStatus);
+            setIsTyping(typingStatus);
+
+            // Remove typing status after 2 seconds
+            setTimeout(() => {
+                setIsTyping(false);
+            }, 2000);
+        });
+
+        return () => {
+            socket.off(TYPING_EVENT);
+        };
+    }, [socket]);
 
     return (
         <div className="grow w-full  flex flex-col items-start  rounded-lg shadow-md h-full max-h-[415px] md:max-h-[550px] bg-secondary_bg p-6">

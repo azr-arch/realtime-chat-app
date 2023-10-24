@@ -11,8 +11,8 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "../MessageInput";
 import ChatMessages from "./ChatMessages";
 
-const SEND_MSG_EVENT = "send-message";
-const RECEIVE_MSG_EVENT = "receive-message";
+import { RECEIVE_MSG_EVENT, SEND_MSG_EVENT, TYPING_EVENT } from "@utils/socket-events";
+import useChatUtils from "@utils/chat";
 
 const ChatContainer = () => {
     // Chat id to fetch corresponding chat me ssages --> ToDo Use context
@@ -23,10 +23,17 @@ const ChatContainer = () => {
     const [message, setMessage] = useState("");
     const { data: session } = useSession();
     const [loading, setLoading] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+
+    // const {sendMessage}  = useChatUtils(socket)
 
     const sendMessage = async () => {
         if (!message) return;
+
+        socket.emit(TYPING_EVENT, { chatId: currentChat?._id, isTyping: false });
         setLoading(true);
+
+        // socket.emit(TYPING_EVENT, {chat: currentChat, isTyping: false})
 
         const senderId = session?.user?.sub;
         const receiverId = Object.entries(currentChat)
@@ -59,6 +66,7 @@ const ChatContainer = () => {
     };
 
     const handleChange = (e) => {
+        socket.emit(TYPING_EVENT, { chatId: currentChat?._id, isTyping: true });
         setMessage(e.target.value);
     };
 

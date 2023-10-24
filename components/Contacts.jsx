@@ -50,6 +50,8 @@ const Contacts = () => {
                 }),
             });
             console.log(res);
+
+            router.refresh();
         } catch (error) {
             console.log("error occured: ", error);
         }
@@ -65,6 +67,7 @@ const Contacts = () => {
             });
 
             const { data } = await res.json(); // toDo store it in localstorage
+            socket.emit("test", "tesiting");
             handleSetCurrChat(data);
         } catch (error) {
             console.log(error);
@@ -90,11 +93,6 @@ const Contacts = () => {
         setLoading(false);
         // }
     }, []);
-
-    // function getReceiver(item) {
-    //     const receiver = item.filter((itm) => itm.email !== session?.user?.email);
-    //     return receiver[0];
-    // }
 
     if (status === "unauthenticated") return redirect("/");
     return (

@@ -1,10 +1,14 @@
+"use client";
+
 import { useChat } from "@context/ChatContext";
+import { useSocket } from "@context/SocketContext";
 
 const ChatList = ({ chats, session, contacts, getChat, loading }) => {
     const { currentChat, handleSetCurrChat, loading: currChatLoading } = useChat();
+    const { socket } = useSocket();
 
     function getReceiver(item) {
-        const receiver = item.filter((itm) => itm.email !== session.user.email);
+        const receiver = item.filter((itm) => itm.email !== session?.user.email);
         return receiver[0];
     }
 
@@ -23,6 +27,7 @@ const ChatList = ({ chats, session, contacts, getChat, loading }) => {
                             w-full text-black cursor-pointer  rounded-md`}
                 onClick={() => {
                     if (currentChat && currentChat._id === chat?._id) return;
+                    socket.emit("JOIN", chat);
                     handleSetCurrChat(chat);
                 }}
             >
@@ -49,6 +54,7 @@ const ChatList = ({ chats, session, contacts, getChat, loading }) => {
             {chats?.length > 0 ? (
                 chats.map((chat, idx) => {
                     const receiver = getReceiver(chat?.participants);
+
                     return <ListItem key={idx} receiver={receiver} chat={chat} />;
                 })
             ) : (
