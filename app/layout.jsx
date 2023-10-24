@@ -1,29 +1,28 @@
-import "@styles/globals.css";
+import "./globals.css";
 import Provider from "@components/Provider";
 import GlobalProvider from "@context/GlobalContext";
-import ThemeProvider from "@context/ThemeContext";
 import { SocketProvider } from "@context/SocketContext";
 import { ChatProvider } from "@context/ChatContext";
-import Chat from "@models/chat";
+
+import { ModalProvider } from "@providers/modal-providers";
 
 export const metadata = {
-    title: "Auth",
-    description: "Devchallenges Challenge",
+    title: "Chat",
+    description: "Chat",
 };
 
 const RootLayout = ({ children }) => {
     return (
         <html lang="en">
             <body className="min-h-screen bg-main transition-colors duration-150 ease-linear">
+                <ModalProvider />
                 <Provider>
                     <GlobalProvider>
                         <SocketProvider>
                             <ChatProvider>
-                                <ThemeProvider>
-                                    <main className="relative h-screen flex-center p-8 bg-primary_bg">
-                                        {children}
-                                    </main>
-                                </ThemeProvider>
+                                <main className="relative h-screen flex-center p-8 bg-primary_bg">
+                                    {children}
+                                </main>
                             </ChatProvider>
                         </SocketProvider>
                     </GlobalProvider>

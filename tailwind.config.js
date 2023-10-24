@@ -1,15 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    darkMode: ["class"],
     content: [
-        "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-        "./components/**/*.{js,ts,jsx,tsx,mdx}",
-        "./app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./pages/**/*.{js,jsx}",
+        "./components/**/*.{js,jsx}",
+        "./app/**/*.{js,jsx}",
+        "./src/**/*.{js,jsx}",
     ],
     theme: {
-        extend: {
+        container: {
+            center: true,
+            padding: "2rem",
             screens: {
-                sm: "220px",
+                "2xl": "1400px",
             },
+        },
+        extend: {
             maxWidth: {
                 login: "29.16444rem",
                 contact: "330px",
@@ -17,24 +23,40 @@ module.exports = {
             maxHeight: {
                 login: "39.6439rem",
             },
-            backgroundColor: {
-                opposite: "var(--bg-opposite)",
-                main: "var(--bg-main)",
-                blue: "var(--bg-blue)",
-                divider: "var(--bg-divider)",
-                main: "var(--bg-main)",
-                hover: "var(--bg-hover)",
-            },
             colors: {
-                text: "var(--color-text)",
-                "l-gray": "var(--color-l-gray)",
-                blue: "var(--color-blue)",
-                logo: "var(--color-logo)",
-                heading: "var(--color-heading)",
-                gray: "var(--color-gray)",
-                label: "var(--color-label)",
-                alert: "var(--color-alert)",
-                dark: "var(--color-dark)",
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                primary: {
+                    DEFAULT: "hsl(var(--primary))",
+                    foreground: "hsl(var(--primary-foreground))",
+                },
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
+                },
+                destructive: {
+                    DEFAULT: "hsl(var(--destructive))",
+                    foreground: "hsl(var(--destructive-foreground))",
+                },
+                muted: {
+                    DEFAULT: "hsl(var(--muted))",
+                    foreground: "hsl(var(--muted-foreground))",
+                },
+                accent: {
+                    DEFAULT: "hsl(var(--accent))",
+                    foreground: "hsl(var(--accent-foreground))",
+                },
+                popover: {
+                    DEFAULT: "hsl(var(--popover))",
+                    foreground: "hsl(var(--popover-foreground))",
+                },
+                card: {
+                    DEFAULT: "hsl(var(--card))",
+                    foreground: "hsl(var(--card-foreground))",
+                },
 
                 nav_bg: "#010019",
                 orange: "#ff4a09",
@@ -45,15 +67,26 @@ module.exports = {
 
                 black_accent_2: "#161425",
             },
-            borderColor: {
-                gray: "var(--border-color-gray)",
-                divider: "var(--border-color-divider)",
-                "light-gray": "var(--border-color-light-gray)",
+            borderRadius: {
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
+                sm: "calc(var(--radius) - 4px)",
             },
-            boxShadow: {
-                primary: "0px 2px 4px 0px rgba(0, 0, 0, 0.05);",
+            keyframes: {
+                "accordion-down": {
+                    from: { height: 0 },
+                    to: { height: "var(--radix-accordion-content-height)" },
+                },
+                "accordion-up": {
+                    from: { height: "var(--radix-accordion-content-height)" },
+                    to: { height: 0 },
+                },
+            },
+            animation: {
+                "accordion-down": "accordion-down 0.2s ease-out",
+                "accordion-up": "accordion-up 0.2s ease-out",
             },
         },
     },
-    plugins: [],
+    plugins: [require("tailwindcss-animate")],
 };

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import sendIcon from "@styles/assets/send.svg";
 
 const MessageInput = ({ value, onChange, onSubmit, loading }) => {
     // Sends message with Enter
@@ -41,7 +40,8 @@ const MessageInput = ({ value, onChange, onSubmit, loading }) => {
                     loading ? "opacity-70" : ""
                 }`}
             >
-                <Image src={sendIcon} width={20} height={20} alt="send-icon" />
+                <div className="w-4 h-4">Send</div>
+                {/* <Image src={sendIcon} width={20} height={20} alt="send-icon" /> */}
             </button>
         </div>
     );

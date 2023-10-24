@@ -1,31 +1,25 @@
 "use client";
 
-import addIcon from "@styles/assets/add.svg";
 import Image from "next/image";
 import { useState, useRef } from "react";
+import useAddContactModal from "@hooks/use-add-modal";
 
 const ContactHeader = ({ handleAddContact }) => {
-    const [addContactInfo, setAddContactInfo] = useState("");
-
-    const dialogRef = useRef();
-
+    const { onOpen } = useAddContactModal();
     return (
-        <header className="self-stretch w-full  flex items-center bg-secondary_bg rounded-md px-5 py-3 justify-between md:max-w-contact w-full shadow-md">
+        <header className="flex items-center bg-secondary_bg rounded-md px-5 py-3 h-16 justify-between md:max-w-contact w-full shadow-md">
             <p className="text-black_accent_2 text-lg font-medium">Chat</p>
 
             <button
-                onClick={() => {
-                    if (!dialogRef.current) return;
-
-                    dialogRef.current.showModal();
-                }}
+                onClick={onOpen}
                 className="bg-orange p-2  flex items-center justify-center rounded-full text-white"
             >
-                <Image src={addIcon} width={30} height={30} alt="add-icon" />
+                <div className="w-4 h-4">+</div>
+                {/* <Image src={addIcon} width={30} height={30} alt="add-icon" /> */}
             </button>
 
             {/* Make this a separate Compo  */}
-            <dialog
+            {/* <dialog
                 className="backdrop:bg-black backdrop:bg-opacity-50 transition-opacity  p-4 rounded-sm shadow-md"
                 id="dialog"
                 ref={dialogRef}
@@ -46,7 +40,7 @@ const ContactHeader = ({ handleAddContact }) => {
                 >
                     Submit
                 </button>
-            </dialog>
+            </dialog> */}
         </header>
     );
 };

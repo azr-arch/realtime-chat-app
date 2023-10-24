@@ -44,7 +44,7 @@ const Login = ({ setIsLoginPage }) => {
     };
 
     return (
-        <section className="max-w-login max-h-login side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
+        <section className="max-w-md mx-auto side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
             <h1 className="text-text text-lg leading-normal mb-7">Login</h1>
             <form
                 onSubmit={handleSubmit}
