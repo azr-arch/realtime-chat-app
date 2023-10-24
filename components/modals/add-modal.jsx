@@ -1,20 +1,18 @@
 "use client";
 
-import useAddContactModal from "@hooks/use-add-modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Modal } from "@components/ui/modal";
 import { Button } from "@components/ui/button";
 
-export const AddModal = () => {
-    const { isOpen, onClose, onOpen } = useAddContactModal();
-    const [loading, setLoading] = useState(false);
+export const AddModal = ({ isOpen, onClose, onConfirm, loading }) => {
+    const [isMounted, setIsMounted] = useState(false);
 
-    const onSubmit = async () => {
-        console.log("Submit handler");
-    };
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
-    console.log("modal render");
+    if (!isMounted) return null;
 
     return (
         <Modal
@@ -28,7 +26,7 @@ export const AddModal = () => {
                     <Button disabled={loading} variant="outline" onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button disabled={loading} variant="default">
+                    <Button disabled={loading} variant="default" onClick={onConfirm}>
                         Add
                     </Button>
                 </div>
