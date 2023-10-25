@@ -3,9 +3,13 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Label } from "./ui/label";
+
+import { toast } from "react-hot-toast";
 
 const Login = ({ setIsLoginPage }) => {
-    const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -28,97 +32,73 @@ const Login = ({ setIsLoginPage }) => {
             });
 
             console.log("res in login submit ", res);
+
             if (res.error) {
                 setLoading(false);
-                setError("invalid credentials");
+                toast.error("Invalid credentials");
                 return;
             }
 
-            setLoading(false);
-            setError("");
+            toast.success("Login successfully");
             //if everything goes well
             router.replace("/chat");
         } catch (error) {
             console.log("an error occured while logging ", error);
+            toast.error(error.message || "Something went wrong");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <section className="max-w-md mx-auto side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
-            <h1 className="text-text text-lg leading-normal mb-7">Login</h1>
-            <form
-                onSubmit={handleSubmit}
-                className="self-stretch flex flex-col items-start mb-8"
-                //added this onchange to clear out any previous error messages
-                onChange={(e) => {
-                    if (error) {
-                        setError("");
-                    }
-                }}
-            >
-                <div className="self-stretch flex items-center p-3 mb-[.9rem] input-border ">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="24"
-                        viewBox="0 -960 960 960"
-                        width="24"
-                        className="mr-2"
-                        fill="#828282"
-                    >
-                        <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
-                    </svg>
-                    <input
-                        value={formData.email}
-                        onChange={(e) =>
-                            setFormData((prev) => ({
-                                ...prev,
-                                [e.target.name]: e.target.value,
-                            }))
-                        }
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        className="border-none  outline-none placeholder:text-l-gray"
-                    />
+        <section className="max-w-md mx-auto  side-p rounded-3xl border border-solid border-gray px-4 pt-10 pb-[2.69rem]">
+            <h1 className="text-text font-medium text-lg leading-normal mb-7">Login</h1>
+            <form onSubmit={handleSubmit}>
+                <div className="grid gap-2">
+                    <div className="grid gap-1">
+                        <Label className="sr-only" htmlFor="email">
+                            Email
+                        </Label>
+                        <Input
+                            id="email"
+                            placeholder="name@example.com"
+                            type="email"
+                            autoCapitalize="none"
+                            autoComplete="email"
+                            autoCorrect="off"
+                            disabled={loading}
+                            name="email"
+                            onChange={(e) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    [e.target.name]: e.target.value,
+                                }))
+                            }
+                        />
+                    </div>
+                    <div className="grid gap-1">
+                        <Label className="sr-only" htmlFor="password">
+                            Password
+                        </Label>
+                        <Input
+                            id="password"
+                            placeholder="password"
+                            type="password"
+                            name="password"
+                            disabled={loading}
+                            onChange={(e) =>
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    [e.target.name]: e.target.value,
+                                }))
+                            }
+                        />
+                    </div>
+                    <Button disabled={loading}>{loading ? "Please Wait..." : "Login "}</Button>
                 </div>
-
-                <div className="self-stretch flex items-center p-3 mb-6 input-border">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="24"
-                        viewBox="0 -960 960 960"
-                        width="24"
-                        fill="#828282"
-                        className="mr-2"
-                    >
-                        <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm0-80h480v-400H240v400Zm240-120q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80ZM240-160v-400 400Z" />
-                    </svg>
-                    <input
-                        onChange={(e) =>
-                            setFormData((prev) => ({
-                                ...prev,
-                                [e.target.name]: e.target.value,
-                            }))
-                        }
-                        value={formData.password}
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        className="border-none outline-none placeholder:text-l-gray"
-                    />
-                </div>
-                {error && <p className="text-red-600 text-sm font-medium pb-2">{error}</p>}
-                <button
-                    disabled={loading}
-                    className={`rounded-lg py-2 self-stretch flex items-center justify-center bg-blue text-white ${
-                        loading ? "opacity-60" : ""
-                    }`}
-                >
-                    {loading ? "Wait up..." : "Start coding now"}
-                </button>
             </form>
 
-            <p className="text-l-gray text-sm text-center leading-normal mb-6">
+            <p className="text-l-gray mt-4 text-sm text-center leading-normal mb-6">
                 or continue with these social profile
             </p>
 

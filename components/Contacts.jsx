@@ -11,12 +11,13 @@ import ContactHeader from "./ContactHeader";
 import ChatList from "./ChatList";
 import ChatContainer from "./chatMessage/ChatContainer";
 
+import { toast } from "react-hot-toast";
+
 const Contacts = () => {
     const { status, data: session } = useSession();
     const router = useRouter();
 
     const [contacts, setContacts] = useState([]);
-    const [addContactOpen, setAddContactOpen] = useState(false);
     const [chats, setChats] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -33,32 +34,6 @@ const Contacts = () => {
         }
     };
 
-    const handleAddContact = async (contactToAdd) => {
-        if (!contactToAdd) return;
-
-        // TODO: Check if contactToAdd is email or not
-        if (contactToAdd === session.user.email) {
-            return alert("you cant add your self");
-        }
-
-        try {
-            const res = await fetch("api/addContact", {
-                method: "POST",
-                body: JSON.stringify({
-                    currUser: session.user.email,
-                    personToAdd: contactToAdd,
-                }),
-            });
-            console.log(res);
-
-            router.refresh();
-        } catch (error) {
-            console.log("error occured: ", error);
-        }
-
-        router.refresh();
-    };
-
     const getChat = async (receiverId) => {
         try {
             const res = await fetch("api/getChat", {
@@ -67,7 +42,6 @@ const Contacts = () => {
             });
 
             const { data } = await res.json(); // toDo store it in localstorage
-            socket.emit("test", "tesiting");
             handleSetCurrChat(data);
         } catch (error) {
             console.log(error);
@@ -97,7 +71,7 @@ const Contacts = () => {
     if (status === "unauthenticated") return redirect("/");
     return (
         <div className="flex flex-col items-start gap-2 self-stretch w-full  md:max-w-contact">
-            <ContactHeader handleAddContact={handleAddContact} />
+            <ContactHeader currUser={session?.user} />
             {/* Chat or Contact List  */}
             <ChatList
                 chats={chats}

@@ -80,3 +80,16 @@ body,
         @apply bg-background text-foreground;
     }
 }
+
+/* scrollbar */
+::-webkit-scrollbar {
+    @apply w-[1px];
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-black h-5;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-white;
+}

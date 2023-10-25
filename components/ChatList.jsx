@@ -2,6 +2,7 @@
 
 import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
+import { UserPlus } from "lucide-react";
 
 const ChatList = ({ chats, session, contacts, getChat, loading }) => {
     const { currentChat, handleSetCurrChat, loading: currChatLoading } = useChat();
@@ -12,7 +13,7 @@ const ChatList = ({ chats, session, contacts, getChat, loading }) => {
         return receiver[0];
     }
 
-    function ListItem({ receiver, chat }) {
+    function ListItem({ receiver, chat, notInContact }) {
         return (
             <div
                 data-disable={currChatLoading} // True or False --> style to look as disable element
@@ -39,6 +40,10 @@ const ChatList = ({ chats, session, contacts, getChat, loading }) => {
                         {chat?.lastMessage?.content}
                     </p>
                 </div>
+
+                {notInContact && (
+                    <UserPlus className="w-4 h-4 ml-auto text-black dark:text-white" />
+                )}
             </div>
         );
     }
@@ -55,7 +60,20 @@ const ChatList = ({ chats, session, contacts, getChat, loading }) => {
                 chats.map((chat, idx) => {
                     const receiver = getReceiver(chat?.participants);
 
-                    return <ListItem key={idx} receiver={receiver} chat={chat} />;
+                    // Find if a user isnt in contacts but in chats
+                    // then prompt for adding user in contact
+                    const notInContact = !contacts.some(
+                        (contact) => contact?._id === receiver?._id
+                    );
+
+                    return (
+                        <ListItem
+                            key={idx}
+                            receiver={receiver}
+                            chat={chat}
+                            notInContact={notInContact}
+                        />
+                    );
                 })
             ) : (
                 <p className="text-on_white_gray">No Chats</p>

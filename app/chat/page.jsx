@@ -4,7 +4,7 @@ import Contacts from "@components/Contacts";
 import ChatContainer from "@components/chatMessage/ChatContainer";
 import SocketIndicator from "@components/SocketIndicator";
 
-const page = () => {
+const page = async () => {
     return (
         <>
             <SocketIndicator />
