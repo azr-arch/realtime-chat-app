@@ -1,16 +1,8 @@
-"use client";
-
-import { signOut } from "next-auth/react";
-
-const page = () => {
+const page = async () => {
     return (
-        <div className="w-full h-full self-stretch flex items-center justify-center">
-            <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="bg-orange text-black_accent_2 rounded-md px-5 py-2"
-            >
-                Logout
-            </button>
+        <div className="w-full h-full self-stretch flex flex-col items-center justify-center">
+            {/* <ProfilePage data={data} /> */}
+            Profilepage
         </div>
     );
 };
