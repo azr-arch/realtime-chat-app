@@ -14,8 +14,9 @@ export async function POST(req) {
         }
 
         await User.updateOne({ email: currUser?.email }, { avatar: imageUrl });
-        return new NextResponse.json({ success: "true" }, { status: 200 });
+        return NextResponse.json({ success: "true" }, { status: 200 });
     } catch (error) {
         console.log("[UPDATE_USER]", error);
+        return new NextResponse(error);
     }
 }

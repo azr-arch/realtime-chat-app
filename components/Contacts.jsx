@@ -22,7 +22,6 @@ const Contacts = () => {
     const [loading, setLoading] = useState(false);
 
     const { handleSetCurrChat } = useChat();
-    const { socket } = useSocket();
 
     const getChats = async (receiverId) => {
         try {
@@ -67,6 +66,10 @@ const Contacts = () => {
         setLoading(false);
         // }
     }, []);
+
+    // useEffect(() => {
+    //     setIsMounted(true);
+    // }, []);
 
     if (status === "unauthenticated") return redirect("/");
     return (

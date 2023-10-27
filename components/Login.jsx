@@ -31,8 +31,6 @@ const Login = ({ setIsLoginPage }) => {
                 redirect: false,
             });
 
-            console.log("res in login submit ", res);
-
             if (res.error) {
                 setLoading(false);
                 toast.error("Invalid credentials");

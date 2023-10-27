@@ -4,6 +4,7 @@ import GlobalProvider from "@context/GlobalContext";
 import { SocketProvider } from "@context/SocketContext";
 import { ChatProvider } from "@context/ChatContext";
 import { ToasterProvider } from "@providers/toast-provider";
+import SocketIndicator from "@components/SocketIndicator";
 
 export const metadata = {
     title: "Chat",
@@ -19,6 +20,7 @@ const RootLayout = ({ children }) => {
                         <SocketProvider>
                             <ChatProvider>
                                 <ToasterProvider />
+                                <SocketIndicator />
                                 <main className="relative h-screen flex-center p-8 bg-primary_bg">
                                     {children}
                                 </main>
