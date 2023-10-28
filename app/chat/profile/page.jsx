@@ -1,5 +1,5 @@
 import ProfilePage from "@components/profile-page";
-import { getUser } from "@utils/getCurrUser";
+import { getUser } from "@utils/chat";
 
 const page = async () => {
     const data = await getUser();

@@ -1,97 +1,56 @@
 "use client";
 
 import { useChat } from "@context/ChatContext";
-import { useSocket } from "@context/SocketContext";
 import { UserPlus } from "lucide-react";
+import { useState, useEffect } from "react";
 
-const ChatList = ({ chats, session, contacts, getChat, loading }) => {
-    const { currentChat, handleSetCurrChat, loading: currChatLoading } = useChat();
-    const { socket } = useSocket();
+const ChatList = ({ chats, session }) => {
+    const [isMounted, setIsMounted] = useState(false);
+    const { currentChat, handleSetCurrChat } = useChat();
 
     function getReceiver(item) {
         const receiver = item.filter((itm) => itm.email !== session?.user.email);
         return receiver[0];
     }
 
-    function ListItem({ receiver, chat, notInContact }) {
-        return (
-            <div
-                data-disable={currChatLoading} // True or False --> style to look as disable element
-                className={`flex hover:bg-on_white_gray_2 
-                            transition-colors ease-in duration-150 
-                            ${
-                                currentChat && currentChat._id === chat?._id
-                                    ? "bg-on_white_gray_2"
-                                    : ""
-                            }
-                            items-center gap-3 py-3 px-5 relative self-stretch 
-                            w-full text-black cursor-pointer  rounded-md`}
-                onClick={() => {
-                    if (currentChat && currentChat._id === chat?._id) return;
-                    socket.emit("JOIN", chat);
-                    handleSetCurrChat(chat);
-                }}
-            >
-                <img src={receiver?.avatar} width={40} height={40} className="rounded-full" />
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
-                <div className="flex flex-col items-start gap-[3px]">
-                    <p className="text-sm text-black_accent_2 font-medium">{receiver?.name}</p>
-                    <p className="text-on_white_gray text-xs font-medium">
-                        {chat?.lastMessage?.content}
-                    </p>
-                </div>
-
-                {notInContact && (
-                    <UserPlus className="w-4 h-4 ml-auto text-black dark:text-white" />
-                )}
-            </div>
-        );
-    }
-
+    if (!isMounted) return null;
     return (
-        <div
-            id="chat-list"
-            className="self-stretch w-full grow flex flex-col items-start  md:max-w-contact bg-secondary_bg p-3 gap-3 shadow-md"
-        >
+        <>
             <span className="text-xs text-on_white_gray">All</span>
 
-            {/* TODO: Separate Chat list and Contact List */}
-            {chats?.length > 0 ? (
-                chats.map((chat, idx) => {
+            {chats?.length > 0 &&
+                chats?.map((chat) => {
                     const receiver = getReceiver(chat?.participants);
 
                     // Find if a user isnt in contacts but in chats
                     // then prompt for adding user in contact
-                    const notInContact = !contacts.some(
-                        (contact) => contact?._id === receiver?._id
-                    );
+                    // const notInContact = !contacts?.some(
+                    //     (contact) => contact?._id === receiver?._id
+                    // );
 
-                    return (
-                        <ListItem
-                            key={idx}
-                            receiver={receiver}
-                            chat={chat}
-                            notInContact={notInContact}
-                        />
-                    );
-                })
-            ) : (
-                <p className="text-on_white_gray">No Chats</p>
-            )}
-
-            {/* Contact List  */}
-
-            <p className="font-medium text-lg mt-4 hidden md:block">Contacts</p>
-            {contacts.length > 0 &&
-                contacts.map((contact, idx) => {
                     return (
                         <div
-                            key={idx}
-                            onClick={() => getChat(contact?._id)}
-                            className="hidden md:flex items-center gap-2 py-3 px-5 relative self-stretch w-full text-black cursor-pointer  rounded-md"
+                            key={chat?._id}
+                            className={`flex hover:bg-on_white_gray_2
+                        transition-colors ease-in duration-150
+                        ${
+                            currentChat && currentChat._id === chat?._id // Active style
+                                ? "bg-on_white_gray_2"
+                                : ""
+                        }
+                        items-center gap-3 py-3 px-5 relative self-stretch
+                        w-full text-black cursor-pointer  rounded-md`}
+                            onClick={() => {
+                                if (currentChat && currentChat._id === chat?._id) return;
+                                handleSetCurrChat(chat);
+                            }}
                         >
                             <img
-                                src={contact?.avatar}
+                                src={receiver?.avatar}
                                 width={40}
                                 height={40}
                                 className="rounded-full"
@@ -99,13 +58,21 @@ const ChatList = ({ chats, session, contacts, getChat, loading }) => {
 
                             <div className="flex flex-col items-start gap-[3px]">
                                 <p className="text-sm text-black_accent_2 font-medium">
-                                    {contact?.name}
+                                    {receiver?.name}
+                                </p>
+                                <p className="text-on_white_gray text-xs font-medium">
+                                    {chat?.lastMessage?.content}
                                 </p>
                             </div>
+
+                            {/* Add a way to detect not in contact chats! */}
+                            {/* {notInContact && (
+                                <UserPlus className="w-4 h-4 ml-auto text-black dark:text-white" />
+                            )} */}
                         </div>
                     );
                 })}
-        </div>
+        </>
     );
 };
 

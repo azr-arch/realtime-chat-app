@@ -10,7 +10,7 @@ const RECEIVE_MSG_EVENT = "receive-message";
 
 export default async function handler(req, res) {
     const { chatId } = req.query;
-    const { users, content, seen } = JSON.parse(req.body);
+    const { users, content } = JSON.parse(req.body);
     try {
         // find if chat exists
         const selectedChat = await Chat.findById(chatId);
@@ -23,7 +23,6 @@ export default async function handler(req, res) {
             sender: users.senderId,
             content: content,
             chat: chatId,
-            seen: seen,
         });
 
         // Update last message in Chat
@@ -32,6 +31,9 @@ export default async function handler(req, res) {
             {
                 $set: {
                     lastMessage: message._id,
+                },
+                $inc: {
+                    unreadCount: 1,
                 },
             },
             { new: true }

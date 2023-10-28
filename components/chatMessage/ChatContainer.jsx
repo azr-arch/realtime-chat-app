@@ -3,38 +3,26 @@
 import { useChat } from "@context/ChatContext";
 import { useEffect, useState } from "react";
 import { useSocket } from "@context/SocketContext";
-import io from "socket.io-client";
 import { useSession } from "next-auth/react";
-import { formatTime } from "@utils/utils";
-import moment from "moment/moment";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "../MessageInput";
 import ChatMessages from "./ChatMessages";
 
-import { RECEIVE_MSG_EVENT, SEND_MSG_EVENT, TYPING_EVENT } from "@utils/socket-events";
-import useChatUtils from "@utils/chat";
+import { RECEIVE_MSG_EVENT } from "@utils/socket-events";
 
 const ChatContainer = () => {
-    // Chat id to fetch corresponding chat me ssages --> ToDo Use context
-    // Store all the chat messages in here state
     const { currentChat } = useChat(); // Data of currentChat
     const [messages, setMessages] = useState([]);
-    const { socket, isConnected } = useSocket();
+    const { socket } = useSocket();
     const [message, setMessage] = useState("");
     const { data: session } = useSession();
     const [loading, setLoading] = useState(false);
-    const [isTyping, setIsTyping] = useState(false);
-
-    // const {sendMessage}  = useChatUtils(socket)
 
     const sendMessage = async () => {
         if (!message) return;
-
-        socket.emit(TYPING_EVENT, { chatId: currentChat?._id, isTyping: false });
         setLoading(true);
 
-        // socket.emit(TYPING_EVENT, {chat: currentChat, isTyping: false})
-
+        // TODD: refactor this part
         const senderId = session?.user?.sub;
         const receiverId = Object.entries(currentChat)
             .filter(([key, value]) => {
@@ -46,12 +34,12 @@ const ChatContainer = () => {
 
         try {
             const res = await fetch(`http://localhost:3000/api/socket/message/${currentChat._id}`, {
+                // Making request to pages/api Route handler
                 method: "POST",
                 body: JSON.stringify({
                     users: { senderId, receiverId: receiverId[0] },
                     content: message,
                     status: "pending",
-                    seen: false,
                 }),
             });
             const msg = await res.json();
@@ -66,7 +54,6 @@ const ChatContainer = () => {
     };
 
     const handleChange = (e) => {
-        socket.emit(TYPING_EVENT, { chatId: currentChat?._id, isTyping: true });
         setMessage(e.target.value);
     };
 
@@ -80,10 +67,9 @@ const ChatContainer = () => {
                     });
 
                     const { data } = await res.json();
-                    // console.log(data);
                     setMessages((prev) => [...data]);
                 } catch (error) {
-                    // console.log(error);
+                    console.log(error);
                 }
             };
             fetchData();
@@ -95,21 +81,9 @@ const ChatContainer = () => {
 
         socket.on(RECEIVE_MSG_EVENT, (msg) => {
             setMessages((prev) => [...prev, msg]);
-
-            console.log("sending message seen", msg);
-            socket.emit("MESSAGE_SEEN", { messageId: msg._id });
         });
-
-        socket.on("MESSAGE_SEEN_ACK", (updatedMsg) => {
-            console.log("new msg: ", updatedMsg);
-            setMessages((prev) =>
-                prev.map((msg) => (msg._id === updatedMsg._id ? updatedMsg : msg))
-            );
-        });
-
         return () => {
             socket.off(RECEIVE_MSG_EVENT);
-            socket.off("MESSAGE_SEEN_ACK");
         };
     }, [socket]);
 

@@ -1,5 +1,4 @@
 import { Server as ServerIO } from "socket.io";
-import { SEND_MSG_EVENT, TYPING_EVENT } from "@utils/socket-events";
 
 export const config = {
     api: {
@@ -16,26 +15,26 @@ const ioHandler = (req, res) => {
             addTrailingSlash: false,
         });
 
-        io.on("connection", (socket) => {
-            // socket.on(TYPING_EVENT, ({chat, isTyping}) => {
-            //     socket.to(chatId)
-            // })
+        // io.on("connection", (socket) => {
+        //     // socket.on(TYPING_EVENT, ({chat, isTyping}) => {
+        //     //     socket.to(chatId)
+        //     // })
 
-            // socket.on("JOIN_EVENT", ({ chatId }) => {
-            //     console.log("join event ", chatId);
-            //     socket.join(chatId);
-            // });
+        //     // socket.on("JOIN_EVENT", ({ chatId }) => {
+        //     //     console.log("join event ", chatId);
+        //     //     socket.join(chatId);
+        //     // });
 
-            socket.on("JOIN", (data) => {
-                console.log("joined: ", data._id);
-                socket.join(data._id);
-            });
+        //     socket.on("JOIN", (data) => {
+        //         console.log("joined: ", data._id);
+        //         socket.join(data._id);
+        //     });
 
-            socket.on(TYPING_EVENT, ({ chatId, isTyping }) => {
-                console.log("typing event ", chatId, isTyping);
-                socket.broadcast.to(chatId).emit(TYPING_EVENT, isTyping);
-            });
-        });
+        //     socket.on(TYPING_EVENT, ({ chatId, isTyping }) => {
+        //         console.log("typing event ", chatId, isTyping);
+        //         socket.broadcast.to(chatId).emit(TYPING_EVENT, isTyping);
+        //     });
+        // });
 
         res.socket.server.io = io;
     }

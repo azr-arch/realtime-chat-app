@@ -1,22 +1,21 @@
 import User from "@models/user";
 import { connectToDB } from "@utils/databse";
-import { ApiResponse } from "@utils";
 import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
 export async function GET(request) {
     try {
         const { user } = await getServerSession();
-        console.log(user);
         await connectToDB();
-        const contacts = await User.findOne({ email: user.email }).select("contacts");
+        const data = await User.findOne({ email: user.email }).select("contacts");
 
-        if (!contacts) {
-            return ApiResponse("user doesnt exists", 404);
+        if (!data) {
+            return new NextResponse("contacts doesnot exists");
         }
 
-        return ApiResponse(contacts, 201);
+        return NextResponse.json({ contacts: data?.contacts }, { status: 200 });
     } catch (error) {
-        // console.error(error);
-        return ApiResponse(error | "An error occurred.", 500);
+        console.log("[FETCH_CONTACTS]", error);
+        return new NextResponse(error);
     }
 }

@@ -2,10 +2,13 @@ import Chat from "@models/chat";
 import ChatMessage from "@models/message";
 import User from "@models/user";
 import { ApiResponse } from "@utils";
+import { getServerSession } from "next-auth";
 
 export async function POST(request) {
+    const { user } = await getServerSession();
     try {
-        const { currUserId, receiverId } = await request.json();
+        const { receiverId } = await request.json();
+        const currUserId = await User.findOne({ email: user.email }).select("_id");
 
         const chat = await Chat.findOne({
             participants: {

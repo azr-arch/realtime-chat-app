@@ -1,88 +1,67 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { useChat } from "@context/ChatContext";
-import { redirect, useRouter } from "next/navigation";
-import Image from "next/image";
-import { Router } from "next/router";
-import { useSocket } from "@context/SocketContext";
 import ContactHeader from "./ContactHeader";
+import ContactList from "./contact-list";
 import ChatList from "./ChatList";
-import ChatContainer from "./chatMessage/ChatContainer";
-
-import { toast } from "react-hot-toast";
 
 const Contacts = () => {
-    const { status, data: session } = useSession();
-    const router = useRouter();
+    const { data: session } = useSession();
 
     const [contacts, setContacts] = useState([]);
     const [chats, setChats] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const { handleSetCurrChat } = useChat();
-
-    const getChats = async (receiverId) => {
+    async function getContacts() {
+        const url = `/api/fetchContacts`;
         try {
-            const res = await fetch("api/fetchAllChats");
-            const { data } = await res.json();
-            setChats((prev) => [...data]);
+            const res = await fetch(url);
+            return await res.json();
         } catch (error) {
             console.log(error);
+            return null;
         }
-    };
+    }
 
-    const getChat = async (receiverId) => {
+    async function getChats() {
+        const url = `/api/fetchAllChats`;
         try {
-            const res = await fetch("api/getChat", {
-                method: "POST",
-                body: JSON.stringify({ currUserId: session.user.sub, receiverId }),
-            });
+            const res = await fetch(url);
 
-            const { data } = await res.json(); // toDo store it in localstorage
-            handleSetCurrChat(data);
+            return await res.json();
         } catch (error) {
             console.log(error);
+            return null;
         }
+    }
+
+    const helperFetch = async () => {
+        const [chatsData, contactsData] = await Promise.all([getChats(), getContacts()]);
+
+        setChats(chatsData?.chats);
+        setContacts(contactsData?.contacts);
     };
 
     useEffect(() => {
         setLoading(true);
-        // if (session?.user?.email) {
-        const fetchContacts = async () => {
-            const res = await fetch("api/fetchContacts");
-
-            if (!res.ok) {
-                // console.log("error occurred ", res);
-                return;
-            }
-            const { data } = await res.json();
-            setContacts([...data.contacts]);
-        };
-        fetchContacts();
-        getChats();
-
+        helperFetch();
         setLoading(false);
-        // }
     }, []);
 
-    // useEffect(() => {
-    //     setIsMounted(true);
-    // }, []);
-
-    if (status === "unauthenticated") return redirect("/");
     return (
         <div className="flex flex-col items-start gap-2 self-stretch w-full  md:max-w-contact">
             <ContactHeader currUser={session?.user} />
-            {/* Chat or Contact List  */}
-            <ChatList
-                chats={chats}
-                session={session}
-                contacts={contacts}
-                getChat={getChat}
-                loading={loading}
-            />
+            {/* Chat and Contact List  */}
+            <div
+                id="chat-list"
+                className="self-stretch w-full grow flex flex-col items-start  md:max-w-contact bg-secondary_bg p-3 gap-3 shadow-md"
+            >
+                <ChatList chats={chats} session={session} />
+                <ContactList contacts={contacts} />
+            </div>
+
+            {/* <ChatList chats={chats} session={session} contacts={contacts} loading={loading} /> */}
         </div>
     );
 };
