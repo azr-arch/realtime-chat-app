@@ -2,7 +2,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 export const Modal = ({ title, description, isOpen, onClose, children }) => {
     const onChange = (open) => {
-        console.log("inside onchange: ", open);
         if (!open) {
             onClose();
         }

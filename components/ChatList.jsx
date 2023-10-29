@@ -2,6 +2,7 @@
 
 import { useChat } from "@context/ChatContext";
 import { UserPlus } from "lucide-react";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 
 const ChatList = ({ chats, session }) => {
@@ -35,7 +36,7 @@ const ChatList = ({ chats, session }) => {
                     return (
                         <div
                             key={chat?._id}
-                            className={`flex hover:bg-on_white_gray_2
+                            className={`flex hover:bg-on_white_gray_2 overflow-hidden
                         transition-colors ease-in duration-150
                         ${
                             currentChat && currentChat._id === chat?._id // Active style
@@ -49,11 +50,11 @@ const ChatList = ({ chats, session }) => {
                                 handleSetCurrChat(chat);
                             }}
                         >
-                            <img
+                            <Image
                                 src={receiver?.avatar}
                                 width={40}
                                 height={40}
-                                className="rounded-full"
+                                className="rounded-full object-cover"
                             />
 
                             <div className="flex flex-col items-start gap-[3px]">

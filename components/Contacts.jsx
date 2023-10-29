@@ -44,9 +44,9 @@ const Contacts = () => {
     };
 
     useEffect(() => {
-        setLoading(true);
+        // setLoading(true);
         helperFetch();
-        setLoading(false);
+        // setLoading(false);
     }, []);
 
     return (
@@ -55,13 +55,11 @@ const Contacts = () => {
             {/* Chat and Contact List  */}
             <div
                 id="chat-list"
-                className="self-stretch w-full grow flex flex-col items-start  md:max-w-contact bg-secondary_bg p-3 gap-3 shadow-md"
+                className="self-stretch w-full grow flex flex-col items-start  md:max-w-contact overflow-y-scroll bg-secondary_bg p-3 gap-3 shadow-md"
             >
                 <ChatList chats={chats} session={session} />
                 <ContactList contacts={contacts} />
             </div>
-
-            {/* <ChatList chats={chats} session={session} contacts={contacts} loading={loading} /> */}
         </div>
     );
 };

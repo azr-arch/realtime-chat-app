@@ -14,14 +14,14 @@ export const metadata = {
 const RootLayout = ({ children }) => {
     return (
         <html lang="en">
-            <body className="min-h-screen bg-main transition-colors duration-150 ease-linear">
+            <body className="min-h-screen transition-colors duration-150 ease-linear">
                 <Provider>
                     <GlobalProvider>
                         <SocketProvider>
                             <ChatProvider>
                                 <ToasterProvider />
                                 <SocketIndicator />
-                                <main className="relative h-screen flex-center p-8 bg-primary_bg">
+                                <main className="relative h-screen flex-center p-8 bg-white">
                                     {children}
                                 </main>
                             </ChatProvider>

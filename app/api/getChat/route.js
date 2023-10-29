@@ -15,9 +15,11 @@ export async function POST(request) {
                 $all: [currUserId, receiverId],
             },
         });
+
         // If chat exists
         if (chat) {
-            return ApiResponse(chat, 200);
+            const chatDetails = await getChatDetails(chat);
+            return ApiResponse(chatDetails, 200);
         }
 
         // Else Create a new instance
@@ -25,8 +27,72 @@ export async function POST(request) {
             participants: [currUserId, receiverId],
         });
 
-        return ApiResponse(newChatInstance, 201);
+        const chatDetails = await getChatDetails(newChatInstance);
+        return ApiResponse(chatDetails, 201);
     } catch (error) {
-        return ApiResponse("bad", 500);
+        console.log("[GET_CHAT]", error);
+        return new NextResponse(error);
     }
+}
+
+async function getChatDetails(chat) {
+    return await Chat.aggregate([
+        { $match: { _id: chat._id } },
+        { $sort: { updatedAt: -1 } },
+        {
+            $lookup: {
+                from: "users",
+                foreignField: "_id",
+                localField: "participants",
+                as: "participants",
+                pipeline: [
+                    {
+                        $project: {
+                            password: 0,
+                            contacts: 0,
+                            updatedAt: 0,
+                            createdAt: 0,
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $lookup: {
+                from: "chatmessages",
+                foreignField: "_id",
+                localField: "lastMessage",
+                as: "lastMessage",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            foreignField: "_id",
+                            localField: "sender",
+                            as: "sender",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        name: 1,
+                                        avatar: 1,
+                                        email: 1,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $addFields: {
+                            sender: { $first: "$sender" },
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $addFields: {
+                lastMessage: { $first: "$lastMessage" },
+            },
+        },
+    ]);
 }

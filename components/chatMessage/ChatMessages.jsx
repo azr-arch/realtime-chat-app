@@ -1,15 +1,18 @@
 "use client";
 
+import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
 import { TYPING_EVENT } from "@utils/socket-events";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 
-const ChatMessages = ({ messages, session }) => {
-    const messagesEndRef = useRef(null);
-    const { socket } = useSocket();
+import MessageWithDate from "@components/ui/messate-date";
 
-    const [isTyping, setIsTyping] = useState(false);
+const ChatMessages = ({ session }) => {
+    const { socket } = useSocket();
+    const { messages, loading } = useChat();
+
+    const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -21,64 +24,46 @@ const ChatMessages = ({ messages, session }) => {
         scrollToBottom();
     }, [messages]);
 
+    // Receiving typing event
     useEffect(() => {
-        socket.on(TYPING_EVENT, (typingStatus) => {
-            console.log("typing status ", typingStatus);
-            setIsTyping(typingStatus);
+        if (socket) {
+            console.log("receiving typing event");
+            socket.on("recieve", (data) => {
+                console.log("typing status ", data);
 
-            // Remove typing status after 2 seconds
-            setTimeout(() => {
-                setIsTyping(false);
-            }, 2000);
-        });
-
+                // // Remove typing status after 2 seconds
+                // setTimeout(() => {
+                //     setIsTyping(false);
+                // }, 2000);
+            });
+        }
         return () => {
-            socket.off(TYPING_EVENT);
+            socket?.off(TYPING_EVENT);
         };
     }, [socket]);
 
     return (
         <div className="grow w-full  flex flex-col items-start  rounded-lg shadow-md h-full max-h-[415px] md:max-h-[550px] bg-secondary_bg p-6">
             <div
-                className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2 shadow-inner py-1"
+                className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2 shadow-inner py-1 relative"
                 ref={messagesEndRef}
             >
-                {messages?.map((msg, idx) => {
-                    return (
-                        <div
-                            key={idx}
-                            className={`flex flex-col items-start gap-1 ${
-                                msg?.sender?._id?.toString() === session?.user?.sub
-                                    ? "self-start items-start"
-                                    : "self-end items-end"
-                            }`}
-                        >
-                            <div
-                                key={idx}
-                                data-sender={
-                                    msg?.sender?._id?.toString() === session?.user?.sub
-                                        ? "self"
-                                        : "other"
-                                }
-                                className={`w-fit ${
-                                    msg?.sender?._id?.toString() === session?.user?.sub
-                                        ? " text-black_accent_2 bg-on_white_gray_2 "
-                                        : "self-end items-end text-white bg-orange"
-                                } flex flex-col text-sm font-medium  rounded-sm py-2 px-4`}
-                            >
-                                <p>{msg?.content}</p>
-                            </div>
-
-                            <div className="flex items-center space-x-2 mt-[2px] text-[10px]">
-                                <time className=" text-on_white_gray font-semibold ">
-                                    {moment(msg?.updatedAt).format("HH:mm A")}
-                                </time>
-                                <p>{msg?.status}</p>
-                                <p>{msg?.seen && "seen"}</p>
-                            </div>
-                        </div>
-                    );
-                })}
+                {loading ? (
+                    <p className="absolute z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                        Fetching chats...
+                    </p>
+                ) : (
+                    messages?.map((msg, idx) => {
+                        return (
+                            <MessageWithDate
+                                key={msg?._id | idx}
+                                msg={msg}
+                                prevMsg={messages[idx - 1]}
+                                session={session}
+                            />
+                        );
+                    })
+                )}
             </div>
         </div>
     );

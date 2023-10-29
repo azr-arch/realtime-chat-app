@@ -8,15 +8,17 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "../MessageInput";
 import ChatMessages from "./ChatMessages";
 
-import { RECEIVE_MSG_EVENT } from "@utils/socket-events";
+import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@utils/socket-events";
 
 const ChatContainer = () => {
-    const { currentChat } = useChat(); // Data of currentChat
-    const [messages, setMessages] = useState([]);
-    const { socket } = useSocket();
+    // const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-    const { data: session } = useSession();
     const [loading, setLoading] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+
+    const { currentChat, setMessages } = useChat(); // Data of currentChat
+    const { socket } = useSocket();
+    const { data: session } = useSession();
 
     const sendMessage = async () => {
         if (!message) return;
@@ -33,7 +35,7 @@ const ChatContainer = () => {
             });
 
         try {
-            const res = await fetch(`http://localhost:3000/api/socket/message/${currentChat._id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${currentChat._id}`, {
                 // Making request to pages/api Route handler
                 method: "POST",
                 body: JSON.stringify({
@@ -44,7 +46,7 @@ const ChatContainer = () => {
             });
             const msg = await res.json();
 
-            setMessages([...messages, msg]);
+            // setMessages((prev) => [...prev, msg]);
             setMessage("");
         } catch (error) {
             console.log(error);
@@ -55,26 +57,12 @@ const ChatContainer = () => {
 
     const handleChange = (e) => {
         setMessage(e.target.value);
+        setIsTyping(true);
+
+        setTimeout(() => {
+            setIsTyping(false);
+        }, 2000);
     };
-
-    useEffect(() => {
-        if (currentChat) {
-            const fetchData = async () => {
-                try {
-                    const res = await fetch("api/getMessages", {
-                        method: "POST",
-                        body: JSON.stringify({ chatId: currentChat._id }),
-                    });
-
-                    const { data } = await res.json();
-                    setMessages((prev) => [...data]);
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-            fetchData();
-        }
-    }, [currentChat]);
 
     useEffect(() => {
         if (!socket) return;
@@ -87,6 +75,18 @@ const ChatContainer = () => {
         };
     }, [socket]);
 
+    // Emitting typing event
+    useEffect(() => {
+        if (currentChat && isTyping && socket) {
+            console.log("emitting typing event");
+            socket.emit(TYPING_EVENT, { chatId: currentChat?._id, isTyping });
+        }
+
+        return () => {
+            socket?.off(TYPING_EVENT);
+        };
+    }, [socket, isTyping]);
+
     return (
         <div className="w-full min-w-[342px] h-full self-stretch flex flex-col items-start gap-2  ">
             <>
@@ -96,7 +96,7 @@ const ChatContainer = () => {
                             selectedChat={currentChat}
                             currUserEmail={session?.user.email}
                         />
-                        <ChatMessages messages={messages} session={session} />
+                        <ChatMessages session={session} />
                         <MessageInput
                             value={message}
                             onChange={handleChange}

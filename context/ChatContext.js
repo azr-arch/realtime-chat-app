@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useSocket } from "../context/SocketContext";
 
 const ChatContext = createContext({
@@ -14,6 +14,8 @@ const ChatContext = createContext({
 const ChatProvider = ({ children }) => {
     const [currentChat, setCurrentChat] = useState("");
     const [loading, setLoading] = useState(false);
+    const [messages, setMessages] = useState([]);
+    // const [contacts, setContacts] = useState([])
 
     const resetUnreadCount = async (id) => {
         const res = await fetch(`http://localhost:3000/api/socket/message/${id}/resetUnreadCount`, {
@@ -23,14 +25,9 @@ const ChatProvider = ({ children }) => {
     };
 
     const handleSetCurrChat = async (data) => {
-        setLoading(true);
+        // setLoading(true);
         setCurrentChat(data);
-
-        // reset the unread count
-        // const updatedChat = await resetUnreadCount(data?._id);
-
-        // setCurrentChat(updatedChat);
-        setLoading(false);
+        // setLoading(false);
     };
 
     const getChat = async (receiverId) => {
@@ -41,15 +38,44 @@ const ChatProvider = ({ children }) => {
             });
 
             const { data } = await res.json(); // toDo store it in localstorage
-            handleSetCurrChat(data);
+            handleSetCurrChat(data[0]);
         } catch (error) {
             console.log(error);
         }
     };
 
+    const fetchMessages = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch("api/getMessages", {
+                method: "POST",
+                body: JSON.stringify({ chatId: currentChat._id }),
+            });
+
+            const { data } = await res.json();
+            setMessages([...data]);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchMessages();
+    }, [currentChat]);
+
     return (
         <ChatContext.Provider
-            value={{ currentChat, handleSetCurrChat, loading, getChat, resetUnreadCount }}
+            value={{
+                currentChat,
+                handleSetCurrChat,
+                loading,
+                getChat,
+                resetUnreadCount,
+                messages,
+                setMessages,
+            }}
         >
             {children}
         </ChatContext.Provider>
