@@ -16,6 +16,9 @@ module.exports = {
             },
         },
         extend: {
+            // width: {
+
+            // },
             maxWidth: {
                 login: "29.16444rem",
                 contact: "330px",
@@ -60,12 +63,22 @@ module.exports = {
 
                 nav_bg: "#010019",
                 orange: "#ff4a09",
-                primary_bg: "#eeeeee",
-                secondary_bg: "#f6f6f6",
                 on_white_gray: "#ababab",
-                on_white_gray_2: "#e6e6e6",
+                on_white_gray_2: "#e9e9e9",
 
+                profile_bg: "#1b1a32",
                 black_accent_2: "#161425",
+            },
+            backgroundColor: {
+                main: "#eee",
+                primary: "#f6f6f6",
+            },
+            textColor: {
+                heading: "#18181a",
+                accent_1: "#0e0e1a",
+                accent_2: "#a7a7a7",
+                text_on_navbg: "#f6f6f7",
+                message: "#080808",
             },
             borderRadius: {
                 lg: "var(--radius)",

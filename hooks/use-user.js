@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 
-export async function getUser() {
+export async function useUserServer() {
     const url = `${process.env.URL}/api/getCurrentUser`;
 
     try {
@@ -18,5 +18,3 @@ export async function getUser() {
         return null;
     }
 }
-
-// Client helper functions

@@ -1,20 +1,19 @@
 "use client";
 
 import { useChat } from "@context/ChatContext";
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSocket } from "@context/SocketContext";
 import { useSession } from "next-auth/react";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "../MessageInput";
 import ChatMessages from "./ChatMessages";
 
-import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@utils/socket-events";
+import { RECEIVE_MSG_EVENT } from "@lib/socket-events";
 
 const ChatContainer = () => {
-    // const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
-    const [isTyping, setIsTyping] = useState(false);
+    // const [isTyping, setIsTyping] = useState(false);
 
     const { currentChat, setMessages } = useChat(); // Data of currentChat
     const { socket } = useSocket();
@@ -35,7 +34,7 @@ const ChatContainer = () => {
             });
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${currentChat._id}`, {
+            await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${currentChat._id}`, {
                 // Making request to pages/api Route handler
                 method: "POST",
                 body: JSON.stringify({
@@ -44,9 +43,6 @@ const ChatContainer = () => {
                     status: "pending",
                 }),
             });
-            const msg = await res.json();
-
-            // setMessages((prev) => [...prev, msg]);
             setMessage("");
         } catch (error) {
             console.log(error);
@@ -57,11 +53,6 @@ const ChatContainer = () => {
 
     const handleChange = (e) => {
         setMessage(e.target.value);
-        setIsTyping(true);
-
-        setTimeout(() => {
-            setIsTyping(false);
-        }, 2000);
     };
 
     useEffect(() => {
@@ -74,18 +65,6 @@ const ChatContainer = () => {
             socket.off(RECEIVE_MSG_EVENT);
         };
     }, [socket]);
-
-    // Emitting typing event
-    useEffect(() => {
-        if (currentChat && isTyping && socket) {
-            console.log("emitting typing event");
-            socket.emit(TYPING_EVENT, { chatId: currentChat?._id, isTyping });
-        }
-
-        return () => {
-            socket?.off(TYPING_EVENT);
-        };
-    }, [socket, isTyping]);
 
     return (
         <div className="w-full min-w-[342px] h-full self-stretch flex flex-col items-start gap-2  ">
@@ -105,7 +84,7 @@ const ChatContainer = () => {
                         />
                     </>
                 ) : (
-                    <div className="w-full self-stretch grow bg-secondary_bg shadow-md rounded-md flex items-center justify-center ">
+                    <div className="w-full self-stretch grow bg-primary shadow-md rounded-md flex items-center justify-center ">
                         Select a chat to talk to
                     </div>
                 )}

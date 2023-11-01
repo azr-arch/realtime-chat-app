@@ -15,10 +15,13 @@ const ContactList = ({ contacts }) => {
 
     return (
         <>
-            <p className="font-medium text-lg mt-4 hidden md:block">Contacts</p>
+            {/*       <span className="text-xs text-on_white_gray ml-6 mt-4">All</span> */}
+            <p className="font-medium text-md text-on_white_gray ml-6 mt-4 hidden md:block">
+                Contacts
+            </p>
 
             {contacts?.length > 0 &&
-                contacts.map((contact) => (
+                contacts.map((contact, idx) => (
                     <div
                         key={contact?._id}
                         onClick={() => getChat(contact?._id)}
@@ -36,6 +39,11 @@ const ContactList = ({ contacts }) => {
                                 {contact?.name}
                             </p>
                         </div>
+
+                        {/* Divider effect */}
+                        {idx !== contacts.length - 1 && (
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-[85%] bg-on_white_gray_2" />
+                        )}
                     </div>
                 ))}
         </>

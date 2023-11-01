@@ -47,11 +47,8 @@ const ChatProvider = ({ children }) => {
     const fetchMessages = async () => {
         setLoading(true);
         try {
-            const res = await fetch("api/getMessages", {
-                method: "POST",
-                body: JSON.stringify({ chatId: currentChat._id }),
-            });
-
+            const res = await fetch(`api/chats/${currentChat._id}/messages`);
+            console.log("res: ", res);
             const { data } = await res.json();
             setMessages([...data]);
         } catch (error) {
@@ -62,7 +59,9 @@ const ChatProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        fetchMessages();
+        if (currentChat) {
+            fetchMessages();
+        }
     }, [currentChat]);
 
     return (

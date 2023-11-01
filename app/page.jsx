@@ -14,9 +14,11 @@ const page = () => {
 
     useEffect(() => {
         if (status === "authenticated") {
-            router.push("/chat");
+            router.replace("/chat");
         }
     }, [status]);
+
+    console.log(status);
 
     if (status === "loading") {
         return <h1 className="text-text">Please wait...</h1>;

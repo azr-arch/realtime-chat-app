@@ -83,13 +83,26 @@ body,
 
 /* scrollbar */
 ::-webkit-scrollbar {
-    @apply w-[1px];
+    @apply w-[0px];
 }
 
-::-webkit-scrollbar-thumb {
+/* ::-webkit-scrollbar-thumb {
     @apply bg-black h-5;
 }
 
 ::-webkit-scrollbar-track {
     @apply bg-white;
+} */
+
+/* Messsage styling */
+div[data-sender="other"] {
+    @apply rounded-tl-2xl rounded-r-3xl pl-4 py-3 pr-6 shadow-sm;
+}
+
+div[data-sender="self"] {
+    @apply rounded-tr-2xl rounded-l-3xl pr-5 py-3 pl-6 shadow-sm;
+}
+
+.effect-bottom {
+    mask-image: linear-gradient(to bottom, black, transparent);
 }

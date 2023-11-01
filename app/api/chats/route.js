@@ -82,7 +82,7 @@ export async function GET(request) {
 
         return NextResponse.json({ chats }, { status: 200 });
     } catch (error) {
-        console.log("[FETCH_ALL_CHATS]", error);
+        console.log("[GET_CHATS]", error);
         return new NextResponse(error);
     }
 }

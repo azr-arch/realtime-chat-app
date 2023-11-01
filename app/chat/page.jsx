@@ -1,5 +1,5 @@
-import Contacts from "@components/Contacts";
-import ChatContainer from "@components/chatMessage/ChatContainer";
+import Contacts from "@components/contact/Contacts";
+import ChatContainer from "@components/chat/ChatContainer";
 
 const ChatPage = async () => {
     return (

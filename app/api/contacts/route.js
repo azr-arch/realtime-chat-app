@@ -1,5 +1,5 @@
 import User from "@models/user";
-import { connectToDB } from "@utils/databse";
+import { connectToDB } from "@lib/db";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { AddModal } from "./modals/add-modal";
-import { Button } from "./ui/button";
+import { AddModal } from "../modals/add-modal";
+import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -38,8 +38,8 @@ const ContactHeader = ({ currUser }) => {
             // setLoading(false)
             toast.success("Contact added successfully.");
             setOpen(false);
-            // window.location.href = "/chat"; // for Hard refresh
-            router.refresh();
+            window.location.reload();
+            return;
         } catch (error) {
             console.log("error occured: ", error);
             toast.error(error.message | "Something went wrong.");
@@ -56,8 +56,8 @@ const ContactHeader = ({ currUser }) => {
                 onClose={() => setOpen(false)}
                 onConfirm={handleAddContact}
             />
-            <header className="flex items-center bg-secondary_bg rounded-md px-5 py-3 h-16 justify-between md:max-w-contact w-full shadow-md">
-                <p className="text-black_accent_2 text-lg font-medium">Chat</p>
+            <header className="flex items-center bg-primary rounded-xl px-5 py-5 justify-between md:max-w-contact w-full shadow-md">
+                <p className="text-heading text-lg font-semibold">Chat</p>
 
                 <Button
                     onClick={() => setOpen(true)}

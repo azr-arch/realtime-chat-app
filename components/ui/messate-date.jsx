@@ -11,23 +11,23 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
             {shouldDisplayDate && (
                 <Badge
                     variant="outline"
-                    className="w-fit self-center rounded-md text-[10px] shadow-sm my-2 bg-black text-neutral-300"
+                    className="w-fit self-center rounded-2xl text-[10px] text-accent_1 font-medium px-3 outline-on_white_gray_2 outline outline-[1px] py-2 my-2"
                 >
                     {msgDate.calendar(null, {
                         sameDay: "[Today]",
                         lastDay: "[Yesterday]",
                         lastWeek: "dddd",
-                        sameElse: "L",
+                        sameElse: "D MMMM, YYYY",
                     })}
                 </Badge>
             )}
 
-            {/* Your existing message rendering code here */}
+            {/* Message */}
             <div
-                className={`flex flex-col items-start gap-1 ${
+                className={`flex flex-col items-start gap-1 relative ${
                     msg?.sender?._id?.toString() === session?.user?.sub
-                        ? "self-start items-start"
-                        : "self-end items-end"
+                        ? "self-end items-end"
+                        : "self-start items-start"
                 }`}
             >
                 <div
@@ -36,8 +36,8 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
                     }
                     className={`w-fit ${
                         msg?.sender?._id?.toString() === session?.user?.sub
-                            ? " text-black_accent_2 bg-on_white_gray_2 "
-                            : "self-end items-end text-white bg-orange"
+                            ? "text-white bg-orange   "
+                            : "self-start items-start  text-message bg-on_white_gray_2"
                     } flex flex-col text-sm font-medium  rounded-sm py-2 px-4`}
                 >
                     <p>{msg?.content}</p>
@@ -49,6 +49,8 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
                     </time>
                     <p>{msg?.status}</p>
                 </div>
+
+                <img />
             </div>
         </>
     );

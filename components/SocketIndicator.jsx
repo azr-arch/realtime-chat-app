@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const SocketIndicator = () => {
     const { isConnected } = useSocket();
-    const [isMounted, setIsMounted] = useState(false);
+    const [isMounted, setIsMounted] = useState(false); // for hydration errors
 
     useEffect(() => {
         setIsMounted(true);

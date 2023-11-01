@@ -2,9 +2,8 @@
 
 import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
-import { TYPING_EVENT } from "@utils/socket-events";
-import moment from "moment";
-import { useEffect, useRef, useState } from "react";
+import { TYPING_EVENT } from "@lib/socket-events";
+import { useEffect, useRef } from "react";
 
 import MessageWithDate from "@components/ui/messate-date";
 
@@ -43,9 +42,9 @@ const ChatMessages = ({ session }) => {
     }, [socket]);
 
     return (
-        <div className="grow w-full  flex flex-col items-start  rounded-lg shadow-md h-full max-h-[415px] md:max-h-[550px] bg-secondary_bg p-6">
+        <div className="grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[415px] md:max-h-[570px] bg-primary p-6">
             <div
-                className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2 shadow-inner py-1 relative"
+                className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2  py-1 relative"
                 ref={messagesEndRef}
             >
                 {loading ? (

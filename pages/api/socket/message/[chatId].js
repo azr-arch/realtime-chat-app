@@ -11,6 +11,7 @@ const RECEIVE_MSG_EVENT = "receive-message";
 export default async function handler(req, res) {
     const { chatId } = req.query;
     const { users, content } = JSON.parse(req.body);
+
     try {
         // find if chat exists
         const selectedChat = await Chat.findById(chatId);

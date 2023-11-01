@@ -2,6 +2,7 @@
 
 import { useChat } from "@context/ChatContext";
 import { UserPlus } from "lucide-react";
+import moment from "moment";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
@@ -21,10 +22,10 @@ const ChatList = ({ chats, session }) => {
     if (!isMounted) return null;
     return (
         <>
-            <span className="text-xs text-on_white_gray">All</span>
+            <span className="text-xs text-on_white_gray ml-6 mt-4">All</span>
 
             {chats?.length > 0 &&
-                chats?.map((chat) => {
+                chats?.map((chat, idx) => {
                     const receiver = getReceiver(chat?.participants);
 
                     // Find if a user isnt in contacts but in chats
@@ -36,15 +37,15 @@ const ChatList = ({ chats, session }) => {
                     return (
                         <div
                             key={chat?._id}
-                            className={`flex hover:bg-on_white_gray_2 overflow-hidden
-                        transition-colors ease-in duration-150
+                            className={`flex relative hover:bg-on_white_gray_2 overflow-hidden
+                        transition-colors ease-in duration-150 min-h-[65px]
                         ${
                             currentChat && currentChat._id === chat?._id // Active style
                                 ? "bg-on_white_gray_2"
                                 : ""
                         }
-                        items-center gap-3 py-3 px-5 relative self-stretch
-                        w-full text-black cursor-pointer  rounded-md`}
+                        items-center gap-3 py-3 relative self-stretch
+                        w-full cursor-pointer `}
                             onClick={() => {
                                 if (currentChat && currentChat._id === chat?._id) return;
                                 handleSetCurrChat(chat);
@@ -52,24 +53,36 @@ const ChatList = ({ chats, session }) => {
                         >
                             <Image
                                 src={receiver?.avatar}
-                                width={40}
-                                height={40}
-                                className="rounded-full object-cover"
+                                width={45}
+                                height={45}
+                                className="rounded-full object-cover ml-6 "
+                                alt="user profile"
                             />
 
+                            {/* Last message time */}
+                            <p className="text-[10px] tracking-wide absolute top-2 font-medium right-4 text-accent_2">
+                                {moment(chat?.updatedAt).format("HH:mm A")}
+                            </p>
                             <div className="flex flex-col items-start gap-[3px]">
-                                <p className="text-sm text-black_accent_2 font-medium">
+                                <p className="text-sm text-accent_1 font-medium">
                                     {receiver?.name}
                                 </p>
-                                <p className="text-on_white_gray text-xs font-medium">
+                                <p className="text-accent_2 text-xs font-medium">
                                     {chat?.lastMessage?.content}
                                 </p>
                             </div>
 
                             {/* Add a way to detect not in contact chats! */}
                             {/* {notInContact && (
-                                <UserPlus className="w-4 h-4 ml-auto text-black dark:text-white" />
+                                <button className="ml-auto mr-5 text-black dark:text-white p-2  rounded-full bg-white/90">
+                                    <UserPlus className="w-4 h-4 " />
+                                </button>
                             )} */}
+
+                            {/* Divider effect */}
+                            {idx !== chats.length - 1 && (
+                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-[85%] bg-on_white_gray_2" />
+                            )}
                         </div>
                     );
                 })}

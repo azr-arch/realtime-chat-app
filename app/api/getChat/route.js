@@ -1,12 +1,14 @@
 import Chat from "@models/chat";
-import ChatMessage from "@models/message";
 import User from "@models/user";
-import { ApiResponse } from "@utils";
 import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
 export async function POST(request) {
     const { user } = await getServerSession();
     try {
+        if (!user) {
+            return new NextResponse("Unauthenticated");
+        }
         const { receiverId } = await request.json();
         const currUserId = await User.findOne({ email: user.email }).select("_id");
 
@@ -19,7 +21,7 @@ export async function POST(request) {
         // If chat exists
         if (chat) {
             const chatDetails = await getChatDetails(chat);
-            return ApiResponse(chatDetails, 200);
+            return NextResponse.json({ data: chatDetails }, { status: 200 });
         }
 
         // Else Create a new instance
@@ -28,7 +30,7 @@ export async function POST(request) {
         });
 
         const chatDetails = await getChatDetails(newChatInstance);
-        return ApiResponse(chatDetails, 201);
+        return NextResponse.json({ data: chatDetails }, { status: 200 });
     } catch (error) {
         console.log("[GET_CHAT]", error);
         return new NextResponse(error);

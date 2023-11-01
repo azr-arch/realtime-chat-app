@@ -32,6 +32,7 @@ export const AddModal = ({ isOpen, onClose, onConfirm, loading }) => {
                     <Button
                         disabled={loading}
                         variant="default"
+                        className="bg-orange text-accent_1"
                         onClick={() => onConfirm(inputRef?.current.value)}
                     >
                         Add
