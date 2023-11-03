@@ -15,6 +15,7 @@ const ChatProvider = ({ children }) => {
     const [currentChat, setCurrentChat] = useState("");
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState([]);
+    const { socket } = useSocket();
     // const [contacts, setContacts] = useState([])
 
     const resetUnreadCount = async (id) => {
@@ -25,6 +26,10 @@ const ChatProvider = ({ children }) => {
     };
 
     const handleSetCurrChat = async (data) => {
+        if (socket) {
+            console.log("emitting join event from socekt");
+            socket.emit("JOIN", { data });
+        }
         // setLoading(true);
         setCurrentChat(data);
         // setLoading(false);
@@ -48,7 +53,6 @@ const ChatProvider = ({ children }) => {
         setLoading(true);
         try {
             const res = await fetch(`api/chats/${currentChat._id}/messages`);
-            console.log("res: ", res);
             const { data } = await res.json();
             setMessages([...data]);
         } catch (error) {

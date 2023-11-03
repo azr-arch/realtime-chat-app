@@ -8,9 +8,11 @@ import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 
 import { toast } from "react-hot-toast";
+import { useSocket } from "@context/SocketContext";
 
 const Login = ({ setIsLoginPage }) => {
     const [loading, setLoading] = useState(false);
+    const { socket } = useSocket();
 
     const [formData, setFormData] = useState({
         email: "",
@@ -36,7 +38,6 @@ const Login = ({ setIsLoginPage }) => {
                 toast.error("Invalid credentials");
                 return;
             }
-
             toast.success("Login successfully");
             //if everything goes well
             router.replace("/chat");
@@ -49,7 +50,7 @@ const Login = ({ setIsLoginPage }) => {
     };
 
     return (
-        <section className="max-w-md mx-auto  side-p rounded-3xl border border-solid border-gray px-4 pt-10 pb-[2.69rem]">
+        <section className="max-w-md mx-auto bg-primary mt-[10vh] side-p rounded-3xl border border-solid border-gray px-4 pt-10 pb-[2.69rem] ">
             <h1 className="text-text font-medium text-lg leading-normal mb-7">Login</h1>
             <form onSubmit={handleSubmit}>
                 <div className="grid gap-2">
@@ -92,7 +93,9 @@ const Login = ({ setIsLoginPage }) => {
                             }
                         />
                     </div>
-                    <Button disabled={loading}>{loading ? "Please Wait..." : "Login "}</Button>
+                    <Button disabled={loading} variant="outline" className="text-accent_1">
+                        {loading ? "Please Wait..." : "Login "}
+                    </Button>
                 </div>
             </form>
 
@@ -222,7 +225,7 @@ const Login = ({ setIsLoginPage }) => {
             </div>
             <p className="text-sm text-center leading-normal text-l-gray">
                 Don`t have an account yet?
-                <button onClick={() => setIsLoginPage(false)} className="text-blue">
+                <button onClick={() => setIsLoginPage(false)} className="text-orange ml-2">
                     Register
                 </button>
             </p>

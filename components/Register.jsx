@@ -50,14 +50,10 @@ const Register = ({ setIsLoginPage }) => {
     };
     return (
         <>
-            <section className="h-screen md:max-w-login mx-auto md:h-auto md:max-h-login px-5 md:side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
+            <section className=" mt-[10vh] bg-primary md:max-w-login mx-auto md:h-auto md:max-h-login px-5 md:side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
                 <h1 className="text-text mb-[0.91rem] w-4/5 md:w-auto text-lg font-semibold leading-normal">
-                    Join thousands of learners from around the world
+                    Register
                 </h1>
-                <p className="text-text mb-[2.2rem]">
-                    Master web development by making real-life projects. There are multiple paths
-                    for you to choose
-                </p>
 
                 <form
                     onSubmit={handleSubmit}
@@ -103,7 +99,7 @@ const Register = ({ setIsLoginPage }) => {
                                 }
                             />
                         </div>
-                        <Button disabled={loading}>
+                        <Button disabled={loading} variant="outline" className="text-accent_1">
                             {loading ? "Please Wait..." : "Register "}
                         </Button>
                     </div>
@@ -235,7 +231,7 @@ const Register = ({ setIsLoginPage }) => {
 
                 <p className="text-sm text-center leading-normal text-l-gray">
                     Already a member?{" "}
-                    <button onClick={() => setIsLoginPage(true)} className="text-blue">
+                    <button onClick={() => setIsLoginPage(true)} className="text-orange ml-2">
                         Login
                     </button>
                 </p>

@@ -8,12 +8,15 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "../MessageInput";
 import ChatMessages from "./ChatMessages";
 
-import { RECEIVE_MSG_EVENT } from "@lib/socket-events";
+import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@lib/socket-events";
+
+const TYPING_TIMER_LENGTH = 800; // 500ms
+let typingTimer;
 
 const ChatContainer = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
-    // const [isTyping, setIsTyping] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
 
     const { currentChat, setMessages } = useChat(); // Data of currentChat
     const { socket } = useSocket();
@@ -21,6 +24,11 @@ const ChatContainer = () => {
 
     const sendMessage = async () => {
         if (!message) return;
+
+        // This is part is responsible if user is typing and in less 500ms user sends the message
+        // Then the UI on other user may not be cleared of `typing`. hence this
+        socket.emit(TYPING_EVENT, { chat: currentChat, isTyping: false });
+
         setLoading(true);
 
         // TODD: refactor this part
@@ -53,6 +61,18 @@ const ChatContainer = () => {
 
     const handleChange = (e) => {
         setMessage(e.target.value);
+
+        if (!isTyping) {
+            setIsTyping(true);
+            socket.emit(TYPING_EVENT, { chat: currentChat, isTyping: true });
+        }
+
+        // Clearing timeout to prevent long queues in event loop!
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            setIsTyping(false);
+            socket.emit(TYPING_EVENT, { chat: currentChat, isTyping: false });
+        }, TYPING_TIMER_LENGTH);
     };
 
     useEffect(() => {
@@ -84,7 +104,7 @@ const ChatContainer = () => {
                         />
                     </>
                 ) : (
-                    <div className="w-full self-stretch grow bg-primary shadow-md rounded-md flex items-center justify-center ">
+                    <div className="w-full self-stretch grow bg-primary shadow-xl rounded-md flex items-center justify-center ">
                         Select a chat to talk to
                     </div>
                 )}

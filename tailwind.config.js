@@ -16,9 +16,6 @@ module.exports = {
             },
         },
         extend: {
-            // width: {
-
-            // },
             maxWidth: {
                 login: "29.16444rem",
                 contact: "330px",

@@ -28,7 +28,7 @@ const ProfilePage = ({ data }) => {
     };
 
     return (
-        <div className="flex flex-col items-start space-y-2">
+        <div className="flex flex-col items-center space-y-2 ">
             {/* Image  */}
             <div className="relative w-[150px] h-[150px] bg-pink-200 rounded-full overflow-hidden">
                 <img
@@ -45,7 +45,10 @@ const ProfilePage = ({ data }) => {
             <p className="text-black_accent_2 font-semibold text-lg">{data?.name}</p>
             <p className="text-neutral-500">{data?.email}</p>
 
-            <Button className="font-semibold mt-4" onClick={() => signOut({ callbackUrl: "/" })}>
+            <Button
+                className="font-semibold mt-4 text-accent_1 hover:bg-zinc-300 ring ring-orange"
+                onClick={() => signOut({ callbackUrl: "/" })}
+            >
                 Logout
             </Button>
         </div>

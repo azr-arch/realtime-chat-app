@@ -14,13 +14,13 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
 
     const receiver = getReceiver(selectedChat?.participants);
     return (
-        <header className="w-full sm:hidden md:flex self-stretch  items-center gap-4 px-6 py-4 bg-primary rounded-xl shadow-sm">
+        <header className="w-full sm:hidden md:flex self-stretch  items-center gap-4 px-6 py-4 bg-primary rounded-xl max-h-[80px] shadow-sm">
             <Image
                 src={receiver?.avatar}
-                width={45}
-                height={45}
-                className="rounded-full "
-                // alt="user-profile"
+                width={25}
+                height={25}
+                className="rounded-full w-12 h-12 object-cover object-center"
+                alt="user-profile"
             />
 
             <div className="flex flex-col items-start ">

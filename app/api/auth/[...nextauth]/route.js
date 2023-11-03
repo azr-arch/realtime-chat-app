@@ -97,6 +97,8 @@ const handler = NextAuth({
                             password: hashedPassword,
                         });
                     }
+
+                    return userExists._id;
                 } catch (error) {
                     console.error("Error checking if user exists: ", error.message);
                 }

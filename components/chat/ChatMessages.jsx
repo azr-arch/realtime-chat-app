@@ -3,13 +3,16 @@
 import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
 import { TYPING_EVENT } from "@lib/socket-events";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import MessageWithDate from "@components/ui/messate-date";
+import useDebounce from "@hooks/use-debounce";
 
 const ChatMessages = ({ session }) => {
     const { socket } = useSocket();
     const { messages, loading } = useChat();
+    const [otherPersonTyping, setOtherPersonTyping] = useState(false);
+    const debouncedIsTyping = useDebounce(otherPersonTyping, 500);
 
     const messagesEndRef = useRef(null);
 
@@ -26,20 +29,15 @@ const ChatMessages = ({ session }) => {
     // Receiving typing event
     useEffect(() => {
         if (socket) {
-            console.log("receiving typing event");
-            socket.on("recieve", (data) => {
-                console.log("typing status ", data);
-
-                // // Remove typing status after 2 seconds
-                // setTimeout(() => {
-                //     setIsTyping(false);
-                // }, 2000);
+            socket.on(TYPING_EVENT, (data) => {
+                // console.log("received typing data from: ", data);
+                setOtherPersonTyping(data.isTyping);
             });
         }
         return () => {
             socket?.off(TYPING_EVENT);
         };
-    }, [socket]);
+    }, []);
 
     return (
         <div className="grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[415px] md:max-h-[570px] bg-primary p-6">
@@ -64,6 +62,8 @@ const ChatMessages = ({ session }) => {
                     })
                 )}
             </div>
+
+            {debouncedIsTyping && <p className="text-xs text-black">typing...</p>}
         </div>
     );
 };

@@ -20,8 +20,8 @@ const RootLayout = ({ children }) => {
             <body
                 className={`min-h-screen transition-colors duration-150 ease-linear ${inter.className}}`}
             >
-                <Provider>
-                    <SocketProvider>
+                <SocketProvider>
+                    <Provider>
                         <ChatProvider>
                             <ToasterProvider />
                             <SocketIndicator />
@@ -29,8 +29,8 @@ const RootLayout = ({ children }) => {
                                 {children}
                             </main>
                         </ChatProvider>
-                    </SocketProvider>
-                </Provider>
+                    </Provider>
+                </SocketProvider>
             </body>
         </html>
     );

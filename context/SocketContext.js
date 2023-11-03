@@ -15,16 +15,17 @@ export const SocketProvider = ({ children }) => {
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        const socketInstance = new ClientIO(process.env.NEXT_PUBLIC_URL, {
+        const socketInstance = new ClientIO({
             path: "/api/socket/io",
-            addTrailingSlash: false,
         });
 
         socketInstance.on("connect", () => {
+            console.log("client socket connected.");
             setIsConnected(true);
         });
 
         socketInstance.on("disconnect", () => {
+            console.log("client socket disconnected.");
             setIsConnected(false);
         });
 

@@ -64,8 +64,8 @@ const Contacts = () => {
                     <ContactList contacts={contacts} />
                 </div>
 
-                {/* <div className="effect-bottom absolute bottom-0 left-0 w-full h-[20%]" /> */}
-                <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent rounded-b-xl" />
+                {/* For masking effect */}
+                <div className="absolute inset-x-0 bottom-0 h-20  bg-gradient-to-t from-white to-transparent rounded-b-xl" />
             </div>
         </div>
     );

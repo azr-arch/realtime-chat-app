@@ -55,7 +55,7 @@ const ChatList = ({ chats, session }) => {
                                 src={receiver?.avatar}
                                 width={45}
                                 height={45}
-                                className="rounded-full object-cover ml-6 "
+                                className="rounded-full w-11 h-11 object-cover ml-6 "
                                 alt="user profile"
                             />
 

@@ -18,8 +18,6 @@ const page = () => {
         }
     }, [status]);
 
-    console.log(status);
-
     if (status === "loading") {
         return <h1 className="text-text">Please wait...</h1>;
     }

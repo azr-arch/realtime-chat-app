@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +8,10 @@ html,
 body,
 :root {
     height: 100%;
+}
+
+html {
+    font-family: "Manrope", sans-serif;
 }
 
 @layer base {
@@ -70,9 +76,7 @@ body,
         --input: 0 0% 14.9%;
         --ring: 0 0% 83.1%;
     }
-}
 
-@layer base {
     * {
         @apply border-border;
     }
