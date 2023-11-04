@@ -38,7 +38,7 @@ const ContactHeader = ({ currUser }) => {
             // setLoading(false)
             toast.success("Contact added successfully.");
             setOpen(false);
-            window.location.reload();
+            router.refresh();
             return;
         } catch (error) {
             console.log("error occured: ", error);
@@ -57,12 +57,12 @@ const ContactHeader = ({ currUser }) => {
                 onConfirm={handleAddContact}
             />
             <header className="flex items-center bg-primary rounded-xl px-5 py-5 justify-between md:max-w-contact w-full shadow-md">
-                <p className="text-heading text-lg font-semibold">Chat</p>
+                <p className="text-heading text-lg font-semibold ml-10 sm:ml-0">Chat</p>
 
                 <Button
                     onClick={() => setOpen(true)}
                     size="icon"
-                    className="bg-orange rounded-full"
+                    className="bg-orange rounded-full hover:text-accent_1 hover:ring-orange hover:ring-1"
                 >
                     <Plus className="w-4 h-4" />
                 </Button>

@@ -24,7 +24,7 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
 
             {/* Message */}
             <div
-                className={`flex flex-col items-start gap-1 relative ${
+                className={`flex flex-col items-start w-11/12 gap-1 relative ${
                     msg?.sender?._id?.toString() === session?.user?.sub
                         ? "self-end items-end"
                         : "self-start items-start"

@@ -25,7 +25,7 @@ const RootLayout = ({ children }) => {
                         <ChatProvider>
                             <ToasterProvider />
                             <SocketIndicator />
-                            <main className="relative h-screen flex-center p-8 bg-main">
+                            <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
                                 {children}
                             </main>
                         </ChatProvider>

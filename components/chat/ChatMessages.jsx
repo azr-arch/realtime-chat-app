@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import MessageWithDate from "@components/ui/messate-date";
 import useDebounce from "@hooks/use-debounce";
+import TypingEffect from "@components/ui/typing-status";
 
 const ChatMessages = ({ session }) => {
     const { socket } = useSocket();
@@ -40,7 +41,7 @@ const ChatMessages = ({ session }) => {
     }, []);
 
     return (
-        <div className="grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[415px] md:max-h-[570px] bg-primary p-6">
+        <div className="grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[350px] md:max-h-[570px] bg-primary p-6">
             <div
                 className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2  py-1 relative"
                 ref={messagesEndRef}
@@ -63,7 +64,7 @@ const ChatMessages = ({ session }) => {
                 )}
             </div>
 
-            {debouncedIsTyping && <p className="text-xs text-black">typing...</p>}
+            {debouncedIsTyping && <TypingEffect />}
         </div>
     );
 };

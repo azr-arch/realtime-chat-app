@@ -55,7 +55,7 @@ const ChatList = ({ chats, session }) => {
                                 src={receiver?.avatar}
                                 width={45}
                                 height={45}
-                                className="rounded-full w-11 h-11 object-cover ml-6 "
+                                className="rounded-full aspect-square w-11 h-11 object-cover ml-6 "
                                 alt="user profile"
                             />
 
@@ -63,11 +63,11 @@ const ChatList = ({ chats, session }) => {
                             <p className="text-[10px] tracking-wide absolute top-2 font-medium right-4 text-accent_2">
                                 {moment(chat?.updatedAt).format("HH:mm A")}
                             </p>
-                            <div className="flex flex-col items-start gap-[3px]">
+                            <div className="flex flex-col items-start gap-[3px] truncate">
                                 <p className="text-sm text-accent_1 font-medium">
                                     {receiver?.name}
                                 </p>
-                                <p className="text-accent_2 text-xs font-medium">
+                                <p className="text-accent_2 text-xs font-medium truncate w-full">
                                     {chat?.lastMessage?.content}
                                 </p>
                             </div>

@@ -23,8 +23,8 @@ const Login = ({ setIsLoginPage }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
         if (!formData.email || !formData.password) return;
+        setLoading(true);
 
         try {
             const res = await signIn("credentials", {
@@ -51,7 +51,7 @@ const Login = ({ setIsLoginPage }) => {
 
     return (
         <section className="max-w-md mx-auto bg-primary mt-[10vh] side-p rounded-3xl border border-solid border-gray px-4 pt-10 pb-[2.69rem] ">
-            <h1 className="text-text font-medium text-lg leading-normal mb-7">Login</h1>
+            <h1 className="text-text font-bold text-lg leading-normal mb-7">Login</h1>
             <form onSubmit={handleSubmit}>
                 <div className="grid gap-2">
                     <div className="grid gap-1">
@@ -99,7 +99,7 @@ const Login = ({ setIsLoginPage }) => {
                 </div>
             </form>
 
-            <p className="text-l-gray mt-4 text-sm text-center leading-normal mb-6">
+            {/* <p className="text-l-gray mt-4 text-sm text-center leading-normal mb-6">
                 or continue with these social profile
             </p>
 
@@ -222,8 +222,8 @@ const Login = ({ setIsLoginPage }) => {
                         </defs>
                     </svg>
                 </span>
-            </div>
-            <p className="text-sm text-center leading-normal text-l-gray">
+            </div> */}
+            <p className="text-sm text-center leading-normal text-l-gray mt-8">
                 Don`t have an account yet?
                 <button onClick={() => setIsLoginPage(false)} className="text-orange ml-2">
                     Register

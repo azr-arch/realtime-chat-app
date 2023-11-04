@@ -43,7 +43,7 @@ const Register = ({ setIsLoginPage }) => {
             throw new Error(data.message);
         } catch (err) {
             console.log("an error occured while registering user! ", err);
-            toast.error(err.message | "Something went wrong");
+            toast.error(err.message);
         } finally {
             setLoading(false);
         }
@@ -51,9 +51,7 @@ const Register = ({ setIsLoginPage }) => {
     return (
         <>
             <section className=" mt-[10vh] bg-primary md:max-w-login mx-auto md:h-auto md:max-h-login px-5 md:side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
-                <h1 className="text-text mb-[0.91rem] w-4/5 md:w-auto text-lg font-semibold leading-normal">
-                    Register
-                </h1>
+                <h1 className="font-bold w-4/5 md:w-auto text-lg  leading-normal mb-7">Register</h1>
 
                 <form
                     onSubmit={handleSubmit}
@@ -105,7 +103,7 @@ const Register = ({ setIsLoginPage }) => {
                     </div>
                 </form>
 
-                <p className="text-l-gray text-sm text-center leading-normal mb-6">
+                {/* <p className="text-l-gray text-sm text-center leading-normal mb-6">
                     or continue with these social profile
                 </p>
 
@@ -227,9 +225,9 @@ const Register = ({ setIsLoginPage }) => {
                             </defs>
                         </svg>
                     </span>
-                </div>
+                </div> */}
 
-                <p className="text-sm text-center leading-normal text-l-gray">
+                <p className="text-sm text-center leading-normal text-l-gray mt-8">
                     Already a member?{" "}
                     <button onClick={() => setIsLoginPage(true)} className="text-orange ml-2">
                         Login
