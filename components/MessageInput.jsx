@@ -46,7 +46,7 @@ const MessageInput = ({ value, onChange, onSubmit, loading }) => {
                 disabled={loading}
                 // style={loading && { opacity: 0.4 }}
                 onClick={handleSubmit}
-                className={`bg-orange rounded-lg ml-auto hover:text-white p-4 shadow-md ${
+                className={`transition bg-orange rounded-lg ml-auto hover:bg-black hover:text-orange p-4 shadow-md ${
                     loading ? "opacity-60" : ""
                 }`}
             >

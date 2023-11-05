@@ -24,6 +24,7 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
 
             {/* Message */}
             <div
+                id={`message-${msg?._id}`}
                 className={`flex flex-col items-start w-11/12 gap-1 relative ${
                     msg?.sender?._id?.toString() === session?.user?.sub
                         ? "self-end items-end"
@@ -47,7 +48,7 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
                     <time className=" text-on_white_gray font-semibold ">
                         {moment(msg?.updatedAt).format("HH:mm A")}
                     </time>
-                    <p>{msg?.status}</p>
+                    <p className="text-black text-sm font-medium">{msg?.status}</p>
                 </div>
 
                 <img />

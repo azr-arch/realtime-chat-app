@@ -13,6 +13,9 @@ const chatMessageSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "Chat",
         },
+        status: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

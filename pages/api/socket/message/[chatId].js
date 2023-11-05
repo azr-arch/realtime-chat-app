@@ -24,6 +24,7 @@ export default async function handler(req, res) {
             sender: users.senderId,
             content: content,
             chat: chatId,
+            status: "sent",
         });
 
         // Update last message in Chat
@@ -72,7 +73,6 @@ export default async function handler(req, res) {
         ]);
 
         let receivedMessage = messages[0];
-        receivedMessage.status = "sent";
 
         chat.participants.forEach((participantObjectId) => {
             if (participantObjectId.toString() === users.senderId) return;

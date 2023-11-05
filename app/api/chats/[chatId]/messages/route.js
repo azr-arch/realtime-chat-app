@@ -68,3 +68,43 @@ export async function GET(request, { params }) {
         return new NextResponse("Internal Server Error");
     }
 }
+
+export async function DELETE(request, { params }) {
+    try {
+        await connectToDB();
+
+        const { user } = await getServerSession();
+        const { chatId } = params;
+
+        if (!user) {
+            return new NextResponse("Unauthenticated");
+        }
+        const userId = await User.findOne({ email: user.email }).select("_id");
+
+        const selectedChat = await Chat.findById(chatId);
+
+        if (!selectedChat) {
+            return NextResponse.json({ error: "No Chat exists" }, { status: 404 });
+        }
+
+        const userIsPartOfChat = selectedChat.participants.some(
+            (id) => String(id) === String(userId._id)
+        );
+
+        if (!userIsPartOfChat) {
+            return new NextResponse("Unauthorized");
+        }
+
+        const [_, newChat] = await Promise.all([
+            ChatMessage.deleteMany({ chat: chatId }),
+            Chat.findByIdAndUpdate(chatId, { lastMessage: null }, { returnDocument: "after" }),
+        ]);
+
+        await newChat.populate({ path: "participants", select: "-password -contacts" });
+
+        return NextResponse.json({ newChat }, { status: 201 });
+    } catch (error) {
+        console.log("[DELETE_MESSAGES]", error);
+        return new NextResponse("Internal Server Error");
+    }
+}

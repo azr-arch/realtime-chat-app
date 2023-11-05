@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { AddModal } from "../modals/add-modal";
+// import { AddModal } from "../modals/add-modal";
+import { AddModal } from "@components/modals/add-modal";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,15 +28,18 @@ const ContactHeader = ({ currUser }) => {
         setLoading(true);
 
         try {
-            await fetch("api/addContact", {
+            const res = await fetch("api/addContact", {
                 method: "POST",
                 body: JSON.stringify({
                     currUser: currUser?.email,
                     personToAdd: contactToAdd,
                 }),
             });
-
-            // setLoading(false)
+            const data = await res.json();
+            if (data.error) {
+                toast.error("User does'nt exists.");
+                return;
+            }
             toast.success("Contact added successfully.");
             setOpen(false);
             router.refresh();

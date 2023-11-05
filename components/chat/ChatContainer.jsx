@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@context/ChatContext";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSocket } from "@context/SocketContext";
 import { useSession } from "next-auth/react";
 import ChatHeader from "./ChatHeader";
@@ -9,6 +9,7 @@ import MessageInput from "../MessageInput";
 import ChatMessages from "./ChatMessages";
 
 import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@lib/socket-events";
+import useTabActive from "@hooks/useTabActive";
 
 const TYPING_TIMER_LENGTH = 800; // 500ms
 let typingTimer;
@@ -18,9 +19,11 @@ const ChatContainer = () => {
     const [loading, setLoading] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
 
-    const { currentChat, setMessages } = useChat(); // Data of currentChat
+    const { currentChat, setMessages, messages } = useChat(); // Data of currentChat
     const { socket } = useSocket();
     const { data: session } = useSession();
+
+    const isTabVisible = useTabActive();
 
     const sendMessage = async () => {
         if (!message) return;
@@ -75,6 +78,41 @@ const ChatContainer = () => {
         }, TYPING_TIMER_LENGTH);
     };
 
+    const memoizedMessages = useMemo(() => {
+        return messages;
+    }, [currentChat, messages]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const messageId = entry.target.getAttribute("id").split("-")[1];
+                        console.log("sending seen_message event");
+                        socket.emit("SEEN_MESSAGE", { messageId, chatId: currentChat?._id });
+                    }
+                });
+            },
+            {
+                threshold: 0.5,
+            }
+        );
+
+        memoizedMessages.forEach((msg) => {
+            if (msg.status === "seen") return;
+
+            const messageElement = document.getElementById(`message-${msg._id}`);
+            if (messageElement && isTabVisible) {
+                observer.observe(messageElement);
+            }
+        });
+
+        return () => {
+            observer.disconnect();
+            socket?.off("SEEN_MESSAGE");
+        };
+    }, [memoizedMessages, isTabVisible]);
+
     useEffect(() => {
         if (!socket) return;
 
@@ -82,7 +120,7 @@ const ChatContainer = () => {
             setMessages((prev) => [...prev, msg]);
         });
         return () => {
-            socket.off(RECEIVE_MSG_EVENT);
+            socket?.off(RECEIVE_MSG_EVENT);
         };
     }, [socket]);
 

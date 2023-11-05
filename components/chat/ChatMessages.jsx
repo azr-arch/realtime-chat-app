@@ -3,7 +3,7 @@
 import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
 import { TYPING_EVENT } from "@lib/socket-events";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import MessageWithDate from "@components/ui/messate-date";
 import useDebounce from "@hooks/use-debounce";
@@ -23,6 +23,16 @@ const ChatMessages = ({ session }) => {
         }
     };
 
+    const updateMessages = (updatedMsg) => {
+        messages.map((msg) => {
+            if (msg._id === updatedMsg._id) {
+                msg.status = "seen";
+            }
+
+            return msg;
+        });
+    };
+
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
@@ -31,12 +41,19 @@ const ChatMessages = ({ session }) => {
     useEffect(() => {
         if (socket) {
             socket.on(TYPING_EVENT, (data) => {
-                // console.log("received typing data from: ", data);
                 setOtherPersonTyping(data.isTyping);
+            });
+
+            socket.on("SEEN_MESSAGE_UPDATE", ({ updatedMsg }) => {
+                console.log("seen message update event");
+                if (updatedMsg) {
+                    updateMessages(updatedMsg);
+                }
             });
         }
         return () => {
             socket?.off(TYPING_EVENT);
+            socket?.off("SEEN_MESSAGE_UPDATE");
         };
     }, []);
 
