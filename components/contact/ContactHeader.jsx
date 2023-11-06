@@ -37,17 +37,19 @@ const ContactHeader = ({ currUser }) => {
                     personToAdd: contactToAdd,
                 }),
             });
-            const data = await res.json();
-            if (data.error) {
-                toast.error("User does'nt exists.");
+
+            const { data, error } = await res.json();
+
+            if (error) {
+                toast.error(error);
                 return;
             }
 
-            if (!data.newContact) {
-                toast.error("Something went wrong!");
-                return;
+            if (!data) {
+                toast.error("Something went wrong.");
             }
-            setContacts((prev) => [...prev, data.newContact]);
+
+            setContacts((prev) => [...prev, data]);
             toast.success("Contact added successfully.");
             setOpen(false);
             router.refresh();

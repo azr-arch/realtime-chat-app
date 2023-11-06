@@ -135,8 +135,6 @@ const ChatContainer = () => {
         };
     }, [socket, currentChat]);
 
-    console.log("render");
-
     return (
         <div className="w-full min-w-[342px] h-full self-stretch flex flex-col items-start gap-2  ">
             <>
