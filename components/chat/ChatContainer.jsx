@@ -45,15 +45,23 @@ const ChatContainer = () => {
             });
 
         try {
-            await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/${currentChat._id}`, {
-                // Making request to pages/api Route handler
-                method: "POST",
-                body: JSON.stringify({
-                    users: { senderId, receiverId: receiverId[0] },
-                    content: message,
-                    status: "pending",
-                }),
+            const sendMsg = {
+                chatId: currentChat?._id,
+                users: { senderId, receiverId: receiverId[0] },
+                content: message,
+                status: "pending",
+            };
+
+            const sentMsg = await new Promise((resolve, reject) => {
+                // Timeout works as waiting period till the acknowledgement is received from server
+                // In simple it will wait 30s until throwing an error
+                socket.timeout(30000).emit("SEND_MESSAGE", sendMsg, (err, sentMsg) => {
+                    if (err) reject(err);
+                    else resolve(sentMsg);
+                });
             });
+
+            setMessages((prev) => [...prev, sentMsg]);
             setMessage("");
         } catch (error) {
             console.log(error);
@@ -88,7 +96,6 @@ const ChatContainer = () => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const messageId = entry.target.getAttribute("id").split("-")[1];
-                        console.log("sending seen_message event");
                         socket.emit("SEEN_MESSAGE", { messageId, chatId: currentChat?._id });
                     }
                 });
@@ -99,11 +106,13 @@ const ChatContainer = () => {
         );
 
         memoizedMessages.forEach((msg) => {
-            if (msg.status === "seen") return;
+            if (msg.status === "seen" || msg.sender._id === session?.user?.sub) return;
 
             const messageElement = document.getElementById(`message-${msg._id}`);
             if (messageElement && isTabVisible) {
                 observer.observe(messageElement);
+                // Set the message status to seen
+                msg.status = "seen";
             }
         });
 
@@ -117,12 +126,16 @@ const ChatContainer = () => {
         if (!socket) return;
 
         socket.on(RECEIVE_MSG_EVENT, (msg) => {
-            setMessages((prev) => [...prev, msg]);
+            if (msg.chat === currentChat?._id) {
+                setMessages((prev) => [...prev, msg]);
+            }
         });
         return () => {
             socket?.off(RECEIVE_MSG_EVENT);
         };
-    }, [socket]);
+    }, [socket, currentChat]);
+
+    console.log("render");
 
     return (
         <div className="w-full min-w-[342px] h-full self-stretch flex flex-col items-start gap-2  ">

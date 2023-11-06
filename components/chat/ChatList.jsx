@@ -6,9 +6,9 @@ import moment from "moment";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-const ChatList = ({ chats, session }) => {
+const ChatList = ({ session }) => {
     const [isMounted, setIsMounted] = useState(false);
-    const { currentChat, handleSetCurrChat } = useChat();
+    const { currentChat, handleSetCurrChat, chats } = useChat();
 
     function getReceiver(item) {
         const receiver = item.filter((itm) => itm.email !== session?.user.email);

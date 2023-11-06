@@ -15,6 +15,8 @@ const ChatProvider = ({ children }) => {
     const [currentChat, setCurrentChat] = useState("");
     const [loading, setLoading] = useState(false);
     const [messages, setMessages] = useState([]);
+    const [chats, setChats] = useState([]);
+    const [contacts, setContacts] = useState([]);
     const { socket } = useSocket();
     // const [contacts, setContacts] = useState([])
 
@@ -42,8 +44,9 @@ const ChatProvider = ({ children }) => {
                 body: JSON.stringify({ receiverId }),
             });
 
-            const { data } = await res.json(); // toDo store it in localstorage
+            const { data } = await res.json();
             handleSetCurrChat(data[0]);
+            setChats((prev) => [...prev, data[0]]);
         } catch (error) {
             console.log(error);
         }
@@ -62,11 +65,34 @@ const ChatProvider = ({ children }) => {
         }
     };
 
+    async function getData(url) {
+        if (!url) return;
+        try {
+            const res = await fetch(url);
+            return await res.json();
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
     useEffect(() => {
         if (currentChat) {
             fetchMessages();
         }
     }, [currentChat]);
+
+    useEffect(() => {
+        (async () => {
+            const [chatsData, contactsData] = await Promise.all([
+                getData("/api/chats"),
+                getData("/api/contacts"),
+            ]);
+
+            setChats(chatsData?.chats);
+            setContacts(contactsData?.contacts);
+        })();
+    }, []);
 
     return (
         <ChatContext.Provider
@@ -78,6 +104,10 @@ const ChatProvider = ({ children }) => {
                 resetUnreadCount,
                 messages,
                 setMessages,
+                contacts,
+                chats,
+                setContacts,
+                setChats,
             }}
         >
             {children}

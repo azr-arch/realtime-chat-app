@@ -27,7 +27,7 @@ const useTabActive = () => {
             window.removeEventListener("focus", handleBrowserVisibilityChange);
             window.removeEventListener("blur", handleBrowserVisibilityChange);
         };
-    }, [document, browserVisible]);
+    }, []);
 
     return documentVisible === "visible" && browserVisible;
 };

@@ -1,52 +1,12 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import ContactHeader from "./ContactHeader";
 import ContactList from "./contact-list";
 import ChatList from "../chat/ChatList";
 
 const Contacts = () => {
     const { data: session } = useSession();
-
-    const [contacts, setContacts] = useState([]);
-    const [chats, setChats] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    async function getContacts() {
-        const url = `/api/contacts`;
-        try {
-            const res = await fetch(url);
-            return await res.json();
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-    }
-
-    async function getChats() {
-        const url = `/api/chats`;
-        try {
-            const res = await fetch(url);
-            return await res.json();
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-    }
-
-    const helperFetch = async () => {
-        const [chatsData, contactsData] = await Promise.all([getChats(), getContacts()]);
-
-        setChats(chatsData?.chats);
-        setContacts(contactsData?.contacts);
-    };
-
-    useEffect(() => {
-        // setLoading(true);
-        helperFetch();
-        // setLoading(false);
-    }, []);
 
     return (
         <div className="flex flex-col items-start gap-2 self-stretch w-full  md:max-w-contact">
@@ -64,8 +24,8 @@ const Contacts = () => {
                     md:max-w-contact overflow-y-scroll bg-primary 
                     gap-3 shadow-md rounded-xl"
                 >
-                    <ChatList chats={chats} session={session} />
-                    <ContactList contacts={contacts} />
+                    <ChatList session={session} />
+                    <ContactList />
                     {/* For providing space at bottom  */}
                     <div className="w-full h-[50px]"></div>
                 </div>

@@ -3,9 +3,9 @@
 import { useChat } from "@context/ChatContext";
 import { useEffect, useState } from "react";
 
-const ContactList = ({ contacts }) => {
+const ContactList = () => {
     const [isMounted, setIsMounted] = useState(false);
-    const { getChat } = useChat();
+    const { getChat, contacts } = useChat();
 
     useEffect(() => {
         setIsMounted(true);
@@ -31,7 +31,7 @@ const ContactList = ({ contacts }) => {
                             src={contact?.avatar}
                             width={40}
                             height={40}
-                            className="rounded-full"
+                            className="rounded-full aspect-square object-cover"
                         />
 
                         <div className="flex flex-col items-start gap-[3px]">

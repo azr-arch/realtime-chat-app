@@ -8,10 +8,12 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { toast } from "react-hot-toast";
+import { useChat } from "@context/ChatContext";
 
 const ContactHeader = ({ currUser }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const { setContacts } = useChat();
 
     const router = useRouter();
 
@@ -40,10 +42,15 @@ const ContactHeader = ({ currUser }) => {
                 toast.error("User does'nt exists.");
                 return;
             }
+
+            if (!data.newContact) {
+                toast.error("Something went wrong!");
+                return;
+            }
+            setContacts((prev) => [...prev, data.newContact]);
             toast.success("Contact added successfully.");
             setOpen(false);
             router.refresh();
-            return;
         } catch (error) {
             console.log("error occured: ", error);
             toast.error(error.message | "Something went wrong.");

@@ -28,7 +28,7 @@ export async function POST(request) {
         // Update the currUser Contact document
         await addToContactList(currUser, newContact);
 
-        return NextResponse.json({ data: newContact }, { status: 200 });
+        return NextResponse.json({ newContact }, { status: 200 });
     } catch (error) {
         console.log("[ADD_CONTACT]", error);
         return NextResponse.json({ error: "An error occurred." }, { status: 500 });

@@ -35,7 +35,7 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
             console.log(newChat);
             handleSetCurrChat(newChat);
 
-            toast.success("Chat cleared successfully! All messages have been removed.");
+            toast.success("Chat cleared!");
             router.refresh();
         } catch (error) {
             console.log(error);

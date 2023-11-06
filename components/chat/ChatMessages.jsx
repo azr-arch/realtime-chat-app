@@ -11,7 +11,7 @@ import TypingEffect from "@components/ui/typing-status";
 
 const ChatMessages = ({ session }) => {
     const { socket } = useSocket();
-    const { messages, loading } = useChat();
+    const { messages, loading, setMessages } = useChat();
     const [otherPersonTyping, setOtherPersonTyping] = useState(false);
     const debouncedIsTyping = useDebounce(otherPersonTyping, 500);
 
@@ -24,12 +24,14 @@ const ChatMessages = ({ session }) => {
     };
 
     const updateMessages = (updatedMsg) => {
-        messages.map((msg) => {
-            if (msg._id === updatedMsg._id) {
-                msg.status = "seen";
-            }
+        setMessages((prev) => {
+            return prev.map((msg) => {
+                if (msg._id === updatedMsg._id) {
+                    msg.status = "seen";
+                }
 
-            return msg;
+                return msg;
+            });
         });
     };
 
@@ -45,7 +47,7 @@ const ChatMessages = ({ session }) => {
             });
 
             socket.on("SEEN_MESSAGE_UPDATE", ({ updatedMsg }) => {
-                console.log("seen message update event");
+                console.log("seen message update event", updatedMsg);
                 if (updatedMsg) {
                     updateMessages(updatedMsg);
                 }
@@ -55,7 +57,7 @@ const ChatMessages = ({ session }) => {
             socket?.off(TYPING_EVENT);
             socket?.off("SEEN_MESSAGE_UPDATE");
         };
-    }, []);
+    }, [socket]);
 
     return (
         <div className="grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[350px] md:max-h-[570px] bg-primary p-6">

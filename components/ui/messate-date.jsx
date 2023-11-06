@@ -1,11 +1,13 @@
 import moment from "moment";
 import { Badge } from "./badge";
+import { Check, CheckCheck } from "lucide-react";
 
 const MessageWithDate = ({ msg, prevMsg, session }) => {
     const msgDate = moment(msg?.updatedAt);
     const prevMsgDate = prevMsg ? moment(prevMsg?.updatedAt) : null;
     const shouldDisplayDate = !prevMsgDate || !msgDate.isSame(prevMsgDate, "day");
 
+    const isSender = session?.user?.sub === msg?.sender?._id;
     return (
         <>
             {shouldDisplayDate && (
@@ -26,17 +28,13 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
             <div
                 id={`message-${msg?._id}`}
                 className={`flex flex-col items-start w-11/12 gap-1 relative ${
-                    msg?.sender?._id?.toString() === session?.user?.sub
-                        ? "self-end items-end"
-                        : "self-start items-start"
+                    isSender ? "self-end items-end" : "self-start items-start"
                 }`}
             >
                 <div
-                    data-sender={
-                        msg?.sender?._id?.toString() === session?.user?.sub ? "self" : "other"
-                    }
+                    data-sender={isSender ? "self" : "other"}
                     className={`w-fit ${
-                        msg?.sender?._id?.toString() === session?.user?.sub
+                        isSender
                             ? "text-white bg-orange   "
                             : "self-start items-start  text-message bg-on_white_gray_2"
                     } flex flex-col text-sm font-medium  rounded-sm py-2 px-4`}
@@ -48,10 +46,16 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
                     <time className=" text-on_white_gray font-semibold ">
                         {moment(msg?.updatedAt).format("HH:mm A")}
                     </time>
-                    <p className="text-black text-sm font-medium">{msg?.status}</p>
+                    {isSender && (
+                        <p className="text-black text-sm font-medium">
+                            {msg?.status === "sent" ? (
+                                <Check className="w-3 h-3 text-accent_1" />
+                            ) : (
+                                <CheckCheck className="w-3 h-3 text-accent_1" />
+                            )}
+                        </p>
+                    )}
                 </div>
-
-                <img />
             </div>
         </>
     );
