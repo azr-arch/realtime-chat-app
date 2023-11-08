@@ -63,13 +63,29 @@ const ChatList = ({ session }) => {
                             <p className="text-[10px] tracking-wide absolute top-2 font-medium right-4 text-accent_2">
                                 {moment(chat?.updatedAt).format("HH:mm A")}
                             </p>
+
+                            {/* Unread count */}
+                            {chat?.unread > 0 &&
+                                chat?.lastMessage?.sender?.email !== session?.user?.email && (
+                                    <span
+                                        className="absolute top-1/2 -translate-y-1/2 
+                                                    flex items-center justify-center w-4 h-4 
+                                                    rounded-full right-4 text-[10px] 
+                                                    font-bold bg-orange text-white"
+                                    >
+                                        {chat?.unread}
+                                    </span>
+                                )}
+
                             <div className="flex flex-col items-start gap-[3px] truncate">
                                 <p className="text-sm text-accent_1 font-medium">
                                     {receiver?.name}
                                 </p>
-                                <p className="text-accent_2 text-xs font-medium truncate w-full">
-                                    {chat?.lastMessage?.content}
-                                </p>
+                                {currentChat?._id !== chat?._id && (
+                                    <p className="text-accent_2 text-xs font-medium truncate w-full">
+                                        {chat?.lastMessage?.content}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Add a way to detect not in contact chats! */}

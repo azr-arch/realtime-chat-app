@@ -13,7 +13,7 @@ import { useChat } from "@context/ChatContext";
 const ContactHeader = ({ currUser }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const { setContacts } = useChat();
+    const { setContacts, contacts } = useChat();
 
     const router = useRouter();
 
@@ -49,7 +49,8 @@ const ContactHeader = ({ currUser }) => {
                 toast.error("Something went wrong.");
             }
 
-            setContacts((prev) => [...prev, data]);
+            // setContacts((prev) => [...prev, data]);
+            setContacts([...contacts, data]);
             toast.success("Contact added successfully.");
             setOpen(false);
             router.refresh();

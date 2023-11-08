@@ -19,7 +19,7 @@ const ChatContainer = () => {
     const [loading, setLoading] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
 
-    const { currentChat, setMessages, messages } = useChat(); // Data of currentChat
+    const { currentChat, setMessages, messages, resetUnreadCount } = useChat(); // Data of currentChat
     const { socket } = useSocket();
     const { data: session } = useSession();
 
@@ -61,7 +61,8 @@ const ChatContainer = () => {
                 });
             });
 
-            setMessages((prev) => [...prev, sentMsg]);
+            // setMessages((prev) => [...prev, sentMsg]);
+            setMessages([...messages, sentMsg]);
             setMessage("");
         } catch (error) {
             console.log(error);
@@ -97,6 +98,11 @@ const ChatContainer = () => {
                     if (entry.isIntersecting) {
                         const messageId = entry.target.getAttribute("id").split("-")[1];
                         socket.emit("SEEN_MESSAGE", { messageId, chatId: currentChat?._id });
+                        console.log("seen message", currentChat, messageId);
+                        if (currentChat?.unread > 0) {
+                            console.log("Resetting unread for: ", currentChat);
+                            resetUnreadCount(currentChat?._id);
+                        }
                     }
                 });
             },
@@ -127,13 +133,14 @@ const ChatContainer = () => {
 
         socket.on(RECEIVE_MSG_EVENT, (msg) => {
             if (msg.chat === currentChat?._id) {
-                setMessages((prev) => [...prev, msg]);
+                // setMessages((prev) => [...prev, msg]);
+                setMessages([...messages, msg]);
             }
         });
         return () => {
             socket?.off(RECEIVE_MSG_EVENT);
         };
-    }, [socket, currentChat]);
+    }, [socket, currentChat, messages]);
 
     return (
         <div className="w-full min-w-[342px] h-full self-stretch flex flex-col items-start gap-2  ">

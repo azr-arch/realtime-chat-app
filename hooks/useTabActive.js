@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 
 const useTabActive = () => {
-    const [documentVisible, setDocumentVisible] = useState(document.visibilityState);
-    const [browserVisible, setBrowserVisible] = useState(document.hasFocus());
+    const [documentVisible, setDocumentVisible] = useState(
+        typeof document === "undefined" ? "visible" : document.visibilityState
+    );
+    const [browserVisible, setBrowserVisible] = useState(
+        typeof document === "undefined" ? true : document.hasFocus()
+    );
 
     useEffect(() => {
         const handleVisibilityChange = () => {

@@ -1,40 +1,55 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useReducer } from "react";
 import { useSocket } from "../context/SocketContext";
 
-const ChatContext = createContext({
-    // deleteMessage: () => undefined,
-    // addMessage: () => undefined,
-    // updateMessage: () => undefined,
-    // createChat: () => undefined,
-    // removeMessage: () => undefined,
-});
+import { initialState, chatReducer } from "@components/reducers/chat-reducer";
+
+const ChatContext = createContext({});
 
 const ChatProvider = ({ children }) => {
-    const [currentChat, setCurrentChat] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [chats, setChats] = useState([]);
-    const [contacts, setContacts] = useState([]);
     const { socket } = useSocket();
-    // const [contacts, setContacts] = useState([])
+    const [state, dispatch] = useReducer(chatReducer, initialState);
 
-    const resetUnreadCount = async (id) => {
-        const res = await fetch(`http://localhost:3000/api/socket/message/${id}/resetUnreadCount`, {
-            method: "POST",
-        });
-        return await res.json();
+    const setChats = (newChats) => {
+        dispatch({ type: "SET_CHATS", payload: newChats });
     };
 
+    const setMessages = (newMessages) => {
+        dispatch({ type: "SET_MESSAGES", payload: newMessages });
+    };
+
+    const setContacts = (newContacts) => {
+        dispatch({ type: "SET_CONTACTS", payload: newContacts });
+    };
+
+    // This one is for closing the chat
+    const closeChat = () => {
+        dispatch({ type: "SET_CURRENT_CHAT", payload: null });
+    };
+
+    // This setter helps in clearing out of unread messages when a chat is clicked
     const handleSetCurrChat = async (data) => {
         if (socket) {
             console.log("emitting join event from socekt");
             socket.emit("JOIN", { data });
         }
-        // setLoading(true);
-        setCurrentChat(data);
-        // setLoading(false);
+
+        const newChat = { ...data, unread: 0 };
+        dispatch({ type: "SET_CURRENT_CHAT", payload: newChat }); // Optimistically set the unread to 0
+        if (data?.unread > 0) {
+            // Reset in background
+            resetUnreadCount(data?._id).then(({ chat }) => {
+                if (chat) {
+                    // Update the chat
+                    dispatch({ type: "SET_CURRENT_CHAT", payload: chat });
+                    const newChats = updateChatList(state.chats, chat);
+                    if (newChats !== null) {
+                        dispatch({ type: "SET_CHATS", payload: newChats });
+                    }
+                }
+            });
+        }
     };
 
     const getChat = async (receiverId) => {
@@ -46,22 +61,23 @@ const ChatProvider = ({ children }) => {
 
             const { data } = await res.json();
             handleSetCurrChat(data[0]);
-            setChats((prev) => [...prev, data[0]]);
+            const newChats = [...state.chats, data[0]];
+            dispatch({ type: "SET_CHATS", payload: newChats });
         } catch (error) {
             console.log(error);
         }
     };
 
     const fetchMessages = async () => {
-        setLoading(true);
+        dispatch({ type: "SET_LOADING", payload: true });
         try {
-            const res = await fetch(`api/chats/${currentChat._id}/messages`);
+            const res = await fetch(`api/chats/${state.currentChat._id}/messages`);
             const { data } = await res.json();
-            setMessages([...data]);
+            dispatch({ type: "SET_MESSAGES", payload: [...data] });
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false);
+            dispatch({ type: "SET_LOADING", payload: false });
         }
     };
 
@@ -76,11 +92,18 @@ const ChatProvider = ({ children }) => {
         }
     }
 
+    async function resetUnreadCount(id) {
+        const res = await fetch(`api/resetUnread/${id}`, {
+            method: "POST",
+        });
+        return await res.json();
+    }
+
     useEffect(() => {
-        if (currentChat) {
+        if (state.currentChat) {
             fetchMessages();
         }
-    }, [currentChat]);
+    }, [state.currentChat]);
 
     useEffect(() => {
         (async () => {
@@ -89,25 +112,50 @@ const ChatProvider = ({ children }) => {
                 getData("/api/contacts"),
             ]);
 
-            setChats(chatsData?.chats);
-            setContacts(contactsData?.contacts);
+            dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
+            dispatch({ type: "SET_CONTACTS", payload: contactsData?.contacts });
         })();
     }, []);
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("CHAT_UPDATE", (updatedChat) => {
+                console.log("chat update event");
+                if (state.currentChat?._id === updatedChat?._id) {
+                    if (updatedChat.unread > 0) {
+                        resetUnreadCount(updatedChat._id);
+                        updatedChat.unread = 0;
+                    }
+                }
+
+                const newChats = updateChatList(state.chats, updatedChat);
+                console.log(newChats);
+                if (newChats !== null) {
+                    dispatch({ type: "SET_CHATS", payload: newChats });
+                }
+            });
+        }
+
+        return () => {
+            socket?.off("CHAT_UPDATE");
+        };
+    }, [socket, state.chats, state.currentChat]);
 
     return (
         <ChatContext.Provider
             value={{
-                currentChat,
+                currentChat: state.currentChat,
+                contacts: state.contacts,
+                messages: state.messages,
+                loading: state.loading,
+                chats: state.chats,
                 handleSetCurrChat,
-                loading,
-                getChat,
                 resetUnreadCount,
-                messages,
                 setMessages,
-                contacts,
-                chats,
                 setContacts,
+                closeChat,
                 setChats,
+                getChat,
             }}
         >
             {children}
@@ -116,5 +164,21 @@ const ChatProvider = ({ children }) => {
 };
 
 const useChat = () => useContext(ChatContext);
+
+function updateChatList(chats, updatedChat) {
+    // Find the index of the chat in the chat list
+    const index = chats.findIndex((chat) => chat._id === updatedChat._id);
+
+    if (index !== -1 && JSON.stringify(chats[index]) !== JSON.stringify(updatedChat)) {
+        // Replace the old chat with the updated chat
+        const newChats = [...chats];
+        newChats[index] = updatedChat;
+        return newChats;
+    }
+
+    // If the chat was not found in the chat list or the chat data hasn't changed,
+    // return null hinting that none was changed
+    return null;
+}
 
 export { ChatProvider, useChat };

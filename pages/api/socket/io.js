@@ -32,9 +32,19 @@ const SocketHandler = (req, res) => {
             });
 
             socket.on("JOIN", ({ data }) => {
-                console.log("SOCKET JOINED: ", data._id);
+                // This can be improve, to provide the user not only in currentChat but globally
+                // Current typing status like whatsapp
+
+                // Currently leaving all the socket previously i was in
+                // To fix the typing status event if not in currentChat i.e. room
+                socket.rooms.forEach((room) => {
+                    if (room !== socket.id && room !== data?.id) {
+                        socket.leave(room);
+                    }
+                });
+
                 socket.join(data?._id);
-                console.log(`socket id: ${socket.id} has rooms:`, socket.rooms);
+                console.log(`SOCKET ${socket.id} has rooms:`, socket.rooms);
                 socket.broadcast.to(data?._id).emit("newjoin", data);
             });
 
@@ -43,12 +53,11 @@ const SocketHandler = (req, res) => {
 
                 returnMsg(receiveMessage);
                 socket.broadcast.to(chat?.id).emit(RECEIVE_MSG_EVENT, receiveMessage);
+                //  To enable realtime update on sender side, we have to change this
+                // TODO: use user id room approach to send events for better security e.x. connected user id to socket, upon JOIN
+                socket.broadcast.emit("CHAT_UPDATE", chat);
             });
 
-            // socket.on("TYPING", ({ chat, isTyping }) => {
-            //     console.log(`SERVER] typing status:${isTyping}, BROADCASTING TO ${chat._id}`);
-            //     socket.broadcast.to(chat?._id).emit("TYPING", { chat, isTyping });
-            // });
             socket.on(TYPING_EVENT, ({ chat, isTyping }) => {
                 socket.broadcast.to(chat?._id).emit(TYPING_EVENT, { isTyping });
             });
@@ -67,7 +76,6 @@ const SocketHandler = (req, res) => {
 
 const updateMessageStatus = async (msgId) => {
     try {
-        await connectToDB();
         return await ChatMessage.findByIdAndUpdate(
             msgId,
             { status: "seen" },
@@ -83,7 +91,6 @@ const updateMessageStatus = async (msgId) => {
 
 const handleMessage = async (chatId, users, content, status) => {
     try {
-        await connectToDB();
         const selectedChat = await Chat.findById(chatId);
 
         if (!selectedChat) throw new Error("Chat doesnt exists");
@@ -107,15 +114,30 @@ const handleMessage = async (chatId, users, content, status) => {
 };
 
 async function lastMessageUpdate(chatId, messageId) {
+    // Also update the unread count
     return await Chat.findByIdAndUpdate(
         chatId,
         {
             $set: {
                 lastMessage: messageId,
             },
+            $inc: {
+                unread: 1,
+            },
         },
         { new: true }
-    );
+    )
+        .populate({
+            path: "participants",
+            select: "name avatar email _id",
+        })
+        .populate({
+            path: "lastMessage",
+            populate: {
+                path: "sender",
+                select: "name avatar email _id",
+            },
+        });
 }
 
 async function chatAggregate(messageId) {

@@ -27,7 +27,7 @@ const Contacts = () => {
                     <ChatList session={session} />
                     <ContactList />
                     {/* For providing space at bottom  */}
-                    <div className="w-full h-[50px]"></div>
+                    <div className="w-full h-[100px]"></div>
                 </div>
 
                 {/* For masking effect */}

@@ -9,7 +9,7 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { useChat } from "@context/ChatContext";
-import { MoreVertical, Trash } from "lucide-react";
+import { MoreVertical, Trash, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { DeleteModal } from "@components/modals/delete-modal";
@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 const ChatHeader = ({ selectedChat, currUserEmail }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const { currentChat, handleSetCurrChat } = useChat();
+    const { currentChat, handleSetCurrChat, closeChat } = useChat();
     const router = useRouter();
 
     const deleteMessages = async () => {
@@ -39,7 +39,7 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
             router.refresh();
         } catch (error) {
             console.log(error);
-            toast.error(error.message || error);
+            toast.error(error.message || "Please try again later.");
         } finally {
             setOpen(false);
             setLoading(false);
@@ -75,7 +75,7 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
                 <div className="flex flex-col items-start ">
                     <p className="text-accent_1 text-base font-medium">{receiver?.name}</p>
 
-                    {/* TODO: add status feature */}
+                    {/* TODO: Add status feature */}
                     {/* <p className="text-xs text-accent_2  tracking-wide">Offline</p> */}
                 </div>
 
@@ -90,7 +90,11 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
                                 className="text-red-500 cursor-pointer"
                             >
                                 <Trash className="w-4 h-4 mr-2" />
-                                Clear chat
+                                Clear Chat
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={closeChat} className="cursor-pointer">
+                                <X className="w-4 h-4 mr-2" />
+                                Close Chat
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>

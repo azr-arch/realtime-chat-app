@@ -97,7 +97,11 @@ export async function DELETE(request, { params }) {
 
         const [_, newChat] = await Promise.all([
             ChatMessage.deleteMany({ chat: chatId }),
-            Chat.findByIdAndUpdate(chatId, { lastMessage: null }, { returnDocument: "after" }),
+            Chat.findByIdAndUpdate(
+                chatId,
+                { lastMessage: null, unread: 0 },
+                { returnDocument: "after" }
+            ),
         ]);
 
         await newChat.populate({ path: "participants", select: "-password -contacts" });

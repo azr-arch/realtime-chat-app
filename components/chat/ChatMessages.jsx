@@ -23,16 +23,26 @@ const ChatMessages = ({ session }) => {
         }
     };
 
-    const updateMessages = (updatedMsg) => {
-        setMessages((prev) => {
-            return prev.map((msg) => {
-                if (msg._id === updatedMsg._id) {
-                    msg.status = "seen";
-                }
+    // const updateMessages = (updatedMsg) => {
+    //     setMessages((prev) => {
+    //         return prev.map((msg) => {
+    //             if (msg._id === updatedMsg._id) {
+    //                 msg.status = "seen";
+    //             }
 
-                return msg;
-            });
+    //             return msg;
+    //         });
+    //     });
+    // };
+
+    const updateMessages = (updatedMsg) => {
+        const newMessages = messages?.map((msg) => {
+            if (msg._id === updatedMsg._id) {
+                return { ...msg, status: "seen" };
+            }
+            return msg;
         });
+        setMessages(newMessages);
     };
 
     useEffect(() => {
@@ -47,7 +57,6 @@ const ChatMessages = ({ session }) => {
             });
 
             socket.on("SEEN_MESSAGE_UPDATE", ({ updatedMsg }) => {
-                console.log("seen message update event", updatedMsg);
                 if (updatedMsg) {
                     updateMessages(updatedMsg);
                 }
@@ -57,11 +66,12 @@ const ChatMessages = ({ session }) => {
             socket?.off(TYPING_EVENT);
             socket?.off("SEEN_MESSAGE_UPDATE");
         };
-    }, [socket]);
+    }, [socket, messages]);
 
     return (
         <div className="grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[350px] md:max-h-[570px] bg-primary p-6">
             <div
+                style={{ scrollBehavior: "smooth" }}
                 className="w-full grow flex flex-col gap-3 overflow-y-scroll px-2  py-1 relative"
                 ref={messagesEndRef}
             >
