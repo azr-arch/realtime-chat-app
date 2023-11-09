@@ -9,19 +9,25 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { useChat } from "@context/ChatContext";
-import { MoreVertical, Trash, X } from "lucide-react";
+import { MoreVertical, Trash, Video, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { DeleteModal } from "@components/modals/delete-modal";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+
+import VideoModal from "@components/modals/video-modal";
+import { useSession } from "next-auth/react";
 // Helper function
 
 const ChatHeader = ({ selectedChat, currUserEmail }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const { currentChat, handleSetCurrChat, closeChat } = useChat();
+    const { data: session } = useSession();
     const router = useRouter();
+
+    const [videoModalOpen, setVideoModalOpen] = useState(false);
 
     const deleteMessages = async () => {
         try {
@@ -55,8 +61,18 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
     };
 
     const receiver = getReceiver(selectedChat?.participants);
+    console.log("receiver rendered ", receiver);
     return (
         <>
+            {videoModalOpen && (
+                <VideoModal
+                    isOpen={videoModalOpen}
+                    onClose={() => setVideoModalOpen(false)}
+                    loading={true}
+                    session={session}
+                    receiver={receiver?.email}
+                />
+            )}
             <DeleteModal
                 onClose={() => setOpen(false)}
                 isOpen={open}
@@ -79,25 +95,35 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
                     {/* <p className="text-xs text-accent_2  tracking-wide">Offline</p> */}
                 </div>
 
-                <div className="ml-auto cursor-pointer relative">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <MoreVertical className="w-5 h-5" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="mr-12 mt-4">
-                            <DropdownMenuItem
-                                onClick={() => setOpen(true)}
-                                className="text-red-500 cursor-pointer"
-                            >
-                                <Trash className="w-4 h-4 mr-2" />
-                                Clear Chat
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={closeChat} className="cursor-pointer">
-                                <X className="w-4 h-4 mr-2" />
-                                Close Chat
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                <div className="flex items-center ml-auto gap-4">
+                    <button
+                        onClick={() => setVideoModalOpen(true)}
+                        aria-label="video-call-btn"
+                        className="bg-black  px-5 py-2 ml-auto rounded-md text-white font-medium flex items-center justify-center"
+                    >
+                        <Video className="w-5 h-5" />
+                    </button>
+
+                    <div className="cursor-pointer relative flex items-center justify-center">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <MoreVertical className="w-5 h-5" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="mr-12 mt-4">
+                                <DropdownMenuItem
+                                    onClick={() => setOpen(true)}
+                                    className="text-red-500 cursor-pointer"
+                                >
+                                    <Trash className="w-4 h-4 mr-2" />
+                                    Clear Chat
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={closeChat} className="cursor-pointer">
+                                    <X className="w-4 h-4 mr-2" />
+                                    Close Chat
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </header>
         </>

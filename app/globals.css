@@ -148,3 +148,35 @@ div[data-sender="self"] {
         height: 50%;
     }
 }
+
+#call-notification[data-state="open"] {
+    animation: come-in 150ms cubic-bezier(0.01, 0, 0.11, 0.88) forwards;
+}
+
+#call-notification[data-state="closed"] {
+    animation: go-out 150ms cubic-bezier(0.01, 0, 0.11, 0.88) forwards;
+}
+
+@keyframes come-in {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
+
+@keyframes go-out {
+    0% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

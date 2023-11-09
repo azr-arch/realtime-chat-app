@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { io as ClientIO } from "socket.io-client";
 
@@ -13,6 +14,7 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
+    const { data: session } = useSession();
 
     useEffect(() => {
         const socketInstance = new ClientIO({
@@ -21,6 +23,9 @@ export const SocketProvider = ({ children }) => {
 
         socketInstance.on("connect", () => {
             console.log("client socket connected.");
+            if (session && session?.user?.email) {
+                socket.emit("REGISTER", { email: session.user.email });
+            }
             setIsConnected(true);
         });
 

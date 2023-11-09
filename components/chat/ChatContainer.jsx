@@ -10,6 +10,7 @@ import ChatMessages from "./ChatMessages";
 
 import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@lib/socket-events";
 import useTabActive from "@hooks/useTabActive";
+import { usePeer } from "@context/peer";
 
 const TYPING_TIMER_LENGTH = 800; // 500ms
 let typingTimer;
@@ -137,6 +138,7 @@ const ChatContainer = () => {
                 setMessages([...messages, msg]);
             }
         });
+
         return () => {
             socket?.off(RECEIVE_MSG_EVENT);
         };

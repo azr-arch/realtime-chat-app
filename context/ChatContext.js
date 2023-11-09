@@ -99,6 +99,16 @@ const ChatProvider = ({ children }) => {
         return await res.json();
     }
 
+    const getDataHelper = async () => {
+        const [chatsData, contactsData] = await Promise.all([
+            getData("api/chats"),
+            getData("api/contacts"),
+        ]);
+
+        dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
+        dispatch({ type: "SET_CONTACTS", payload: contactsData?.contacts });
+    };
+
     useEffect(() => {
         if (state.currentChat) {
             fetchMessages();
@@ -106,15 +116,7 @@ const ChatProvider = ({ children }) => {
     }, [state.currentChat]);
 
     useEffect(() => {
-        (async () => {
-            const [chatsData, contactsData] = await Promise.all([
-                getData("/api/chats"),
-                getData("/api/contacts"),
-            ]);
-
-            dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
-            dispatch({ type: "SET_CONTACTS", payload: contactsData?.contacts });
-        })();
+        getDataHelper();
     }, []);
 
     useEffect(() => {

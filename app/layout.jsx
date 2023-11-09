@@ -20,17 +20,15 @@ const RootLayout = ({ children }) => {
             <body
                 className={`min-h-screen transition-colors duration-150 ease-linear ${inter.className}}`}
             >
-                <SocketProvider>
-                    <Provider>
-                        <ChatProvider>
-                            <ToasterProvider />
-                            <SocketIndicator />
-                            <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
-                                {children}
-                            </main>
-                        </ChatProvider>
-                    </Provider>
-                </SocketProvider>
+                <Provider>
+                    <SocketProvider>
+                        <ToasterProvider />
+                        <SocketIndicator />
+                        <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
+                            {children}
+                        </main>
+                    </SocketProvider>
+                </Provider>
             </body>
         </html>
     );
