@@ -22,3 +22,9 @@ These instructions will get you a copy of the project up and running on your loc
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md] file for details
+
+---
+
+**Design Credit**: The design for this project is inspired by [https://dribbble.com/shots/22529373-Desktop-design-of-a-chat-application-Lazarev]. All credit for the design goes to them.
+
+---
