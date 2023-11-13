@@ -1,7 +1,7 @@
 import ProfilePage from "@components/profile-page";
 import { useUserServer } from "@hooks/use-user";
 
-const page = async () => {
+const Page = async () => {
     const data = await useUserServer();
     return (
         <div className="w-full h-full self-stretch flex flex-col items-center justify-center">
@@ -10,4 +10,4 @@ const page = async () => {
     );
 };
 
-export default page;
+export default Page;

@@ -2,60 +2,14 @@
 
 import { Button } from "@components/ui/button";
 import { useSocket } from "@context/SocketContext";
-import { usePeer } from "@context/peer";
 import { Mic, PhoneOff } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-const VideoModal = ({ onClose, loading, session, receiver }) => {
-    const [isMounted, setIsMounted] = useState(false);
+const VideoModal = ({ onClose, loading, session, receiver, isInitiator }) => {
     const { socket } = useSocket();
-    const { createOffer } = usePeer();
-    const [onCall, setOnCall] = useState(false);
-    const videoRef = useRef(null);
     const [callStatus, setCallStatus] = useState("idle");
-
-    const endCall = () => {
-        // send end call event
-        // setOnCall(false);
-        setCallStatus("notReceived");
-        // onClose();
-        setTimeout(() => {
-            onClose();
-        }, 2000);
-    };
-
-    const handleAnswer = ({ ans }) => {
-        console.log("Call was accepted");
-        console.log(ans);
-        setCallStatus("onCall");
-    };
-
-    const sendOffer = useCallback(async () => {
-        // setOnCall(true);
-        setCallStatus("ringing");
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-            const offer = await createOffer();
-            socket.emit("OUTGOING_CALL", { sender: session?.user?.email, offer, receiver });
-            videoRef.current.srcObject = stream;
-
-            setTimeout(() => {
-                if (callStatus === "ringing") {
-                    endCall();
-                }
-            }, 10000);
-        } catch (error) {
-            console.log(error);
-        }
-    }, [socket, receiver]);
-
-    useEffect(() => {
-        socket?.on("CALL_ACCEPTED", handleAnswer);
-
-        return () => {
-            socket?.off("CALL_ACCEPTED");
-        };
-    }, [socket]);
+    const videoRef = useRef(null);
+    const remoteVideo = useRef(null);
 
     // NOTE: Send call-end event with socket first then unmount this component
     return (
@@ -68,15 +22,24 @@ const VideoModal = ({ onClose, loading, session, receiver }) => {
                     p-3
                 "
             >
-                <div className="text-white w-full h-full grow flex items-center justify-center">
-                    <video ref={videoRef} className="w-full h-full object-cover"></video>
+                <div className="text-white w-full h-full grow flex items-center relative justify-center">
+                    <video autoPlay ref={videoRef} className="w-full h-full object-cover" />
+
+                    {remoteVideo.current && (
+                        <video autoPlay ref={remoteVideo} className="w-full h-full object-cover" />
+                    )}
+
                     {callStatus === "ringing" && (
-                        <p className="">
+                        <p className=" absolute text-green-500 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
                             {callStatus === "ringing" ? "Calling..." : "Unavailable"}
                         </p>
                     )}
                     {callStatus === "idle" && (
-                        <button disabled={callStatus !== "idle"} className="" onClick={sendOffer}>
+                        <button
+                            disabled={callStatus !== "idle"}
+                            className=" absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2"
+                            onClick={sendOffer}
+                        >
                             Call
                         </button>
                     )}

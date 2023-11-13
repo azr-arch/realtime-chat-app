@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "./ui/button";
 import ImageUpload from "./ui/image-upload";
 
@@ -31,7 +31,7 @@ const ProfilePage = ({ data }) => {
         <div className="flex flex-col items-center space-y-2 ">
             {/* Image  */}
             <div className="relative w-[150px] h-[150px] bg-pink-200 rounded-full overflow-hidden">
-                <img
+                <Image
                     className="object-cover object-center aspect-square bg-orange"
                     width={150}
                     height={150}
@@ -39,6 +39,7 @@ const ProfilePage = ({ data }) => {
                     src={avatar}
                 />
             </div>
+
             {/* TODO: Hide this in image and Appear when Click on image */}
             <ImageUpload onUpload={upload} />
 

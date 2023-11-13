@@ -7,39 +7,38 @@ import ChatContainer from "./chat/ChatContainer";
 import { NotifyCallModal } from "./modals/call-notification";
 import VideoModal from "./modals/video-modal";
 import { useSocket } from "@context/SocketContext";
-import { usePeer } from "@context/peer";
+import { useSession } from "next-auth/react";
 
 const ChatPageClient = () => {
     const [open, setOpen] = useState(false);
     const [videoModalOpen, setVideoModalOpen] = useState(false);
-    const [calleeData, setCalleeData] = useState(null); // Email
-    const { createAnswer } = usePeer();
-
+    const [calleeData, setCalleeData] = useState({ from: null, offer: null }); // Email
+    const { data: session } = useSession();
     const { socket } = useSocket();
 
-    const handleIncomingCall = useCallback(async ({ from, offer }) => {
-        setCalleeData(from);
-        setOpen(true);
-        const ans = await createAnswer(offer);
-        socket.emit("CALL_ACCEPTED", { ans, to: from });
-    }, []);
+    // useEffect(() => {
 
-    useEffect(() => {
-        socket?.on("INCOMING_CALL", handleIncomingCall);
-
-        return () => {
-            socket?.off("INCOMING_CALL", handleIncomingCall);
-        };
-    }, []);
+    //     return () => {
+    //     };
+    // }, []);
 
     return (
         <>
-            {videoModalOpen && <VideoModal />}
-            <NotifyCallModal isOpen={open} onClose={() => setOpen(false)} from={calleeData} />
-            <button className="fixed top-4  z-50 left-10" onClick={() => setOpen(true)}>
-                {" "}
-                toggle
-            </button>
+            {/* {videoModalOpen && (
+                <VideoModal
+                    isOpen={videoModalOpen}
+                    onClose={() => setVideoModalOpen(false)}
+                    session={session}
+                    receiver={calleeData.from}
+                    isInitiator={true}
+                />
+            )}
+            <NotifyCallModal
+                isOpen={open}
+                onClose={endCall}
+                from={calleeData?.from}
+                onSuccess={acceptCall}
+            /> */}
             <Contacts />
             <ChatContainer />
         </>

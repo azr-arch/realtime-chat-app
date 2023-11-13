@@ -10,7 +10,6 @@ import ChatMessages from "./ChatMessages";
 
 import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@lib/socket-events";
 import useTabActive from "@hooks/useTabActive";
-import { usePeer } from "@context/peer";
 
 const TYPING_TIMER_LENGTH = 800; // 500ms
 let typingTimer;
@@ -90,7 +89,7 @@ const ChatContainer = () => {
 
     const memoizedMessages = useMemo(() => {
         return messages;
-    }, [currentChat, messages]);
+    }, [messages]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -127,7 +126,7 @@ const ChatContainer = () => {
             observer.disconnect();
             socket?.off("SEEN_MESSAGE");
         };
-    }, [memoizedMessages, isTabVisible]);
+    }, [memoizedMessages, isTabVisible, socket, currentChat, resetUnreadCount, session?.user?.sub]);
 
     useEffect(() => {
         if (!socket) return;
@@ -142,7 +141,7 @@ const ChatContainer = () => {
         return () => {
             socket?.off(RECEIVE_MSG_EVENT);
         };
-    }, [socket, currentChat, messages]);
+    }, [socket, currentChat, messages, setMessages]);
 
     return (
         <div className="w-full min-w-[342px] h-full self-stretch flex flex-col items-start gap-2  ">

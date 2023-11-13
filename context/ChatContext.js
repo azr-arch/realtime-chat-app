@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, useCallback, useContext, useEffect, useReducer } from "react";
 import { useSocket } from "../context/SocketContext";
 
 import { initialState, chatReducer } from "@components/reducers/chat-reducer";
@@ -68,7 +68,7 @@ const ChatProvider = ({ children }) => {
         }
     };
 
-    const fetchMessages = async () => {
+    const fetchMessages = useCallback(async () => {
         dispatch({ type: "SET_LOADING", payload: true });
         try {
             const res = await fetch(`api/chats/${state.currentChat._id}/messages`);
@@ -79,7 +79,7 @@ const ChatProvider = ({ children }) => {
         } finally {
             dispatch({ type: "SET_LOADING", payload: false });
         }
-    };
+    }, [state?.currentChat?._id]);
 
     async function getData(url) {
         if (!url) return;
@@ -99,7 +99,7 @@ const ChatProvider = ({ children }) => {
         return await res.json();
     }
 
-    const getDataHelper = async () => {
+    const getDataHelper = useCallback(async () => {
         const [chatsData, contactsData] = await Promise.all([
             getData("api/chats"),
             getData("api/contacts"),
@@ -107,17 +107,17 @@ const ChatProvider = ({ children }) => {
 
         dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
         dispatch({ type: "SET_CONTACTS", payload: contactsData?.contacts });
-    };
+    }, []);
 
     useEffect(() => {
         if (state.currentChat) {
             fetchMessages();
         }
-    }, [state.currentChat]);
+    }, [state.currentChat, fetchMessages]);
 
     useEffect(() => {
         getDataHelper();
-    }, []);
+    }, [getDataHelper]);
 
     useEffect(() => {
         if (socket) {

@@ -4,20 +4,18 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { useChat } from "@context/ChatContext";
 import { MoreVertical, Trash, Video, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { DeleteModal } from "@components/modals/delete-modal";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-import VideoModal from "@components/modals/video-modal";
 import { useSession } from "next-auth/react";
+import { useSocket } from "@context/SocketContext";
 // Helper function
 
 const ChatHeader = ({ selectedChat, currUserEmail }) => {
@@ -25,9 +23,8 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
     const [loading, setLoading] = useState(false);
     const { currentChat, handleSetCurrChat, closeChat } = useChat();
     const { data: session } = useSession();
+    const { socket } = useSocket();
     const router = useRouter();
-
-    const [videoModalOpen, setVideoModalOpen] = useState(false);
 
     const deleteMessages = async () => {
         try {
@@ -61,18 +58,18 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
     };
 
     const receiver = getReceiver(selectedChat?.participants);
-    console.log("receiver rendered ", receiver);
+
+    // useEffect(() => {
+    //     socket?.on("CALL_ACCEPTED", handleAnswer);
+    //     // socket?.on("ICE_CANDIDATE", handleIceCandidate)
+    //     return () => {
+    //         socket?.off("CALL_ACCEPTED", handleAnswer);
+    //         // socket?.off("ICE_CANDIDATE", handleIceCandidate)
+    //     };
+    // }, [socket]);
+
     return (
         <>
-            {videoModalOpen && (
-                <VideoModal
-                    isOpen={videoModalOpen}
-                    onClose={() => setVideoModalOpen(false)}
-                    loading={true}
-                    session={session}
-                    receiver={receiver?.email}
-                />
-            )}
             <DeleteModal
                 onClose={() => setOpen(false)}
                 isOpen={open}
@@ -96,13 +93,13 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
                 </div>
 
                 <div className="flex items-center ml-auto gap-4">
-                    <button
+                    {/* <button
                         onClick={() => setVideoModalOpen(true)}
                         aria-label="video-call-btn"
                         className="bg-black  px-5 py-2 ml-auto rounded-md text-white font-medium flex items-center justify-center"
                     >
                         <Video className="w-5 h-5" />
-                    </button>
+                    </button> */}
 
                     <div className="cursor-pointer relative flex items-center justify-center">
                         <DropdownMenu>

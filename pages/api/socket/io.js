@@ -90,20 +90,21 @@ const SocketHandler = (req, res) => {
             socket.on("OUTGOING_CALL", ({ sender, offer, receiver }) => {
                 const personToCall = emailToSocket[receiver]; // Get socket id
                 console.log("SENDIN CALL TO ", personToCall);
-                io.to(personToCall).emit("INCOMING_CALL", { from: sender, offer });
+                socket.to(personToCall).emit("INCOMING_CALL", { from: sender, offer });
                 // }
             });
 
-            // This just for helping transfer incoming call request info
-            // socket.on("ACCEPT_INCOMING", ({ from, to }) => {
-            //     const toId = emailToSocket[to];
-            //     io.to(toId).emit("INCOMING_CALL_ACCEPT", { from });
-            // });
-
-            socket.on("CALL_ACCEPTED", ({ to, ans, from }) => {
+            socket.on("CALL_ACCEPTED", ({ to, ans }) => {
                 const toId = emailToSocket[to];
                 io.to(toId).emit("CALL_ACCEPTED", { ans });
             });
+
+            socket.on("ICE_CANDIDATE", ({candidate, to}) => {
+                console.log("SERVER SENDING ICE TO ", to)
+                console.log("THIS IS THE CANDIDATE ", candidate)
+                const toId = emailToSocket[to]
+                io.to(toId).emit("ICE_CANDIDATE", candidate)
+            })
         });
     }
 

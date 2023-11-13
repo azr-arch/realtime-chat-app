@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-const page = () => {
+const Page = () => {
     const [isLoginPage, setIsLoginPage] = useState(true);
     const router = useRouter();
     const { status } = useSession();
@@ -16,7 +16,7 @@ const page = () => {
         if (status === "authenticated") {
             router.replace("/chat");
         }
-    }, [status]);
+    }, [status, router]);
 
     if (status === "loading") {
         return <h1 className="text-text">Please wait...</h1>;
@@ -32,4 +32,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Page;

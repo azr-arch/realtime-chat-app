@@ -2,6 +2,7 @@
 
 import { useChat } from "@context/ChatContext";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 const ContactList = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -27,11 +28,12 @@ const ContactList = () => {
                         onClick={() => getChat(contact?._id)}
                         className="hidden md:flex items-center gap-2 py-3 px-5 relative self-stretch w-full text-black cursor-pointer  rounded-md"
                     >
-                        <img
+                        <Image
                             src={contact?.avatar}
                             width={40}
                             height={40}
-                            className="rounded-full aspect-square object-cover"
+                            alt="user-avatar"
+                            className="rounded-full w-10 h-10 aspect-square object-cover"
                         />
 
                         <div className="flex flex-col items-start gap-[3px]">

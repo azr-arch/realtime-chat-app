@@ -6,7 +6,7 @@ import { Button } from "@components/ui/button";
 import { PhoneCall, PhoneOff } from "lucide-react";
 import { useSocket } from "@context/SocketContext";
 
-export const NotifyCallModal = ({ isOpen, onClose, from, session, onSubmit }) => {
+export const NotifyCallModal = ({ isOpen = false, onClose, from, session, onSuccess }) => {
     const { socket } = useSocket();
 
     return (
@@ -14,7 +14,7 @@ export const NotifyCallModal = ({ isOpen, onClose, from, session, onSubmit }) =>
             <div
                 id="call-notification"
                 className="
-                     py-4 rounded-md px-2 fixed z-50 right-[5vw] top-9  opacity-0 
+                     py-4 rounded-md px-2 fixed z-50 right-[5vw] translate-x-full top-9  opacity-0 
                      bg-black/80"
                 data-state={isOpen ? "open" : "closed"}
             >
@@ -26,6 +26,7 @@ export const NotifyCallModal = ({ isOpen, onClose, from, session, onSubmit }) =>
                             variant="default"
                             size="icon"
                             className="bg-green-500 hover:bg-green-700"
+                            onClick={onSuccess}
                         >
                             <PhoneCall />
                         </Button>

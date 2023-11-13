@@ -58,7 +58,7 @@ const Navbar = () => {
                 <Menu className="w-5 h-5" />
             </div>
             <nav
-                aria-expanded={mobileNavOpen}
+                data-expanded={mobileNavOpen}
                 className={cn(
                     "flex flex-col items-start pt-[3.7rem] pl-10 sm:hidden transition transform fixed inset-0 w-full h-full  z-50 bg-black/90",
                     mobileNavOpen ? "-translate-x-0" : "-translate-x-full"

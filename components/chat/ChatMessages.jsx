@@ -3,7 +3,7 @@
 import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
 import { TYPING_EVENT } from "@lib/socket-events";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import MessageWithDate from "@components/ui/messate-date";
 import useDebounce from "@hooks/use-debounce";
@@ -23,27 +23,18 @@ const ChatMessages = ({ session }) => {
         }
     };
 
-    // const updateMessages = (updatedMsg) => {
-    //     setMessages((prev) => {
-    //         return prev.map((msg) => {
-    //             if (msg._id === updatedMsg._id) {
-    //                 msg.status = "seen";
-    //             }
-
-    //             return msg;
-    //         });
-    //     });
-    // };
-
-    const updateMessages = (updatedMsg) => {
-        const newMessages = messages?.map((msg) => {
-            if (msg._id === updatedMsg._id) {
-                return { ...msg, status: "seen" };
-            }
-            return msg;
-        });
-        setMessages(newMessages);
-    };
+    const updateMessages = useCallback(
+        (updatedMsg) => {
+            const newMessages = messages?.map((msg) => {
+                if (msg._id === updatedMsg._id) {
+                    return { ...msg, status: "seen" };
+                }
+                return msg;
+            });
+            setMessages(newMessages);
+        },
+        [messages, setMessages]
+    );
 
     useEffect(() => {
         scrollToBottom();
@@ -66,7 +57,7 @@ const ChatMessages = ({ session }) => {
             socket?.off(TYPING_EVENT);
             socket?.off("SEEN_MESSAGE_UPDATE");
         };
-    }, [socket, messages]);
+    }, [socket, messages, updateMessages]);
 
     return (
         <div className="grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[350px] md:max-h-[570px] bg-primary p-6">
