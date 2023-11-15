@@ -27,7 +27,7 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
             {/* Message */}
             <div
                 id={`message-${msg?._id}`}
-                className={`flex flex-col items-start w-11/12 gap-1 relative ${
+                className={`flex flex-col items-start  max-w-[80%] gap-1 relative ${
                     isSender ? "self-end items-end" : "self-start items-start"
                 }`}
             >
@@ -37,7 +37,7 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
                         isSender
                             ? "text-white bg-orange   "
                             : "self-start items-start  text-message bg-on_white_gray_2"
-                    } flex flex-col text-sm font-medium  rounded-sm py-2 px-4`}
+                    } flex flex-col text-sm font-medium rounded-sm py-2 px-4 break-all`}
                 >
                     <p>{msg?.content}</p>
                 </div>

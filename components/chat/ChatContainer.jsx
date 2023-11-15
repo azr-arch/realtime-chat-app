@@ -71,8 +71,12 @@ const ChatContainer = () => {
         }
     };
 
-    const handleChange = (e) => {
-        setMessage(e.target.value);
+    const handleChange = (e, manually = false, manualData) => {
+        if (manually) {
+            setMessage((prev) => prev + manualData);
+        } else {
+            setMessage(e.target.value);
+        }
 
         if (!isTyping) {
             setIsTyping(true);

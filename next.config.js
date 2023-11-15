@@ -4,7 +4,18 @@ const nextConfig = {
         serverComponentsExternalPackages: ["axios", "mongoose"],
     },
     images: {
-        domains: ["th.bing.com", "res.cloudinary.com"],
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "th.bing.com",
+                pathname: "**",
+            },
+            {
+                protocol: "https",
+                hostname: "res.cloudinary.com",
+                pathname: "**",
+            },
+        ],
     },
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
         config.externals.push({

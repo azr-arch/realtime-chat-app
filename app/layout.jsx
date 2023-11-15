@@ -1,7 +1,6 @@
 import "./globals.css";
 import Provider from "@providers/Provider";
 import { SocketProvider } from "@context/SocketContext";
-import { ChatProvider } from "@context/ChatContext";
 import { ToasterProvider } from "@providers/toast-provider";
 import SocketIndicator from "@components/SocketIndicator";
 
