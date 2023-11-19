@@ -7,9 +7,9 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { useChat } from "@context/ChatContext";
-import { MoreVertical, Trash, Video, X } from "lucide-react";
+import { MoreVertical, Trash, X } from "lucide-react";
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { DeleteModal } from "@components/modals/delete-modal";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";

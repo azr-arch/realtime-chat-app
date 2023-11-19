@@ -4,8 +4,9 @@ import { Paperclip, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import EmojiPicker from "./ui/emoji";
+import { useEdgeStore } from "@lib/edgestore";
 
-const MessageInput = ({ value, onChange, onSubmit, loading }) => {
+const MessageInput = ({ value, onChange, onSubmit, loading, onFileChange }) => {
     const [isMounted, setIsMounted] = useState(false);
     const inputRef = useRef();
 
@@ -41,17 +42,21 @@ const MessageInput = ({ value, onChange, onSubmit, loading }) => {
 
     return (
         <div className="w-full mt-auto flex items-center gap-3 overflow-hidden justify-between rounded-l-lg ">
-            <button
-                disabled={loading}
-                // style={loading && { opacity: 0.4 }}
-                onClick={addMediaMessage}
+            <label
+                htmlFor="media-message"
                 className={`transition bg-orange rounded-lg ml-auto hover:bg-black hover:text-orange p-4 shadow-md ${
                     loading ? "opacity-60" : ""
                 }`}
             >
+                <input
+                    type="file"
+                    name="media-message"
+                    id="media-message"
+                    hidden
+                    onChange={onFileChange}
+                />
                 <Paperclip className="w-5 h-5" />
-                {/* <Picker data={data} onEmojiSelect={console.log} /> */}
-            </button>
+            </label>
 
             <div className="grow h-full flex items-center w-full bg-primary rounded-lg overflow-hidden shadow-md p-1">
                 <input
@@ -69,7 +74,7 @@ const MessageInput = ({ value, onChange, onSubmit, loading }) => {
             </div>
 
             <button
-                disabled={loading}
+                disabled={loading || value === ""}
                 // style={loading && { opacity: 0.4 }}
                 onClick={handleSubmit}
                 className={`transition bg-orange rounded-lg ml-auto hover:bg-black hover:text-orange p-4 shadow-md ${

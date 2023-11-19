@@ -3,6 +3,7 @@
 export const initialState = {
     currentChat: "",
     loading: false,
+    chatsLoading: false,
     messages: [],
     chats: [],
     contacts: [],
@@ -15,6 +16,9 @@ export function chatReducer(state, action) {
 
         case "SET_LOADING":
             return { ...state, loading: action.payload };
+
+        case "SET_CHATS_LOADING":
+            return { ...state, chatsLoading: action.payload };
 
         case "SET_MESSAGES":
             return { ...state, messages: action.payload };

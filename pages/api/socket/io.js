@@ -65,15 +65,23 @@ const SocketHandler = (req, res) => {
                 socket.broadcast.to(data?._id).emit("newjoin", data);
             });
 
-            socket.on("SEND_MESSAGE", async ({ chatId, users, content, status }, returnMsg) => {
-                const [receiveMessage, chat] = await handleMessage(chatId, users, content, status);
+            socket.on(
+                "SEND_MESSAGE",
+                async ({ chatId, users, content, status, fileContent }, returnMsg) => {
+                    const [receiveMessage, chat] = await handleMessage(
+                        chatId,
+                        users,
+                        content,
+                        fileContent
+                    );
 
-                returnMsg(receiveMessage);
-                socket.broadcast.to(chat?.id).emit(RECEIVE_MSG_EVENT, receiveMessage);
-                //  To enable realtime update on sender side, we have to change this
-                // TODO: use user id room approach to send events for better security e.x. connected user id to socket, upon JOIN
-                socket.broadcast.emit("CHAT_UPDATE", chat);
-            });
+                    returnMsg(receiveMessage);
+                    socket.broadcast.to(chat?.id).emit(RECEIVE_MSG_EVENT, receiveMessage);
+                    //  To enable realtime update on sender side, we have to change this
+                    // TODO: use user id room approach to send events for better security e.x. connected user id to socket, upon JOIN
+                    socket.broadcast.emit("CHAT_UPDATE", chat);
+                }
+            );
 
             socket.on(TYPING_EVENT, ({ chat, isTyping }) => {
                 socket.broadcast.to(chat?._id).emit(TYPING_EVENT, { isTyping });
@@ -99,12 +107,12 @@ const SocketHandler = (req, res) => {
                 io.to(toId).emit("CALL_ACCEPTED", { ans });
             });
 
-            socket.on("ICE_CANDIDATE", ({candidate, to}) => {
-                console.log("SERVER SENDING ICE TO ", to)
-                console.log("THIS IS THE CANDIDATE ", candidate)
-                const toId = emailToSocket[to]
-                io.to(toId).emit("ICE_CANDIDATE", candidate)
-            })
+            socket.on("ICE_CANDIDATE", ({ candidate, to }) => {
+                console.log("SERVER SENDING ICE TO ", to);
+                console.log("THIS IS THE CANDIDATE ", candidate);
+                const toId = emailToSocket[to];
+                io.to(toId).emit("ICE_CANDIDATE", candidate);
+            });
         });
     }
 
@@ -126,19 +134,28 @@ const updateMessageStatus = async (msgId) => {
     }
 };
 
-const handleMessage = async (chatId, users, content, status) => {
+const handleMessage = async (chatId, users, content, fileContent) => {
     try {
         const selectedChat = await Chat.findById(chatId);
 
         if (!selectedChat) throw new Error("Chat doesnt exists");
 
-        // Create new instance of Message
-        const message = await ChatMessage.create({
+        let messageData = {
             sender: users.senderId,
-            content: content,
             chat: chatId,
             status: "sent",
-        });
+        };
+
+        if (content.trim() !== "") {
+            messageData.content = content;
+        }
+
+        if (fileContent) {
+            messageData.document = fileContent;
+        }
+
+        // Create new Message
+        const message = await ChatMessage.create(messageData);
 
         const [chat, messages] = await Promise.all([
             lastMessageUpdate(chatId, message._id),

@@ -100,6 +100,8 @@ const ChatProvider = ({ children }) => {
     }
 
     const getDataHelper = useCallback(async () => {
+        dispatch({ type: "SET_CHATS_LOADING", payload: true });
+
         const [chatsData, contactsData] = await Promise.all([
             getData("api/chats"),
             getData("api/contacts"),
@@ -107,6 +109,7 @@ const ChatProvider = ({ children }) => {
 
         dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
         dispatch({ type: "SET_CONTACTS", payload: contactsData?.contacts });
+        dispatch({ type: "SET_CHATS_LOADING", payload: false });
     }, []);
 
     useEffect(() => {
@@ -150,6 +153,7 @@ const ChatProvider = ({ children }) => {
                 contacts: state.contacts,
                 messages: state.messages,
                 loading: state.loading,
+                chatsLoading: state.chatsLoading,
                 chats: state.chats,
                 handleSetCurrChat,
                 resetUnreadCount,

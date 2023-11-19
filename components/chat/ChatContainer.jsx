@@ -10,6 +10,7 @@ import ChatMessages from "./ChatMessages";
 
 import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@lib/socket-events";
 import useTabActive from "@hooks/useTabActive";
+import { useEdgeStore } from "@lib/edgestore";
 
 const TYPING_TIMER_LENGTH = 800; // 500ms
 let typingTimer;
@@ -18,15 +19,33 @@ const ChatContainer = () => {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
+    const [file, setFile] = useState(null);
+    const [filePreview, setFilePreview] = useState(null);
+    const [fileSendProgress, setFileSendProgress] = useState(0);
 
     const { currentChat, setMessages, messages, resetUnreadCount } = useChat(); // Data of currentChat
     const { socket } = useSocket();
     const { data: session } = useSession();
+    const { edgestore } = useEdgeStore();
 
     const isTabVisible = useTabActive();
 
+    const sendingMediaMessage = async () => {
+        if (file) {
+            const res = await edgestore.publicFiles.upload({
+                file,
+                onProgressChange: (progress) => {
+                    setFileSendProgress(progress);
+                },
+            });
+            return res.url;
+        }
+    };
+
     const sendMessage = async () => {
-        if (!message) return;
+        if (!message && !file) return;
+
+        console.log("sending msg");
 
         // This is part is responsible if user is typing and in less 500ms user sends the message
         // Then the UI on other user may not be cleared of `typing`. hence this
@@ -45,12 +64,19 @@ const ChatContainer = () => {
             });
 
         try {
-            const sendMsg = {
+            let sendMsg = {
                 chatId: currentChat?._id,
                 users: { senderId, receiverId: receiverId[0] },
                 content: message,
                 status: "pending",
             };
+
+            if (file) {
+                const fileContent = await sendingMediaMessage();
+                sendMsg.fileContent = fileContent;
+            }
+
+            console.log(sendMsg);
 
             const sentMsg = await new Promise((resolve, reject) => {
                 // Timeout works as waiting period till the acknowledgement is received from server
@@ -61,12 +87,14 @@ const ChatContainer = () => {
                 });
             });
 
-            // setMessages((prev) => [...prev, sentMsg]);
             setMessages([...messages, sentMsg]);
             setMessage("");
         } catch (error) {
             console.log(error);
         } finally {
+            setFile(null);
+            setFilePreview(null);
+            setFileSendProgress(0);
             setLoading(false);
         }
     };
@@ -94,6 +122,18 @@ const ChatContainer = () => {
     const memoizedMessages = useMemo(() => {
         return messages;
     }, [messages]);
+
+    const onFileChange = useCallback((e) => {
+        setFile(e.target.files[0]);
+
+        const preview = URL.createObjectURL(e.target.files[0]);
+        setFilePreview(preview);
+    }, []);
+
+    const clearFile = () => {
+        setFile(null);
+        setFilePreview(null);
+    };
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -156,12 +196,19 @@ const ChatContainer = () => {
                             selectedChat={currentChat}
                             currUserEmail={session?.user.email}
                         />
-                        <ChatMessages session={session} />
+                        <ChatMessages
+                            session={session}
+                            filePreview={filePreview}
+                            clearFile={clearFile}
+                            sendMsg={sendMessage}
+                            fileSendProgress={fileSendProgress}
+                        />
                         <MessageInput
                             value={message}
                             onChange={handleChange}
                             onSubmit={sendMessage}
                             loading={loading}
+                            onFileChange={onFileChange}
                         />
                     </>
                 ) : (

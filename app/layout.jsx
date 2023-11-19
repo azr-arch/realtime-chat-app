@@ -5,6 +5,7 @@ import { ToasterProvider } from "@providers/toast-provider";
 import SocketIndicator from "@components/SocketIndicator";
 
 import { Inter } from "next/font/google";
+import { EdgeStoreProvider } from "@lib/edgestore";
 
 export const metadata = {
     title: "Chat",
@@ -19,15 +20,17 @@ const RootLayout = ({ children }) => {
             <body
                 className={`min-h-screen transition-colors duration-150 ease-linear ${inter.className}}`}
             >
-                <Provider>
-                    <SocketProvider>
-                        <ToasterProvider />
-                        <SocketIndicator />
-                        <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
-                            {children}
-                        </main>
-                    </SocketProvider>
-                </Provider>
+                <EdgeStoreProvider>
+                    <Provider>
+                        <SocketProvider>
+                            <ToasterProvider />
+                            <SocketIndicator />
+                            <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
+                                {children}
+                            </main>
+                        </SocketProvider>
+                    </Provider>
+                </EdgeStoreProvider>
             </body>
         </html>
     );

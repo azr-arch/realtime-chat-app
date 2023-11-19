@@ -16,6 +16,9 @@ const chatMessageSchema = new Schema(
         status: {
             type: String,
         },
+        document: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

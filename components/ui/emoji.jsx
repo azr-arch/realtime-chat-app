@@ -6,7 +6,7 @@ import Picker from "@emoji-mart/react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "./dropdown-menu";
 import { Button } from "./button";
 import { Smile } from "lucide-react";
-const EmojiPicker = ({ isOpen, onSuccess, onClose }) => {
+const EmojiPicker = ({ onSuccess }) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

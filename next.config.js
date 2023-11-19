@@ -15,6 +15,11 @@ const nextConfig = {
                 hostname: "res.cloudinary.com",
                 pathname: "**",
             },
+            {
+                protocol: "https",
+                hostname: "files.edgestore.dev",
+                pathname: "**",
+            },
         ],
     },
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
