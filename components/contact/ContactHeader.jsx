@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useRef } from "react";
-// import { AddModal } from "../modals/add-modal";
+
 import { AddModal } from "@components/modals/add-modal";
 import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { toast } from "react-hot-toast";
 import { useChat } from "@context/ChatContext";
+import SearchBar from "@components/ui/search-bar";
 
 const ContactHeader = ({ currUser }) => {
     const [open, setOpen] = useState(false);
@@ -70,8 +71,10 @@ const ContactHeader = ({ currUser }) => {
                 onClose={() => setOpen(false)}
                 onConfirm={handleAddContact}
             />
-            <header className="flex items-center bg-primary rounded-xl px-5 py-5 justify-between md:max-w-contact w-full shadow-md">
+            <header className="flex items-center bg-primary rounded-xl px-5 py-5 justify-between md:justify-around md:max-w-contact w-full shadow-md">
                 <p className="text-heading text-lg font-semibold ml-10 sm:ml-0">Chat</p>
+
+                <SearchBar />
 
                 <Button
                     onClick={() => setOpen(true)}

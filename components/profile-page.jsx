@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -9,6 +10,7 @@ import Image from "next/image";
 import { toast } from "react-hot-toast";
 
 const ProfilePage = ({ data }) => {
+    console.log(data);
     const [avatar, setAvatar] = useState(data?.avatar);
 
     const upload = async (result) => {
@@ -56,4 +58,4 @@ const ProfilePage = ({ data }) => {
     );
 };
 
-export default ProfilePage;
+export default React.memo(ProfilePage);

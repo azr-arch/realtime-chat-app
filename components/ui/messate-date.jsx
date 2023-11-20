@@ -34,27 +34,30 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
                     isSender ? "self-end items-end" : "self-start items-start"
                 }`}
             >
-                <div
-                    data-sender={isSender ? "self" : "other"}
-                    className={`w-fit ${
-                        isSender
-                            ? "text-white bg-orange   "
-                            : "self-start items-start  text-message bg-on_white_gray_2"
-                    } flex flex-col text-sm font-medium rounded-sm py-2 px-4 break-all`}
-                >
-                    {msg?.document && (
-                        <ContextMenuWrapper src={msg?.document}>
-                            <Image
-                                src={msg?.document}
-                                width={200}
-                                height={200}
-                                className="w-[200px] h-[200px] aspect-square object-cover"
-                                alt="msg"
-                            />
-                        </ContextMenuWrapper>
-                    )}
-                    <p>{msg?.content !== "" && msg?.content}</p>
-                </div>
+                {msg?.document && (
+                    <ContextMenuWrapper src={msg?.document}>
+                        <Image
+                            src={msg?.document}
+                            width={200}
+                            height={200}
+                            className="w-[200px] h-[200px] aspect-square object-cover rounded-xl cursor-pointer shadow-sm"
+                            alt="msg"
+                        />
+                    </ContextMenuWrapper>
+                )}
+
+                {msg?.content && (
+                    <div
+                        data-sender={isSender ? "self" : "other"}
+                        className={`w-fit ${
+                            isSender
+                                ? "text-white bg-orange   "
+                                : "self-start items-start  text-message bg-on_white_gray_2"
+                        } flex flex-col text-sm font-medium rounded-sm py-2 px-4 break-all`}
+                    >
+                        <p>{msg?.content}</p>
+                    </div>
+                )}
 
                 <div className="flex items-center space-x-2 mt-[2px] text-[10px]">
                     <time className=" text-on_white_gray font-semibold ">

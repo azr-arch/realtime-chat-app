@@ -5,16 +5,36 @@ import { useChat } from "@context/ChatContext";
 import { UserPlus } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 
 const ChatList = ({ session }) => {
     const [isMounted, setIsMounted] = useState(false);
     const { currentChat, handleSetCurrChat, chats, chatsLoading } = useChat();
+    const [filteredChats, setFilteredChats] = useState([]);
+    const searchParams = useSearchParams();
 
-    function getReceiver(item) {
-        const receiver = item.filter((itm) => itm.email !== session?.user.email);
-        return receiver[0];
-    }
+    const getReceiver = useCallback(
+        (item) => {
+            const receiver = item.filter((itm) => itm.email !== session?.user.email);
+            return receiver[0];
+        },
+        [session?.user.email]
+    );
+
+    useEffect(() => {
+        const filterBy = searchParams.get("search")?.toLowerCase();
+
+        if (filterBy) {
+            const filtered = chats.filter((chat) => {
+                const receiver = getReceiver(chat?.participants);
+                return receiver?.email?.toLowerCase().includes(filterBy);
+            });
+            setFilteredChats(filtered);
+        } else {
+            setFilteredChats(chats);
+        }
+    }, [chats, searchParams, getReceiver]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -33,8 +53,8 @@ const ChatList = ({ session }) => {
                 />
             )}
 
-            {chats?.length > 0 &&
-                chats?.map((chat, idx) => {
+            {filteredChats?.length > 0 &&
+                filteredChats?.map((chat, idx) => {
                     const receiver = getReceiver(chat?.participants);
 
                     // TODO: Find if a user isnt in contacts but in chats

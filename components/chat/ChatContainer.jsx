@@ -45,8 +45,6 @@ const ChatContainer = () => {
     const sendMessage = async () => {
         if (!message && !file) return;
 
-        console.log("sending msg");
-
         // This is part is responsible if user is typing and in less 500ms user sends the message
         // Then the UI on other user may not be cleared of `typing`. hence this
         socket.emit(TYPING_EVENT, { chat: currentChat, isTyping: false });
@@ -75,8 +73,6 @@ const ChatContainer = () => {
                 const fileContent = await sendingMediaMessage();
                 sendMsg.fileContent = fileContent;
             }
-
-            console.log(sendMsg);
 
             const sentMsg = await new Promise((resolve, reject) => {
                 // Timeout works as waiting period till the acknowledgement is received from server
@@ -142,9 +138,7 @@ const ChatContainer = () => {
                     if (entry.isIntersecting) {
                         const messageId = entry.target.getAttribute("id").split("-")[1];
                         socket.emit("SEEN_MESSAGE", { messageId, chatId: currentChat?._id });
-                        console.log("seen message", currentChat, messageId);
                         if (currentChat?.unread > 0) {
-                            console.log("Resetting unread for: ", currentChat);
                             resetUnreadCount(currentChat?._id);
                         }
                     }
