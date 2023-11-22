@@ -72,7 +72,7 @@ const ContactHeader = ({ currUser }) => {
                 onConfirm={handleAddContact}
             />
             <header className="flex items-center bg-primary rounded-xl px-5 py-5 justify-between md:justify-around md:max-w-contact w-full shadow-md">
-                <p className="text-heading text-lg font-semibold ml-10 sm:ml-0">Chat</p>
+                <p className="text-heading text-lg font-semibold ml-10 md:ml-0">Chat</p>
 
                 <SearchBar />
 
