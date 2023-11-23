@@ -9,12 +9,14 @@ import MessageWithDate from "@components/ui/messate-date";
 import useDebounce from "@hooks/use-debounce";
 import TypingEffect from "@components/ui/typing-status";
 import Image from "next/image";
-import { Send, XCircle } from "lucide-react";
+import { MoveDown, Send, XCircle } from "lucide-react";
+import { Button } from "@components/ui/button";
 
 const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgress }) => {
     const { socket } = useSocket();
     const { messages, loading, setMessages } = useChat();
     const [otherPersonTyping, setOtherPersonTyping] = useState(false);
+    const [isScrolledUp, setIsScrolledUp] = useState(false);
     const debouncedIsTyping = useDebounce(otherPersonTyping, 500);
 
     const messagesEndRef = useRef(null);
@@ -85,6 +87,13 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
                     })
                 )}
             </div>
+
+            {isScrolledUp && (
+                <Button size="sm" variant="ghost">
+                    <MoveDown className="w-4 h-4" />
+                </Button>
+            )}
+
             {filePreview && (
                 <div className="absolute bottom-2 left-4 z-20 ">
                     <Image

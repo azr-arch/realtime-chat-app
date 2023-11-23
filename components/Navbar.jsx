@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { MessageSquare, User } from "lucide-react";
 import { cn } from "@lib/utils";
 import { MobileMenu } from "./mobile-menu";
+import { Logo } from "./logo";
 
 const Navbar = () => {
     const pathname = usePathname();
@@ -27,6 +28,7 @@ const Navbar = () => {
     return (
         <>
             <nav className="hidden md:flex  min-w-[70px] max-w-[75px] flex-col items-center justify-between py-8 px-4 bg-nav_bg h-full rounded-2xl shadow-sm">
+                <Logo />
                 {routes.map((route) => {
                     return (
                         <Link

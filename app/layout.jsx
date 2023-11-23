@@ -4,21 +4,33 @@ import { SocketProvider } from "@context/SocketContext";
 import { ToasterProvider } from "@providers/toast-provider";
 import SocketIndicator from "@components/SocketIndicator";
 
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { EdgeStoreProvider } from "@lib/edgestore";
+import { siteConfig } from "@config/site";
 
 export const metadata = {
-    title: "Chat",
-    description: "Chat",
+    title: {
+        default: siteConfig.name,
+        template: `%s | ${siteConfig.name}`,
+    },
+    description: siteConfig.description,
+    icons: [
+        {
+            url: "/logo.svg",
+            href: "/logo.svg",
+        },
+    ],
 };
 
-const inter = Inter({ weight: ["400", "500", "600", "700"], subsets: ["latin"] });
+const font = localFont({
+    src: "../public/fonts/charlie-display-3.ttf",
+});
 
 const RootLayout = ({ children }) => {
     return (
         <html lang="en">
             <body
-                className={`min-h-screen transition-colors duration-150 ease-linear ${inter.className}}`}
+                className={`min-h-screen transition-colors duration-150 ease-linear ${font.className}}`}
             >
                 <EdgeStoreProvider>
                     <Provider>
