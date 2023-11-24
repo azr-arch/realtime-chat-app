@@ -1,8 +1,6 @@
 "use client";
 
 import { useSocket } from "@context/SocketContext";
-import { AlertTriangle } from "lucide-react";
-import { getSession, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 let limit = 5;
