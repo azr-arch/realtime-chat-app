@@ -62,10 +62,12 @@ const handler = NextAuth({
         async session({ session }) {
             // store the user id from MongoDB to session
             try {
-                const sessionUser = await User.findOne({ email: session.user.email });
-
-                session.user.sub = sessionUser._id.toString();
-
+                if(session.user) {
+                    const sessionUser = await User.findOne({ email: session.user.email });
+                    if(sessionUser) {
+                        session.user.sub = sessionUser._id.toString();
+                    }    
+                } 
                 return session;
             } catch (e) {
                 console.log("an errro occrued in session ", e);
