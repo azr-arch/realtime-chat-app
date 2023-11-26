@@ -87,7 +87,7 @@ const ChatProvider = ({ children }) => {
             const res = await fetch(url);
             return await res.json();
         } catch (error) {
-            console.log(error);
+            console.error(error);
             return null;
         }
     }
@@ -102,10 +102,12 @@ const ChatProvider = ({ children }) => {
     const getDataHelper = useCallback(async () => {
         dispatch({ type: "SET_CHATS_LOADING", payload: true });
 
-        const [chatsData, contactsData] = await Promise.all([
-            getData("api/chats"),
-            getData("api/contacts"),
-        ]);
+        // const [chatsData, contactsData] = await Promise.all([
+        //     getData("api/chats"),
+        //     getData("api/contacts"),
+        // ]);
+        const chatsData = await getData("api/chats");
+        const contactsData = await getData("api/contacts");
 
         dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
         dispatch({ type: "SET_CONTACTS", payload: contactsData?.contacts });

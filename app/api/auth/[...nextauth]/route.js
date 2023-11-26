@@ -12,6 +12,8 @@ import User from "@models/user";
 import { signOut } from "next-auth/react";
 
 import bcrypt from "bcrypt";
+
+export const dynamic = "force-dynamic";
 const handler = NextAuth({
     providers: [
         CredentialsProvider({
@@ -62,12 +64,12 @@ const handler = NextAuth({
         async session({ session }) {
             // store the user id from MongoDB to session
             try {
-                if(session.user) {
+                if (session.user) {
                     const sessionUser = await User.findOne({ email: session.user.email });
-                    if(sessionUser) {
+                    if (sessionUser) {
                         session.user.sub = sessionUser._id.toString();
-                    }    
-                } 
+                    }
+                }
                 return session;
             } catch (e) {
                 console.log("an errro occrued in session ", e);

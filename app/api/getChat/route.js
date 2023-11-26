@@ -3,6 +3,8 @@ import User from "@models/user";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request) {
     const { user } = await getServerSession();
     try {
