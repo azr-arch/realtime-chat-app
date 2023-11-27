@@ -44,7 +44,7 @@ export const MobileMenu = () => {
         <>
             <Button
                 onClick={onOpen}
-                className="block md:hidden absolute top-[4rem] left-10 z-50 "
+                className="block md:hidden absolute top-[3.9rem] left-10 z-50 "
                 variant="ghost"
                 size="md"
             >

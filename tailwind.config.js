@@ -16,6 +16,9 @@ module.exports = {
             },
         },
         extend: {
+            screens: {
+                xs: "380px",
+            },
             maxWidth: {
                 login: "29.16444rem",
                 contact: "330px",

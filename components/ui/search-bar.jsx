@@ -44,7 +44,7 @@ const SearchBar = () => {
                 type="text"
                 name="search"
                 placeholder="Search"
-                className="md:w-28 bg-transparent h-full  outline-none text-sm"
+                className="w-20 xs:w-28 bg-transparent h-full  outline-none text-sm"
                 onChange={handleSearch}
                 value={searchParams.get("search") || ""}
             />

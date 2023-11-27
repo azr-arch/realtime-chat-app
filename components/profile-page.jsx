@@ -10,7 +10,6 @@ import Image from "next/image";
 import { toast } from "react-hot-toast";
 
 const ProfilePage = ({ data }) => {
-    console.log(data);
     const [avatar, setAvatar] = useState(data?.avatar);
 
     const upload = async (result) => {

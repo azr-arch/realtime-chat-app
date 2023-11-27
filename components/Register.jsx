@@ -42,7 +42,7 @@ const Register = ({ setIsLoginPage }) => {
 
             throw new Error(data.message);
         } catch (err) {
-            console.log("an error occured while registering user! ", err);
+            console.log("[REGISTERING_USER_CLIENT]:", err);
             toast.error(err.message);
         } finally {
             setLoading(false);
