@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import EmojiPicker from "./ui/emoji";
 import { useEdgeStore } from "@lib/edgestore";
+import { Input } from "./ui/input";
 
 const MessageInput = ({ value, onChange, onSubmit, loading, onFileChange }) => {
     const [isMounted, setIsMounted] = useState(false);
@@ -38,6 +39,12 @@ const MessageInput = ({ value, onChange, onSubmit, loading, onFileChange }) => {
         inputRef?.current.focus();
     };
 
+    useEffect(() => {
+        if (!loading) {
+            inputRef?.current?.focus();
+        }
+    }, [loading]);
+
     if (!isMounted) return null;
 
     return (
@@ -66,16 +73,16 @@ const MessageInput = ({ value, onChange, onSubmit, loading, onFileChange }) => {
                     onChange={onChange}
                     onKeyDown={handleKeyPress}
                     className={`grow h-full w-full px-5 outline-none
-                               font-medium text-sm placeholder:opacity-50 bg-transparent
-                                 placeholder-black_accent_2 `}
-                    placeholder="Write messages..."
+                               font-medium text-sm  bg-transparent placeholder:opacity-70
+                                 placeholder-black_accent_2 focus-visible:ring-0`}
+                    placeholder="Hey there!"
+                    disabled={loading}
                 />
                 <EmojiPicker onSuccess={handleEmojiAdd} />
             </div>
 
             <button
                 disabled={loading || value === ""}
-                // style={loading && { opacity: 0.4 }}
                 onClick={handleSubmit}
                 className={`transition bg-orange rounded-lg ml-auto hover:bg-black hover:text-orange p-4 shadow-md ${
                     loading ? "opacity-60" : ""

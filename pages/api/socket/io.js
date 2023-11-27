@@ -33,12 +33,12 @@ const SocketHandler = (req, res) => {
             socket.on("REGISTER", ({ email }) => {
                 // Remove the existing mapping if it exists
                 if (emailToSocket.has(email)) {
-                    socketToEmail.delete(emailToSocket[email]);
+                    socketToEmail.delete(emailToSocket.get(email));
                 }
 
                 // Add the new mapping
-                socketToEmail[socket.id] = email;
-                emailToSocket[email] = socket.id;
+                socketToEmail.set(socket.id, email);
+                emailToSocket.set(email, socket.id);
 
                 console.log("REGISTERED_USER: ", socketToEmail);
                 console.log("EMAILTOSOCKETMAP: ", emailToSocket);
