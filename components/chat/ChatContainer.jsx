@@ -23,7 +23,7 @@ const ChatContainer = () => {
     const [filePreview, setFilePreview] = useState(null);
     const [fileSendProgress, setFileSendProgress] = useState(0);
 
-    const { currentChat, setMessages, messages, resetUnreadCount } = useChat(); // Data of currentChat
+    const { currentChat, setMessages, messages, resetUnreadCount, updateSeen } = useChat(); // Data of currentChat
     const { socket } = useSocket();
     const { data: session } = useSession();
     const { edgestore } = useEdgeStore();
@@ -97,6 +97,7 @@ const ChatContainer = () => {
 
     const handleChange = (e, manually = false, manualData) => {
         if (manually) {
+            // For adding emojis
             setMessage((prev) => prev + manualData);
         } else {
             setMessage(e.target.value);
@@ -135,12 +136,14 @@ const ChatContainer = () => {
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
+                    const isSender = entry.target.getAttribute("data-isSender") === "true";
+                    if (entry.isIntersecting && !isSender) {
                         const messageId = entry.target.getAttribute("id").split("-")[1];
                         socket.emit("SEEN_MESSAGE", { messageId, chatId: currentChat?._id });
                         if (currentChat?.unread > 0) {
                             resetUnreadCount(currentChat?._id);
                         }
+                        updateSeen({ _id: messageId });
                     }
                 });
             },
@@ -150,13 +153,13 @@ const ChatContainer = () => {
         );
 
         memoizedMessages.forEach((msg) => {
-            if (msg.status === "seen" || msg.sender._id === session?.user?.sub) return;
+            if (msg.status === "seen") return;
 
             const messageElement = document.getElementById(`message-${msg._id}`);
             if (messageElement && isTabVisible) {
+                // Add a data attribute to indicate if the message sender is the current user
+                messageElement.setAttribute("data-isSender", msg.sender._id === session?.user?.sub);
                 observer.observe(messageElement);
-                // Set the message status to seen
-                msg.status = "seen";
             }
         });
 
@@ -164,7 +167,15 @@ const ChatContainer = () => {
             observer.disconnect();
             socket?.off("SEEN_MESSAGE");
         };
-    }, [memoizedMessages, isTabVisible, socket, currentChat, resetUnreadCount, session?.user?.sub]);
+    }, [
+        memoizedMessages,
+        isTabVisible,
+        socket,
+        currentChat,
+        resetUnreadCount,
+        session?.user?.sub,
+        updateSeen,
+    ]);
 
     useEffect(() => {
         if (!socket) return;

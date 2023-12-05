@@ -78,4 +78,4 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
     );
 };
 
-export default memo(MessageWithDate);
+export default MessageWithDate;

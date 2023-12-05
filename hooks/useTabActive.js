@@ -33,7 +33,7 @@ const useTabActive = () => {
         };
     }, []);
 
-    return documentVisible === "visible" && browserVisible;
+    return (documentVisible === "visible" && browserVisible) || documentVisible === "visible";
 };
 
 export default useTabActive;

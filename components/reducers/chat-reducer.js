@@ -29,6 +29,17 @@ export function chatReducer(state, action) {
         case "SET_CONTACTS":
             return { ...state, contacts: action.payload };
 
+        case "UPDATE_SEEN":
+            return {
+                ...state,
+                messages: state.messages.map((msg) => {
+                    if (msg._id === action.payload._id) {
+                        return { ...msg, status: "seen" };
+                    }
+                    return msg;
+                }),
+            };
+
         default:
             throw new Error("No action of " + action.type);
     }

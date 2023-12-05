@@ -114,6 +114,10 @@ const ChatProvider = ({ children }) => {
         dispatch({ type: "SET_CHATS_LOADING", payload: false });
     }, []);
 
+    const updateSeen = (updateMsg) => {
+        dispatch({ type: "UPDATE_SEEN", payload: updateMsg });
+    };
+
     useEffect(() => {
         if (state.currentChat) {
             fetchMessages();
@@ -136,7 +140,6 @@ const ChatProvider = ({ children }) => {
                 }
 
                 const newChats = updateChatList(state.chats, updatedChat);
-                console.log(newChats);
                 if (newChats !== null) {
                     dispatch({ type: "SET_CHATS", payload: newChats });
                 }
@@ -161,6 +164,7 @@ const ChatProvider = ({ children }) => {
                 resetUnreadCount,
                 setMessages,
                 setContacts,
+                updateSeen,
                 closeChat,
                 setChats,
                 getChat,

@@ -27,7 +27,7 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="hidden md:flex  min-w-[70px] max-w-[75px] flex-col items-center justify-between py-8 px-4 bg-nav_bg h-full rounded-2xl shadow-sm">
+            <nav className="hidden md:flex  min-w-[70px] max-w-[70px] flex-col items-center justify-between py-8 px-4 bg-nav_bg h-full rounded-2xl shadow-sm">
                 <Logo />
                 {routes.map((route) => {
                     return (

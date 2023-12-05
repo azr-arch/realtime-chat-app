@@ -14,7 +14,7 @@ import { Button } from "@components/ui/button";
 
 const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgress }) => {
     const { socket } = useSocket();
-    const { messages, loading, setMessages } = useChat();
+    const { messages, loading, setMessages, updateSeen } = useChat();
     const [otherPersonTyping, setOtherPersonTyping] = useState(false);
     const [isScrolledUp, setIsScrolledUp] = useState(false);
     const debouncedIsTyping = useDebounce(otherPersonTyping, 500);
@@ -27,18 +27,19 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
         }
     };
 
-    const updateMessages = useCallback(
-        (updatedMsg) => {
-            const newMessages = messages?.map((msg) => {
-                if (msg._id === updatedMsg._id) {
-                    return { ...msg, status: "seen" };
-                }
-                return msg;
-            });
-            setMessages(newMessages);
-        },
-        [messages, setMessages]
-    );
+    // const updateMessages = useCallback(
+    //     (updatedMsg) => {
+    //         const newMessages = messages?.map((msg) => {
+    //             if (msg._id === updatedMsg._id) {
+    //                 return { ...msg, status: "seen" };
+    //             }
+    //             return msg;
+    //         });
+    //         console.log("setting new message after recieving chat seen update!");
+    //         setMessages(newMessages);
+    //     },
+    //     [messages, setMessages]
+    // );
 
     useEffect(() => {
         scrollToBottom();
@@ -53,7 +54,7 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
 
             socket.on("SEEN_MESSAGE_UPDATE", ({ updatedMsg }) => {
                 if (updatedMsg) {
-                    updateMessages(updatedMsg);
+                    updateSeen(updatedMsg);
                 }
             });
         }
@@ -61,7 +62,7 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
             socket?.off(TYPING_EVENT);
             socket?.off("SEEN_MESSAGE_UPDATE");
         };
-    }, [socket, messages, updateMessages]);
+    }, [socket, messages, updateSeen]);
 
     return (
         <div className="relative grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[350px] md:max-h-[570px] bg-primary p-6">
