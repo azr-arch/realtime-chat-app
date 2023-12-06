@@ -1,22 +1,22 @@
 "use client";
+import Image from "next/image";
+import { useEffect, useRef, useState, memo } from "react";
 
 import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
 import { TYPING_EVENT } from "@lib/socket-events";
-import { useCallback, useEffect, useRef, useState, memo } from "react";
-
-import MessageWithDate from "@components/ui/messate-date";
 import useDebounce from "@hooks/use-debounce";
+
 import TypingEffect from "@components/ui/typing-status";
-import Image from "next/image";
-import { MoveDown, Send, XCircle } from "lucide-react";
 import { Button } from "@components/ui/button";
+import { GroupedMessages } from "@components/grouped-messages";
+import { Loader, MoveDown, Send, XCircle } from "lucide-react";
 
 const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgress }) => {
     const { socket } = useSocket();
-    const { messages, loading, setMessages, updateSeen } = useChat();
+    const { messages, loading, updateSeen } = useChat();
     const [otherPersonTyping, setOtherPersonTyping] = useState(false);
-    const [isScrolledUp, setIsScrolledUp] = useState(false);
+    const [isScrolledUp] = useState(false);
     const debouncedIsTyping = useDebounce(otherPersonTyping, 500);
 
     const messagesEndRef = useRef(null);
@@ -26,20 +26,6 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
             messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
         }
     };
-
-    // const updateMessages = useCallback(
-    //     (updatedMsg) => {
-    //         const newMessages = messages?.map((msg) => {
-    //             if (msg._id === updatedMsg._id) {
-    //                 return { ...msg, status: "seen" };
-    //             }
-    //             return msg;
-    //         });
-    //         console.log("setting new message after recieving chat seen update!");
-    //         setMessages(newMessages);
-    //     },
-    //     [messages, setMessages]
-    // );
 
     useEffect(() => {
         scrollToBottom();
@@ -68,24 +54,15 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
         <div className="relative grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[350px] md:max-h-[570px] bg-primary p-6">
             <div
                 style={{ scrollBehavior: "smooth" }}
-                className="w-full grow flex flex-col gap-3 overflow-y-scroll overflow-x-hidden px-2  py-1 relative"
+                className="w-full grow flex flex-col gap-4 overflow-y-scroll overflow-x-hidden px-2  py-1 relative"
                 ref={messagesEndRef}
             >
                 {loading ? (
-                    <p className="absolute z-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2">
-                        Fetching chats...
-                    </p>
+                    <div className="absolute w-5 h-5 md:w-8 md:h-8 top-1/2 -translate-x-1/2 left-1/2 -translate-y-1/2">
+                        <Loader className="w-full h-full animate-spin text-orange" />
+                    </div>
                 ) : (
-                    messages?.map((msg, idx) => {
-                        return (
-                            <MessageWithDate
-                                key={msg?._id | idx}
-                                msg={msg}
-                                prevMsg={messages[idx - 1]}
-                                session={session}
-                            />
-                        );
-                    })
+                    <GroupedMessages messages={messages} session={session} />
                 )}
             </div>
 

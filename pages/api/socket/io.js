@@ -113,6 +113,15 @@ const SocketHandler = (req, res) => {
                 const toId = emailToSocket[to];
                 io.to(toId).emit("ICE_CANDIDATE", candidate);
             });
+
+            socket.on("DISCONNECT", () => {
+                console.log("a client disconnected");
+
+                const email = socketToEmail.get(socket.id);
+
+                socketToEmail.delete(socket.id);
+                emailToSocket.delete(email);
+            });
         });
     }
 

@@ -28,6 +28,12 @@ const ProfilePage = ({ data }) => {
         }
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+
+        signOut({ callbackUrl: "/" });
+    };
+
     return (
         <div className="flex flex-col items-center space-y-2 ">
             {/* Image  */}
@@ -49,7 +55,7 @@ const ProfilePage = ({ data }) => {
 
             <Button
                 className="font-semibold mt-4 text-accent_1 hover:bg-zinc-300 ring ring-orange"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={handleLogout}
             >
                 Logout
             </Button>

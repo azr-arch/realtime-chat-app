@@ -39,6 +39,7 @@ const Login = ({ setIsLoginPage }) => {
                 return;
             }
             socket?.emit("REGISTER", { email: formData.email });
+            localStorage.setItem("UserEmail", JSON.stringify(formData.email));
             toast.success("Login successfully");
             //if everything goes well
             router.replace("/chat");

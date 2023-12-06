@@ -17,14 +17,16 @@ export const SocketProvider = ({ children }) => {
     const { data: session } = useSession();
 
     useEffect(() => {
+        const userEmail = JSON.parse(localStorage.getItem("UserEmail"));
+
         const socketInstance = new ClientIO({
             path: "/api/socket/io",
         });
 
         socketInstance.on("connect", () => {
-            console.log("client socket connected.");
-            if (session && session?.user?.email) {
-                socket.emit("REGISTER", { email: session.user.email });
+            if (userEmail) {
+                console.log("socket is registered with ", userEmail);
+                socketInstance.emit("REGISTER", { email: userEmail });
             }
             setIsConnected(true);
         });

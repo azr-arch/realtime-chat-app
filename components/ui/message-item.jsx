@@ -1,31 +1,15 @@
-import { memo } from "react";
 import moment from "moment";
-import { Badge } from "./badge";
 import { Check, CheckCheck } from "lucide-react";
 import Image from "next/image";
 import ContextMenuWrapper from "./context-menu-wrapper";
+import { DateBadge } from "@components/date-badge";
 
-const MessageWithDate = ({ msg, prevMsg, session }) => {
-    const msgDate = moment(msg?.updatedAt);
-    const prevMsgDate = prevMsg ? moment(prevMsg?.updatedAt) : null;
-    const shouldDisplayDate = !prevMsgDate || !msgDate.isSame(prevMsgDate, "day");
-
+export const MessageItem = ({ msg, session }) => {
     const isSender = session?.user?.sub === msg?.sender?._id;
+
     return (
         <>
-            {shouldDisplayDate && (
-                <Badge
-                    variant="outline"
-                    className="w-fit self-center rounded-2xl text-[10px] text-accent_1 font-medium px-3 outline-on_white_gray_2 outline outline-[1px] py-2 my-2"
-                >
-                    {msgDate.calendar(null, {
-                        sameDay: "[Today]",
-                        lastDay: "[Yesterday]",
-                        lastWeek: "dddd",
-                        sameElse: "D MMMM, YYYY",
-                    })}
-                </Badge>
-            )}
+            {msg?.isNewDay && <DateBadge time={msg?.updatedAt} />}
 
             {/* Message */}
             <div
@@ -77,5 +61,3 @@ const MessageWithDate = ({ msg, prevMsg, session }) => {
         </>
     );
 };
-
-export default MessageWithDate;
