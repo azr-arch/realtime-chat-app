@@ -12,8 +12,9 @@ const Page = async () => {
     if (!data?.user) return null;
 
     const user = await User.findOne({ email: data.user.email }).select("_id name email avatar");
-    const obj = user.toObject();
     if (!user) return null;
+
+    const obj = { ...user.toObject(), _id: user._id.toString() };
     return (
         <div className="w-full h-full self-stretch flex flex-col items-center justify-center">
             <Suspense fallback={<Loader className="w-5 h-5 animate-spin" />}>
