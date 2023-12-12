@@ -1,18 +1,10 @@
 "use client";
 
 import { useChat } from "@context/ChatContext";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const ContactList = () => {
-    const [isMounted, setIsMounted] = useState(false);
     const { getChat, contacts } = useChat();
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    if (!isMounted) return null;
 
     return (
         <>
