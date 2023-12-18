@@ -27,8 +27,6 @@ const SocketHandler = (req, res) => {
         });
         res.socket.server.io = io;
         io.on("connection", (socket) => {
-            console.log("a client connected", socket.id);
-
             // Event for Mapping socketid to email
             socket.on("REGISTER", ({ email }) => {
                 // Remove the existing mapping if it exists
@@ -42,6 +40,9 @@ const SocketHandler = (req, res) => {
 
                 console.log("REGISTERED_USER: ", socketToEmail);
                 console.log("EMAILTOSOCKETMAP: ", emailToSocket);
+
+                console.log("SENDING_ACTIVE_USERS: ", socketToEmail);
+                io.emit("ACTIVE_USERS", Array.from(emailToSocket.keys()));
             });
 
             socket.on("test", (data) => {
@@ -61,7 +62,6 @@ const SocketHandler = (req, res) => {
                 });
 
                 socket.join(data?._id);
-                console.log(`SOCKET ${socket.id} has rooms:`, socket.rooms);
                 socket.broadcast.to(data?._id).emit("newjoin", data);
             });
 
@@ -88,9 +88,7 @@ const SocketHandler = (req, res) => {
             });
 
             socket.on("SEEN_MESSAGE", async ({ messageId, chatId }) => {
-                console.log("SEEN MESSAGE EVENT SERVER: ", messageId, chatId);
                 const updatedMsg = await updateMessageStatus(messageId);
-                console.log("updatedMSg: ", updatedMsg);
                 socket.broadcast.to(chatId).emit("SEEN_MESSAGE_UPDATE", { updatedMsg });
             });
 
@@ -114,13 +112,15 @@ const SocketHandler = (req, res) => {
                 io.to(toId).emit("ICE_CANDIDATE", candidate);
             });
 
-            socket.on("DISCONNECT", () => {
+            socket.on("disconnect", () => {
                 console.log("a client disconnected");
 
                 const email = socketToEmail.get(socket.id);
 
                 socketToEmail.delete(socket.id);
                 emailToSocket.delete(email);
+
+                io.emit("ACTIVE_USERS:REMOVE", email);
             });
         });
     }

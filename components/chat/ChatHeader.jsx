@@ -9,13 +9,16 @@ import {
 import { useChat } from "@context/ChatContext";
 import { MoreVertical, Trash, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DeleteModal } from "@components/modals/delete-modal";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 import { useSocket } from "@context/SocketContext";
+import useActiveList from "@hooks/use-active-list";
+import { OnlineStatus } from "@app/_components/online-status";
+import { cn } from "@lib/utils";
 // Helper function
 
 const ChatHeader = ({ selectedChat, currUserEmail }) => {
@@ -25,6 +28,8 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
     const { data: session } = useSession();
     const { socket } = useSocket();
     const router = useRouter();
+
+    const { members } = useActiveList();
 
     const deleteMessages = async () => {
         try {
@@ -59,6 +64,10 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
 
     const receiver = getReceiver(selectedChat?.participants);
 
+    const isActive = useMemo(() => {
+        return members.includes(receiver?.email);
+    }, [members, receiver?.email]);
+
     // useEffect(() => {
     //     socket?.on("CALL_ACCEPTED", handleAnswer);
     //     // socket?.on("ICE_CANDIDATE", handleIceCandidate)
@@ -77,19 +86,26 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
                 loading={loading}
             />
             <header className="w-full hidden md:flex self-stretch  items-center gap-4 px-6 py-4 bg-primary rounded-xl max-h-[80px] shadow-sm">
-                <Image
-                    src={receiver?.avatar}
-                    width={25}
-                    height={25}
-                    className="rounded-full w-12 h-12 object-cover object-center"
-                    alt="user-profile"
-                />
+                <div className="relative w-12 h-12 rounded-full">
+                    <Image
+                        src={receiver?.avatar}
+                        fill
+                        className="rounded-full overflow-hidden object-cover object-center"
+                        alt="user-profile"
+                    />
+                </div>
 
                 <div className="flex flex-col items-start ">
-                    <p className="text-accent_1 text-base font-medium">{receiver?.name}</p>
+                    <p className="text-accent_1 font-medium">{receiver?.name}</p>
 
-                    {/* TODO: Add status feature */}
-                    {/* <p className="text-xs text-accent_2  tracking-wide">Offline</p> */}
+                    <p
+                        className={cn(
+                            `text-[10px] text-accent_2 tracking-wide`,
+                            isActive && "text-green-400 font-semibold"
+                        )}
+                    >
+                        {isActive ? "Online" : "Offline"}
+                    </p>
                 </div>
 
                 <div className="flex items-center ml-auto gap-4">

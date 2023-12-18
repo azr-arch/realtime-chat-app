@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 
 import { toast } from "react-hot-toast";
 
-const Register = ({ setIsLoginPage }) => {
+const Register = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -226,13 +226,6 @@ const Register = ({ setIsLoginPage }) => {
                         </svg>
                     </span>
                 </div> */}
-
-                <p className="text-sm text-center leading-normal text-l-gray mt-8">
-                    Already a member?{" "}
-                    <button onClick={() => setIsLoginPage(true)} className="text-orange ml-2">
-                        Login
-                    </button>
-                </p>
             </section>
             {/* <div className="flex">
         <p>created by username</p>

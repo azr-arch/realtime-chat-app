@@ -1,7 +1,9 @@
 "use client";
 
+import { OnlineStatus } from "@app/_components/online-status";
 import { ChatsContactsSkeleton } from "@components/ui/skeleton-loader";
 import { useChat } from "@context/ChatContext";
+import useActiveList from "@hooks/use-active-list";
 import { UserPlus } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
@@ -14,12 +16,21 @@ const ChatList = ({ session }) => {
     const [filteredChats, setFilteredChats] = useState([]);
     const searchParams = useSearchParams();
 
+    const { members } = useActiveList();
+
     const getReceiver = useCallback(
         (item) => {
             const receiver = item.filter((itm) => itm.email !== session?.user.email);
             return receiver[0];
         },
         [session?.user.email]
+    );
+
+    const isActive = useCallback(
+        (email) => {
+            return members.includes(email);
+        },
+        [members]
     );
 
     useEffect(() => {
@@ -80,13 +91,17 @@ const ChatList = ({ session }) => {
                                 handleSetCurrChat(chat);
                             }}
                         >
-                            <Image
-                                src={receiver?.avatar}
-                                width={45}
-                                height={45}
-                                className="rounded-full aspect-square w-11 h-11 object-cover ml-6 "
-                                alt="user profile"
-                            />
+                            <div className="w-11 h-11 rounded-full relative ml-6 ">
+                                <Image
+                                    fill
+                                    src={receiver?.avatar}
+                                    className="object-cover rounded-full overflow-hidden"
+                                    alt="user profile"
+                                />
+
+                                {/* Active status */}
+                                {isActive(receiver?.email) && <OnlineStatus />}
+                            </div>
                             {/* Last message time */}
                             <p className="text-[10px] tracking-wide absolute top-2 font-medium right-4 text-accent_2">
                                 {moment(chat?.updatedAt).format("HH:mm A")}

@@ -10,7 +10,7 @@ import { Label } from "./ui/label";
 import { toast } from "react-hot-toast";
 import { useSocket } from "@context/SocketContext";
 
-const Login = ({ setIsLoginPage }) => {
+const Login = () => {
     const [loading, setLoading] = useState(false);
     const { socket } = useSocket();
 
@@ -225,12 +225,6 @@ const Login = ({ setIsLoginPage }) => {
                     </svg>
                 </span>
             </div> */}
-            <p className="text-sm text-center leading-normal text-l-gray mt-8">
-                Don`t have an account yet?
-                <button onClick={() => setIsLoginPage(false)} className="text-orange ml-2">
-                    Register
-                </button>
-            </p>
         </section>
     );
 };

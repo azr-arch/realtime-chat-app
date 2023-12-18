@@ -1,5 +1,6 @@
 "use client";
 
+import useActiveList from "@hooks/use-active-list";
 import { useSession } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { io as ClientIO } from "socket.io-client";
@@ -15,6 +16,8 @@ export const SocketProvider = ({ children }) => {
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const { data: session } = useSession();
+
+    const { remove, set } = useActiveList();
 
     useEffect(() => {
         const userEmail = JSON.parse(localStorage.getItem("UserEmail"));
@@ -34,6 +37,15 @@ export const SocketProvider = ({ children }) => {
         socketInstance.on("disconnect", () => {
             console.log("client socket disconnected.");
             setIsConnected(false);
+        });
+
+        socketInstance.on("ACTIVE_USERS", (activeUsersArr) => {
+            set(activeUsersArr);
+        });
+
+        socketInstance.on("ACTIVE_USERS:REMOVE", (data) => {
+            console.log("remove a active user ", data);
+            remove(data);
         });
 
         setSocket(socketInstance);
