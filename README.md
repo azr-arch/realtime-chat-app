@@ -13,6 +13,15 @@ This is a real-time chat application built with Next.js, Tailwind CSS, NextAuth,
 - One-on-one Talk: Chat directly with your friends privately.
 - Send Images and Emojis: Able to send images and emojis.
 
+## Built With
+
+- [Next.js](https://nextjs.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [NextAuth](https://next-auth.js.org/)
+- [MongoDB](https://mongodb.com)
+- [SocketIO](https://socket.io/)
+- [LiveKit](https://livekit.io/)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
