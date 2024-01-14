@@ -5,7 +5,6 @@ import Image from "next/image";
 
 const ContactList = () => {
     const { getChat, contacts } = useChat();
-
     return (
         <>
             {/*       <span className="text-xs text-on_white_gray ml-6 mt-4">All</span> */}
@@ -18,26 +17,20 @@ const ContactList = () => {
                     <div
                         key={contact?._id}
                         onClick={() => getChat(contact?._id)}
-                        className="hidden md:flex items-center gap-2 py-3 px-5 relative self-stretch w-full text-black cursor-pointer  rounded-md"
+                        className="hidden md:flex items-center gap-3 hover:bg-white/10 transition-colors py-3 px-5 relative self-stretch w-full  cursor-pointer  rounded-md"
                     >
-                        <Image
-                            src={contact?.avatar}
-                            width={40}
-                            height={40}
-                            alt="user-avatar"
-                            className="rounded-full w-10 h-10 aspect-square object-cover"
-                        />
-
-                        <div className="flex flex-col items-start gap-[3px]">
-                            <p className="text-sm text-black_accent_2 font-medium">
-                                {contact?.name}
-                            </p>
+                        <div className="w-11 h-11 rounded-full relative overflow-hidden">
+                            <Image
+                                fill
+                                src={contact?.avatar}
+                                alt="user-avatar"
+                                className="object-cover overflow-hidden"
+                            />
                         </div>
 
-                        {/* Divider effect */}
-                        {idx !== contacts.length - 1 && (
-                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-[85%] bg-on_white_gray_2" />
-                        )}
+                        <div className="flex flex-col items-start gap-[3px]">
+                            <p className="text-sm text-accent_1 font-medium">{contact?.name}</p>
+                        </div>
                     </div>
                 ))}
         </>

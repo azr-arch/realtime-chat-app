@@ -11,6 +11,8 @@ import ChatMessages from "./ChatMessages";
 import { RECEIVE_MSG_EVENT, TYPING_EVENT } from "@lib/socket-events";
 import useTabActive from "@hooks/useTabActive";
 import { useEdgeStore } from "@lib/edgestore";
+import { MediaRoom } from "@app/_components/media-room";
+import { useSearchParams } from "next/navigation";
 
 const TYPING_TIMER_LENGTH = 800; // 500ms
 let typingTimer;
@@ -27,6 +29,8 @@ const ChatContainer = () => {
     const { socket } = useSocket();
     const { data: session } = useSession();
     const { edgestore } = useEdgeStore();
+
+    const searchParams = useSearchParams();
 
     const isTabVisible = useTabActive();
 
@@ -201,13 +205,19 @@ const ChatContainer = () => {
                             selectedChat={currentChat}
                             currUserEmail={session?.user.email}
                         />
-                        <ChatMessages
-                            session={session}
-                            filePreview={filePreview}
-                            clearFile={clearFile}
-                            sendMsg={sendMessage}
-                            fileSendProgress={fileSendProgress}
-                        />
+
+                        {searchParams.has("video") ? (
+                            <MediaRoom currUser={session?.user} callId={currentChat._id} />
+                        ) : (
+                            <ChatMessages
+                                session={session}
+                                filePreview={filePreview}
+                                clearFile={clearFile}
+                                sendMsg={sendMessage}
+                                fileSendProgress={fileSendProgress}
+                            />
+                        )}
+
                         <MessageInput
                             value={message}
                             onChange={handleChange}
@@ -217,7 +227,7 @@ const ChatContainer = () => {
                         />
                     </>
                 ) : (
-                    <div className="w-full self-stretch grow bg-primary shadow-xl rounded-md flex items-center justify-center ">
+                    <div className="w-full self-stretch grow text-accent_1 bg-primary shadow-xl rounded-md flex items-center justify-center ">
                         Select a chat to talk to
                     </div>
                 )}

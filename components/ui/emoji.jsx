@@ -10,7 +10,7 @@ const EmojiPicker = ({ onSuccess }) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="outline">
+                <Button size="icon" variant="default" className="bg-black">
                     <Smile className="w-4 h-4 " />
                 </Button>
             </DropdownMenuTrigger>

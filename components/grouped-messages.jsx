@@ -54,6 +54,7 @@ export const GroupedMessages = ({ messages, session }) => {
                 return (
                     <div
                         key={idx}
+                        data-label="chat-messages"
                         className={cn("flex flex-col w-full gap-3 relative", {
                             "pl-11": isReceiver,
                         })}

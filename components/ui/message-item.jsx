@@ -35,9 +35,9 @@ export const MessageItem = ({ msg, session }) => {
                         data-sender={isSender ? "self" : "other"}
                         className={`w-fit ${
                             isSender
-                                ? "text-white bg-orange   "
-                                : "self-start items-start  text-message bg-on_white_gray_2"
-                        } flex flex-col text-sm font-medium rounded-sm py-2 px-4 break-all`}
+                                ? "text-black bg-orange   "
+                                : "self-start items-start  text-white bg-black"
+                        } flex flex-col text-sm font-semibold rounded-sm py-2 px-4 break-all`}
                     >
                         <p>{msg?.content}</p>
                     </div>

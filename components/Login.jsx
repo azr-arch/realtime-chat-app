@@ -53,7 +53,7 @@ const Login = () => {
 
     return (
         <section className="max-w-md mx-auto bg-primary mt-[10vh] side-p rounded-3xl border border-solid border-gray px-4 pt-10 pb-[2.69rem] ">
-            <h1 className="text-text font-bold text-lg leading-normal mb-7">Login</h1>
+            <h1 className="text-heading font-bold text-lg leading-normal mb-7">Login</h1>
             <form onSubmit={handleSubmit}>
                 <div className="grid gap-2">
                     <div className="grid gap-1">
@@ -69,6 +69,7 @@ const Login = () => {
                             autoCorrect="off"
                             disabled={loading}
                             name="email"
+                            className="bg-transparent text-white"
                             onChange={(e) =>
                                 setFormData((prev) => ({
                                     ...prev,
@@ -86,6 +87,7 @@ const Login = () => {
                             placeholder="password"
                             type="password"
                             name="password"
+                            className="bg-transparent text-white"
                             disabled={loading}
                             onChange={(e) =>
                                 setFormData((prev) => ({
@@ -95,7 +97,11 @@ const Login = () => {
                             }
                         />
                     </div>
-                    <Button disabled={loading} variant="outline" className="text-accent_1">
+                    <Button
+                        disabled={loading}
+                        variant="default"
+                        className="text-accent_1 mt-4 hover:outline transition"
+                    >
                         {loading ? "Please Wait..." : "Login "}
                     </Button>
                 </div>

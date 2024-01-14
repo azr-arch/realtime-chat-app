@@ -1,5 +1,5 @@
 export const OnlineStatus = () => {
     return (
-        <span className="absolute z-50 top-[2px] right-[2px] rounded-full w-2 h-2 bg-green-500 transition animate-in duration-150" />
+        <span className="absolute z-50 top-[0px] right-[0px] rounded-full w-3 h-3 bg-green-500 transition animate-in duration-150" />
     );
 };

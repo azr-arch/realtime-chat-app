@@ -93,16 +93,18 @@ const SocketHandler = (req, res) => {
             });
 
             // When a user is initiating a call
-            socket.on("OUTGOING_CALL", ({ sender, offer, receiver }) => {
-                const personToCall = emailToSocket[receiver]; // Get socket id
+            socket.on("OUTGOING_CALL", ({ from, to, chatId }) => {
+                const personToCall = emailToSocket.get(to); // Get socket id
                 console.log("SENDIN CALL TO ", personToCall);
-                socket.to(personToCall).emit("INCOMING_CALL", { from: sender, offer });
+                socket.to(personToCall).emit("INCOMING_CALL", { from, chatId });
                 // }
             });
 
-            socket.on("CALL_ACCEPTED", ({ to, ans }) => {
-                const toId = emailToSocket[to];
-                io.to(toId).emit("CALL_ACCEPTED", { ans });
+            socket.on("CALL_ENDED", ({ to }) => {
+                const personToCall = emailToSocket.get(to); // Get socket id
+                console.log("ending CALL TO ", personToCall);
+                socket.to(personToCall).emit("CALL_ENDED");
+                // }
             });
 
             socket.on("ICE_CANDIDATE", ({ candidate, to }) => {

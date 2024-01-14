@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState, memo } from "react";
+import { useEffect, useRef, useState, memo, useLayoutEffect } from "react";
 
 import { useChat } from "@context/ChatContext";
 import { useSocket } from "@context/SocketContext";
@@ -11,6 +11,7 @@ import TypingEffect from "@components/ui/typing-status";
 import { Button } from "@components/ui/button";
 import { GroupedMessages } from "@components/grouped-messages";
 import { Loader, MoveDown, Send, XCircle } from "lucide-react";
+import { Messages } from "./messages";
 
 const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgress }) => {
     const { socket } = useSocket();
@@ -18,18 +19,6 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
     const [otherPersonTyping, setOtherPersonTyping] = useState(false);
     const [isScrolledUp] = useState(false);
     const debouncedIsTyping = useDebounce(otherPersonTyping, 500);
-
-    const messagesEndRef = useRef(null);
-
-    const scrollToBottom = () => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-        }
-    };
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
 
     // Receiving typing event
     useEffect(() => {
@@ -52,19 +41,13 @@ const ChatMessages = ({ session, filePreview, clearFile, sendMsg, fileSendProgre
 
     return (
         <div className="relative grow w-full flex flex-col items-start rounded-xl shadow-md h-full max-h-[350px] md:max-h-[570px] bg-primary p-6">
-            <div
-                style={{ scrollBehavior: "smooth" }}
-                className="w-full grow flex flex-col gap-4 overflow-y-scroll overflow-x-hidden px-2  py-1 relative"
-                ref={messagesEndRef}
-            >
-                {loading ? (
-                    <div className="absolute w-5 h-5 md:w-8 md:h-8 top-1/2 -translate-x-1/2 left-1/2 -translate-y-1/2">
-                        <Loader className="w-full h-full animate-spin text-orange" />
-                    </div>
-                ) : (
-                    <GroupedMessages messages={messages} session={session} />
-                )}
-            </div>
+            {loading ? (
+                <div className="absolute w-5 h-5 md:w-8 md:h-8 top-1/2 -translate-x-1/2 left-1/2 -translate-y-1/2">
+                    <Loader className="w-full h-full animate-spin text-white" />
+                </div>
+            ) : (
+                <Messages messages={messages} session={session} />
+            )}
 
             {isScrolledUp && (
                 <Button size="sm" variant="ghost">

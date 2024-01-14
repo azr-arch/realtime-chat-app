@@ -12,7 +12,7 @@ import { useState, useEffect, useCallback } from "react";
 
 const ChatList = ({ session }) => {
     const [isMounted, setIsMounted] = useState(false);
-    const { currentChat, handleSetCurrChat, chats, chatsLoading } = useChat();
+    const { currentChat, handleSetCurrChat, chats, chatsLoading, loading } = useChat();
     const [filteredChats, setFilteredChats] = useState([]);
     const searchParams = useSearchParams();
 
@@ -54,7 +54,7 @@ const ChatList = ({ session }) => {
     if (!isMounted) return null;
     return (
         <>
-            <span className="text-xs text-on_white_gray ml-6 mt-4">All</span>
+            <span className="text-xs text-heading ml-6 mt-4">All</span>
 
             {/* Skeleton loading */}
             {chatsLoading && (
@@ -77,12 +77,15 @@ const ChatList = ({ session }) => {
                     return (
                         <div
                             key={chat?._id}
-                            className={`flex relative hover:bg-on_white_gray_2 overflow-hidden
+                            className={`flex relative hover:bg-white/10 overflow-hidden
                         transition-colors ease-in duration-150 min-h-[65px]
                         ${
                             currentChat && currentChat._id === chat?._id // Active style
-                                ? "bg-on_white_gray_2"
+                                ? "bg-white/10"
                                 : ""
+                        }
+                        ${
+                            loading ? "opacity-50  pointer-events-none" : "" // Disable style
                         }
                         items-center gap-3 py-3 relative self-stretch
                         w-full cursor-pointer `}
@@ -103,7 +106,7 @@ const ChatList = ({ session }) => {
                                 {isActive(receiver?.email) && <OnlineStatus />}
                             </div>
                             {/* Last message time */}
-                            <p className="text-[10px] tracking-wide absolute top-2 font-medium right-4 text-accent_2">
+                            <p className="text-[10px] tracking-wide absolute top-2 font-bold right-4 text-accent_2">
                                 {moment(chat?.updatedAt).format("HH:mm A")}
                             </p>
                             {/* Unread count */}
@@ -113,7 +116,7 @@ const ChatList = ({ session }) => {
                                         className="absolute top-1/2 -translate-y-1/2 
                                                     flex items-center justify-center w-4 h-4 
                                                     rounded-full right-4 text-[10px] 
-                                                    font-bold bg-orange text-white"
+                                                    font-bold bg-orange text-black"
                                     >
                                         {chat?.unread}
                                     </span>
@@ -123,7 +126,11 @@ const ChatList = ({ session }) => {
                                     {receiver?.name}
                                 </p>
                                 {currentChat?._id !== chat?._id && (
-                                    <p className="text-accent_2 text-xs font-medium truncate w-full">
+                                    <p
+                                        className={`text-accent_2 text-xs truncate w-full ${
+                                            chat?.unread > 0 ? "font-extrabold" : "font-medium"
+                                        }`}
+                                    >
                                         {chat?.lastMessage?.content}
                                     </p>
                                 )}
@@ -134,10 +141,6 @@ const ChatList = ({ session }) => {
                                     <UserPlus className="w-4 h-4 " />
                                 </button>
                             )} */}
-                            {/* Divider effect */}
-                            {idx !== chats.length - 1 && (
-                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-[1px] w-[85%] bg-on_white_gray_2" />
-                            )}
                         </div>
                     );
                 })}

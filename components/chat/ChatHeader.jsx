@@ -7,27 +7,32 @@ import {
     DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { useChat } from "@context/ChatContext";
-import { MoreVertical, Trash, X } from "lucide-react";
+import { MoreVertical, Trash, Video, X, VideoOff } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
 import { DeleteModal } from "@components/modals/delete-modal";
 import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { useSession } from "next-auth/react";
 import { useSocket } from "@context/SocketContext";
 import useActiveList from "@hooks/use-active-list";
 import { OnlineStatus } from "@app/_components/online-status";
 import { cn } from "@lib/utils";
+import Link from "next/link";
+import { Button } from "@components/ui/button";
 // Helper function
 
 const ChatHeader = ({ selectedChat, currUserEmail }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const { currentChat, handleSetCurrChat, closeChat } = useChat();
-    const { data: session } = useSession();
+
     const { socket } = useSocket();
+
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const { members } = useActiveList();
 
@@ -68,14 +73,38 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
         return members.includes(receiver?.email);
     }, [members, receiver?.email]);
 
-    // useEffect(() => {
-    //     socket?.on("CALL_ACCEPTED", handleAnswer);
-    //     // socket?.on("ICE_CANDIDATE", handleIceCandidate)
-    //     return () => {
-    //         socket?.off("CALL_ACCEPTED", handleAnswer);
-    //         // socket?.off("ICE_CANDIDATE", handleIceCandidate)
-    //     };
-    // }, [socket]);
+    const clearParams = useCallback(() => {
+        router.push(pathname);
+    }, [router, pathname]);
+
+    const startCall = useCallback(() => {
+        if (!socket) return;
+
+        socket?.emit("OUTGOING_CALL", {
+            from: currUserEmail,
+            to: receiver?.email,
+            chatId: currentChat?._id,
+        });
+        console.log("OUTGOING_CALL TO", receiver?.email);
+    }, [socket, currUserEmail, receiver, currentChat]);
+
+    const stopCall = useCallback(() => {
+        if (!socket) return;
+
+        socket?.emit("CALL_ENDED", { to: receiver?.email });
+    }, [socket, receiver]);
+
+    const onVideoCall = useCallback(() => {
+        if (searchParams.get("video")) {
+            clearParams();
+            stopCall();
+        } else {
+            router.push(`${pathname}?video=true`, { shallow: true });
+            startCall();
+        }
+    }, [searchParams, clearParams, router, pathname, startCall, stopCall]);
+
+    const isVideoCall = Boolean(searchParams.get("video"));
 
     return (
         <>
@@ -109,20 +138,25 @@ const ChatHeader = ({ selectedChat, currUserEmail }) => {
                 </div>
 
                 <div className="flex items-center ml-auto gap-4">
-                    {/* <button
-                        onClick={() => setVideoModalOpen(true)}
-                        aria-label="video-call-btn"
-                        className="bg-black  px-5 py-2 ml-auto rounded-md text-white font-medium flex items-center justify-center"
+                    <Button
+                        variant="outline"
+                        onClick={onVideoCall}
+                        size="sm"
+                        className={cn(isVideoCall ? "bg-red-500 hover:bg-red-700 text-white" : "")}
                     >
-                        <Video className="w-5 h-5" />
-                    </button> */}
+                        {isVideoCall ? (
+                            <VideoOff className="w-5 h-5" />
+                        ) : (
+                            <Video className="w-5 h-5" />
+                        )}
+                    </Button>
 
                     <div className="cursor-pointer relative flex items-center justify-center">
                         <DropdownMenu>
                             <DropdownMenuTrigger>
-                                <MoreVertical className="w-5 h-5" />
+                                <MoreVertical className="w-5 h-5 text-accent_2" />
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="mr-12 mt-4">
+                            <DropdownMenuContent className="mr-12 mt-4 ">
                                 <DropdownMenuItem
                                     onClick={() => setOpen(true)}
                                     className="text-red-500 cursor-pointer"

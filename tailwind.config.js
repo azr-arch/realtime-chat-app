@@ -61,8 +61,8 @@ module.exports = {
                     foreground: "hsl(var(--card-foreground))",
                 },
 
-                nav_bg: "#010019",
-                orange: "#ff4a09",
+                nav_bg: "#1d1e20",
+                orange: "#a57efa",
                 on_white_gray: "#ababab",
                 on_white_gray_2: "#e9e9e9",
 
@@ -70,14 +70,16 @@ module.exports = {
                 black_accent_2: "#161425",
             },
             backgroundColor: {
-                main: "#eee",
-                primary: "#f6f6f6",
+                main: "#121316",
+                primary: "#191a1d",
+                accent_1: "#2a2b2d",
             },
             textColor: {
-                heading: "#18181a",
-                accent_1: "#0e0e1a",
-                accent_2: "#a7a7a7",
-                text_on_navbg: "#f6f6f7",
+                heading: "#fff",
+                accent_1: "#d0d0d0",
+                accent_2: "#717173",
+                accent_3: "#2a2b2d",
+                text_on_navbg: "#78797a",
                 message: "#080808",
             },
             borderRadius: {

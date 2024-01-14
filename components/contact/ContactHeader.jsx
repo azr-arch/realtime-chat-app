@@ -81,7 +81,7 @@ const ContactHeader = ({ currUser }) => {
                 <Button
                     onClick={() => setOpen(true)}
                     size="icon"
-                    className="bg-orange rounded-full hover:text-accent_1 hover:ring-orange hover:ring-1"
+                    className="bg-accent_1 rounded-full hover:text-accent_1 hover:ring-white hover:ring-1"
                 >
                     <Plus className="w-4 h-4" />
                 </Button>

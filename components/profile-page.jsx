@@ -50,7 +50,7 @@ const ProfilePage = ({ data }) => {
             {/* TODO: Hide this in image and Appear when Click on image */}
             <ImageUpload onUpload={upload} />
 
-            <p className="text-black_accent_2 font-semibold text-lg">{data?.name}</p>
+            <p className="text-heading font-semibold text-lg">{data?.name}</p>
             <p className="text-neutral-500">{data?.email}</p>
 
             <Button

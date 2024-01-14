@@ -30,7 +30,7 @@ export const AuthForm = () => {
     return (
         <>
             {formVariant === "LOGIN" ? <Login /> : <Register />}
-            <p className="text-sm text-center leading-normal text-l-gray mt-8">
+            <p className="text-sm text-accent_1 text-center leading-normal text-l-gray mt-8">
                 {formVariant === "LOGIN" ? "Don`t have an account yet?" : "Already a member?"}
                 <button onClick={toggleForm} className="text-orange ml-2">
                     {formVariant === "LOGIN" ? "register" : "login"}

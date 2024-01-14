@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { usePathname } from "next/navigation";
-import { MessageSquare, User } from "lucide-react";
+import { MessageSquare, UserIcon } from "lucide-react";
 import { cn } from "@lib/utils";
 import { MobileMenu } from "./mobile-menu";
 import { Logo } from "./logo";
@@ -12,14 +12,8 @@ const Navbar = () => {
     const pathname = usePathname();
     const routes = [
         {
-            href: "/chat",
-            label: <MessageSquare className="h-6 w-6 text-inherit" />,
-            labelText: "Chat",
-            active: pathname === `/chat`,
-        },
-        {
             href: "/chat/profile",
-            label: <User className="h-10 w-10 p-[10px] rounded-full  text-inherit bg-profile_bg" />,
+            label: <UserIcon className="h-6 w-6  " />,
             labelText: "Account",
             active: pathname === "/chat/profile",
         },
@@ -36,7 +30,7 @@ const Navbar = () => {
                             key={route.href}
                             className={cn(
                                 `transition-colors p-3 rounded-full`,
-                                route.active ? "text-orange" : "text-text_on_navbg"
+                                route.active ? "text-white" : "text-text_on_navbg"
                             )}
                         >
                             {route.label}

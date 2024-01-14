@@ -50,8 +50,10 @@ const Register = () => {
     };
     return (
         <>
-            <section className=" mt-[10vh] bg-primary md:max-w-login mx-auto md:h-auto md:max-h-login px-5 md:side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-[2.69rem]">
-                <h1 className="font-bold w-4/5 md:w-auto text-lg  leading-normal mb-7">Register</h1>
+            <section className=" mt-[10vh] bg-primary md:max-w-login mx-auto md:h-auto md:max-h-login px-5 md:side-p rounded-3xl border border-solid border-gray pt-[3.15rem] pb-1">
+                <h1 className="font-bold w-4/5 md:w-auto text-lg  leading-normal mb-7 text-heading">
+                    Register
+                </h1>
 
                 <form
                     onSubmit={handleSubmit}
@@ -64,6 +66,7 @@ const Register = () => {
                             </Label>
                             <Input
                                 id="email"
+                                className="bg-transparent text-white"
                                 placeholder="name@example.com"
                                 type="email"
                                 autoCapitalize="none"
@@ -84,6 +87,7 @@ const Register = () => {
                                 Password
                             </Label>
                             <Input
+                                className="bg-transparent text-white"
                                 id="password"
                                 placeholder="password"
                                 type="password"
@@ -97,7 +101,11 @@ const Register = () => {
                                 }
                             />
                         </div>
-                        <Button disabled={loading} variant="outline" className="text-accent_1">
+                        <Button
+                            disabled={loading}
+                            variant="default"
+                            className="text-accent_1  hover:outline mt-4"
+                        >
                             {loading ? "Please Wait..." : "Register "}
                         </Button>
                     </div>
