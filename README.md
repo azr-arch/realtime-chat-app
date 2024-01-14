@@ -1,13 +1,17 @@
 # Next.js Chat Application
 
-This is a real-time chat application built with Next.js, Tailwind CSS, NextAuth, MongoDB, and Socket.IO. In the future, it will also incorporate WebRTC for video chat capabilities.
+This is a real-time chat application built with Next.js, Tailwind CSS, NextAuth, MongoDB, LiveKit and Socket.IO.
+
+![App-Poster](./public/assets/chat-app-poster.jpeg)
 
 ## Features
 
 - Real-time messaging: Send and receive messages in real-time using Socket.IO.
 - Add Users: add other users with their login email 
 - User authentication: Securely register and log in users using MongoDB and NextAuth.
-- (Coming soon) Video chat: Talk face-to-face with other users using WebRTC.
+- Video chat: Talk face-to-face with other users.
+- One-on-one Talk: Chat directly with your friends privately.
+- Send Images and Emojis: Able to send images and emojis.
 
 ## Getting Started
 
