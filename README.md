@@ -4,6 +4,9 @@ This is a real-time chat application built with Next.js, Tailwind CSS, NextAuth,
 
 ![App-Poster](./public/assets/chat-app-poster.jpeg)
 
+## Note: 
+The project url may take couple of minutes, because of free tier hosting limitations
+
 ## Features
 
 - Real-time messaging: Send and receive messages in real-time using Socket.IO.
