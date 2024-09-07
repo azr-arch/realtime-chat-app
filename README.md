@@ -42,13 +42,12 @@ This project is licensed under the MIT License - see the [LICENSE.md] file for d
 ---
 
 **Design Credit**: The design for this project is inspired by [https://dribbble.com/shots/22529373-Desktop-design-of-a-chat-application-Lazarev]. All credit for the design goes to them.
-Certainly! To add a note in your previous chat app's README about the enhanced version that follows Next.js best practices and structure, you can include something like this:
 
 ---
 
 ## Note: Enhanced Version Available!
 
-🚀 **Check out the new and improved version of this chat app!** We've rebuilt it from scratch using Next.js, TypeScript, and other modern tools. No more React.js confusion! 🎉
+🚀 **Check out the new and improved version of this chat app!** rebuilt from scratch using Next.js, TypeScript, and other modern tools. No more React.js confusion! 🎉
 
 [Chat App v2](https://github.com/azr-arch/chat-app-v2)
 
