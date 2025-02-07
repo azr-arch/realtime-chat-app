@@ -9,6 +9,7 @@ import SocketIndicator from "@components/SocketIndicator";
 import localFont from "next/font/local";
 import { EdgeStoreProvider } from "@lib/edgestore";
 import { siteConfig } from "@config/site";
+import { FreeTierNotice } from "@components/free-tier-notice";
 
 export const metadata = {
     title: {
@@ -39,6 +40,10 @@ const RootLayout = ({ children }) => {
                         <SocketProvider>
                             <ToasterProvider />
                             <SocketIndicator />
+
+                            {/* This is just to showcase that project is hosted on free tiers and may take time to wake up */}
+                            <FreeTierNotice />
+
                             <main className="relative h-screen flex-center py-8 px-4 md:p-8 bg-main">
                                 {children}
                             </main>
