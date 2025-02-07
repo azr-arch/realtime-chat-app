@@ -19,10 +19,10 @@ export const FreeTierNotice = () => {
         });
 
         return () => clearTimeout(connectionTimer);
-    }, []);
+    }, [socket]);
 
     return showNotice ? (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-10 bg-white/50 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md text-center">
                 <div className="animate-spin mb-4">⏳</div>
                 <h2 className="text-xl font-bold mb-2">One Moment Please...</h2>

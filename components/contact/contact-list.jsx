@@ -5,6 +5,11 @@ import Image from "next/image";
 
 const ContactList = () => {
     const { getChat, contacts } = useChat();
+
+    const handleGetChat = (id, email) => {
+        getChat(id, email);
+    };
+
     return (
         <>
             {/*       <span className="text-xs text-on_white_gray ml-6 mt-4">All</span> */}
@@ -13,10 +18,10 @@ const ContactList = () => {
             </p>
 
             {contacts?.length > 0 &&
-                contacts.map((contact, idx) => (
+                contacts.map((contact) => (
                     <div
                         key={contact?._id}
-                        onClick={() => getChat(contact?._id)}
+                        onClick={() => handleGetChat(contact?._id, contact?.email)}
                         className="hidden md:flex items-center gap-3 hover:bg-white/10 transition-colors py-3 px-5 relative self-stretch w-full  cursor-pointer  rounded-md"
                     >
                         <div className="w-11 h-11 rounded-full relative overflow-hidden">
