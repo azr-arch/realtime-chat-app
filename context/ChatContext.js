@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useReducer } from "r
 import { useSocket } from "../context/SocketContext";
 
 import { initialState, chatReducer } from "@components/reducers/chat-reducer";
+import { get } from "mongoose";
 
 const ChatContext = createContext({});
 
@@ -52,14 +53,22 @@ const ChatProvider = ({ children }) => {
         }
     };
 
-    const getChat = async (receiverId) => {
+    const getChat = async (receiverId, email) => {
         try {
             const res = await fetch("api/getChat", {
                 method: "POST",
                 body: JSON.stringify({ receiverId }),
             });
 
-            const { data } = await res.json();
+            const { data, newChat } = await res.json();
+
+            // send refresh chat event to end user
+            if (newChat && email) {
+                socket?.emit("chat-list-update", {
+                    endUser: email,
+                });
+            }
+
             handleSetCurrChat(data[0]);
             const newChats = [...state.chats, data[0]];
             dispatch({ type: "SET_CHATS", payload: newChats });
@@ -99,6 +108,7 @@ const ChatProvider = ({ children }) => {
         return await res.json();
     }
 
+    // TODO need to refactor this
     const getDataHelper = useCallback(async () => {
         dispatch({ type: "SET_CHATS_LOADING", payload: true });
 
@@ -112,6 +122,11 @@ const ChatProvider = ({ children }) => {
         dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
         dispatch({ type: "SET_CONTACTS", payload: contactsData?.contacts });
         dispatch({ type: "SET_CHATS_LOADING", payload: false });
+    }, []);
+
+    const refreshChats = useCallback(async () => {
+        const chatsData = await getData("api/chats");
+        dispatch({ type: "SET_CHATS", payload: chatsData?.chats });
     }, []);
 
     const updateSeen = (updateMsg) => {
@@ -162,6 +177,7 @@ const ChatProvider = ({ children }) => {
                 chats: state.chats,
                 handleSetCurrChat,
                 resetUnreadCount,
+                refreshChats,
                 setMessages,
                 setContacts,
                 updateSeen,

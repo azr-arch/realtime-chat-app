@@ -3,6 +3,7 @@
 import { OnlineStatus } from "@app/_components/online-status";
 import { ChatsContactsSkeleton } from "@components/ui/skeleton-loader";
 import { useChat } from "@context/ChatContext";
+import { useSocket } from "@context/SocketContext";
 import useActiveList from "@hooks/use-active-list";
 import { UserPlus } from "lucide-react";
 import moment from "moment";
@@ -11,10 +12,11 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 
 const ChatList = ({ session }) => {
-    const [isMounted, setIsMounted] = useState(false);
-    const { currentChat, handleSetCurrChat, chats, chatsLoading, loading } = useChat();
+    const { currentChat, handleSetCurrChat, chats, chatsLoading, loading, refreshChats } =
+        useChat();
     const [filteredChats, setFilteredChats] = useState([]);
     const searchParams = useSearchParams();
+    const { socket } = useSocket();
 
     const { members } = useActiveList();
 
@@ -48,10 +50,13 @@ const ChatList = ({ session }) => {
     }, [chats, searchParams, getReceiver]);
 
     useEffect(() => {
-        setIsMounted(true);
-    }, []);
+        if (socket) {
+            socket.on("chat-list-update", () => {
+                refreshChats();
+            });
+        }
+    }, [socket, refreshChats]);
 
-    if (!isMounted) return null;
     return (
         <>
             <span className="text-xs text-heading ml-6 mt-4">All</span>

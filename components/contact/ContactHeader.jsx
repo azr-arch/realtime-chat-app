@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import { AddModal } from "@components/modals/add-modal";
 import { Button } from "../ui/button";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { toast } from "react-hot-toast";
@@ -15,7 +15,6 @@ const ContactHeader = ({ currUser }) => {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const { setContacts, contacts } = useChat();
-
     const router = useRouter();
 
     const handleAddContact = async (contactToAdd) => {

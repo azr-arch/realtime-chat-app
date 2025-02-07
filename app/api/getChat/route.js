@@ -23,7 +23,7 @@ export async function POST(request) {
         // If chat exists
         if (chat) {
             const chatDetails = await getChatDetails(chat);
-            return NextResponse.json({ data: chatDetails }, { status: 200 });
+            return NextResponse.json({ data: chatDetails, newChat: false }, { status: 200 });
         }
 
         // Else Create a new instance
@@ -32,7 +32,7 @@ export async function POST(request) {
         });
 
         const chatDetails = await getChatDetails(newChatInstance);
-        return NextResponse.json({ data: chatDetails }, { status: 200 });
+        return NextResponse.json({ data: chatDetails, newChat: true }, { status: 200 });
     } catch (error) {
         console.log("[GET_CHAT]", error);
         return new NextResponse(error);
