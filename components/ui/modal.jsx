@@ -8,11 +8,13 @@ export const Modal = ({ title, description, isOpen, onClose, children }) => {
     };
 
     return (
-        <Dialog open={isOpen} onOpenChange={onChange}>
-            <DialogContent>
+        <Dialog className="bg-black" open={isOpen} onOpenChange={onChange}>
+            <DialogContent className="bg-black border-white/20 text-white">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
-                    <DialogDescription>{description}</DialogDescription>
+                    <DialogDescription className="text-neutral-400">
+                        {description}
+                    </DialogDescription>
                 </DialogHeader>
                 <div>{children}</div>
             </DialogContent>

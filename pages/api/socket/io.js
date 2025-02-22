@@ -114,6 +114,12 @@ const SocketHandler = (req, res) => {
                 io.to(toId).emit("ICE_CANDIDATE", candidate);
             });
 
+            socket.on("chat-list-update", ({ endUser }) => {
+                const toId = emailToSocket.get(endUser);
+                // Sending an referesh chat slist event to the meant user
+                socket.to(toId).emit("chat-list-update");
+            });
+
             socket.on("disconnect", () => {
                 console.log("a client disconnected");
 

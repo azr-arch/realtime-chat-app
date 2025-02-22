@@ -49,14 +49,20 @@ export const AddModal = ({ isOpen, onClose, onConfirm, loading }) => {
             isOpen={isOpen}
             onClose={onClose}
         >
-            <div className="space-y-4 py-2 pb-4">
+            <div className="space-y-4 py-2 pb-4 ">
                 <div className="flex items-center gap-2">
-                    <Input ref={inputRef} placeholder="Email" disabled={isLoading} />
+                    <Input
+                        className="bg-black/50"
+                        ref={inputRef}
+                        placeholder="Email"
+                        disabled={isLoading}
+                    />
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={searchContact}
                         disabled={isLoading}
+                        className="bg-black focus-visible:ring-offset-0"
                     >
                         <Search className="w-4 h-4" />
                     </Button>
