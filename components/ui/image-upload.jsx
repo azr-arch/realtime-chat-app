@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "./button";
-import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
-import { ImagePlusIcon, Trash } from "lucide-react";
+import { ImagePlusIcon } from "lucide-react";
+
+const PRESET_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET_NAME;
 
 const ImageUpload = ({ onUpload }) => {
     const [isMounted, setIsMounted] = useState(false);
@@ -12,10 +13,6 @@ const ImageUpload = ({ onUpload }) => {
     useEffect(() => {
         setIsMounted(true);
     }, []);
-
-    // const onUpload = (result) => {
-    //     onChange(result.info.secure_url);
-    // };
 
     if (!isMounted) return null;
 
@@ -31,7 +28,7 @@ const ImageUpload = ({ onUpload }) => {
                     <Image fill className="object-cover" alt="profile" src={url} />
                 </div>
             </div> */}
-            <CldUploadWidget onUpload={onUpload} uploadPreset="wg0slw1v">
+            <CldUploadWidget onUpload={onUpload} uploadPreset={PRESET_NAME}>
                 {({ open }) => {
                     const onClick = () => {
                         open();

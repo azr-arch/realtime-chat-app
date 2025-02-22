@@ -6,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req) {
     try {
+        console.log("inside post request");
         const { user: currUser } = await getServerSession();
         const { imageUrl } = await req.json();
 
